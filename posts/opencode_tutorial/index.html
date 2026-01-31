@@ -1,0 +1,333 @@
+<!doctype html><html lang=en dir=auto data-theme=auto><head><meta charset=utf-8><meta http-equiv=X-UA-Compatible content="IE=edge"><meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no"><meta name=robots content="index, follow"><title>Opencode tutorial for beginners | Prometheus's fire</title><meta name=keywords content="Opencode,Coding Agent,LLM,Tutorial"><meta name=description content="Opencode tutorial for beginners
+1. 介绍
+Opencode [1] 定位是Claude Code 的开源替代品。
+但在目前LLM发展的趋势下，Claude Code很难独占市场，同时我并不看好A\实施的技术封锁。世面上Coding Agent普遍装配有现在最火的Skills、MCP servers、Agents、Subagents，单一使用Claude Code、Codex、Gemini CLI面临的问题就是锁定该CLI采用的模型。虽然现在[2-3]能够实现在CLI级别下，通过Skills方式在三家CLI之间进行联动，但流程繁琐、上下文管理不够精细、不适用于科研，同时[4]这类切换中转站管理的方式也能解决短期额度不够的问题。
+上述讨论的问题，并不在该教程中深入讨论，Opencode通过后续安装插件能更好解决上述调用多个模型的痛点问题。
+
+开源软件注定拥有更高的可玩性，但是配置门槛相应会高一些。
+
+1.1 部署
+[1]中仓库给出了opencode的多个平台的Desktop和tui的安装方式，根据喜好进行安装。
+推荐安装：
+
+Oh-my-opencode[5]
+Opencode-antigravity-auth[6]
+
+后续会给出推荐理由
+1.2 优势
+在介绍中，大概提了两点目前御三家的痛点问题，这在Opencode中正好是完美符合，同时对学生党更加友好，相应的至少有两个优势：
+
+能够灵活使用多个且多家模型；
+对使用API调用模型的用户更友好，配置文件写好即可使用slack command进行模型切换。
+上下文窗口有百分比显示，容易对单个对话进行控制。
+(补充) 如今已经支持github copilot登陆，通过Opencode-antigravity-auth可使用Google one pro用户在antigravity的额度，不需要通过反代。
+
+2. 配置
+开源社区中有丰富的docs，[7]中有详细的配置流程可供参考，官方并未支持中文，差评！A\的docs都支持中文。[8]中有非官方的中文docs，谨慎阅读，容易夹带私货。
+接下来，直接进入穷学生省流配置环节
+2.1 github copilot
+在安装好Opencode后，建议不要直接在终端直接运行，而是先运行下面命令。
+opencode auth login
+选择对应的model provider进行OAuth登陆，这里穷学生直接选择github copilot的学生包，添加好认证后，就已经可以使用opencode随意探索了。
+注意
+
+这里面有一个对于我这种强迫症患者必须要做的，不用听有些教程上说的，在auth login选择other手动添加自己的中转站。
+对于添加了自己不用的provider，使用opencode autho logout进行相应删除，不然翻遍配置文件，都不知道自己添加的provider到底放在哪个位置。
+(重点)：如果发现登陆过后模型不可用，请打开github，在头像中点击settings->copilot->Fetures将需要用的模型打开，同时可以查看当前premium requests查看用量。
+
+2.2 Google one pro
+相信很多穷学生都是美国留学生，拥有了Google one pro订阅的账号，虽然额度一调再调，但是对于科研党是完全够用的，不讨论如何获取Google one pro(养美区号，1key认证，咸鱼一刀虚拟卡)。
+在[6]中安装Opencode-antigravity-auth插件，该插件可以将Google one pro订阅用到极致。"><meta name=author content><link rel=canonical href=https://phy-zhangzl.github.io/posts/opencode_tutorial/><link crossorigin=anonymous href=/assets/css/stylesheet.f504b0cef5be3eca5feadee81d4260d365ddd648680c95a81f14bd73887a8bbd.css integrity="sha256-9QSwzvW+Pspf6t7oHUJg02Xd1khoDJWoHxS9c4h6i70=" rel="preload stylesheet" as=style><link rel=icon href=https://phy-zhangzl.github.io/favicon.ico><link rel=icon type=image/png sizes=16x16 href=https://phy-zhangzl.github.io/favicon-16x16.png><link rel=icon type=image/png sizes=32x32 href=https://phy-zhangzl.github.io/favicon-32x32.png><link rel=apple-touch-icon href=https://phy-zhangzl.github.io/apple-touch-icon.png><link rel=mask-icon href=https://phy-zhangzl.github.io/safari-pinned-tab.svg><meta name=theme-color content="#2e2e33"><meta name=msapplication-TileColor content="#2e2e33"><link rel=alternate hreflang=en href=https://phy-zhangzl.github.io/posts/opencode_tutorial/><noscript><style>#theme-toggle,.top-link{display:none}</style><style>@media(prefers-color-scheme:dark){:root{--theme:rgb(29, 30, 32);--entry:rgb(46, 46, 51);--primary:rgb(218, 218, 219);--secondary:rgb(155, 156, 157);--tertiary:rgb(65, 66, 68);--content:rgb(196, 196, 197);--code-block-bg:rgb(46, 46, 51);--code-bg:rgb(55, 56, 62);--border:rgb(51, 51, 51);color-scheme:dark}.list{background:var(--theme)}.toc{background:var(--entry)}}@media(prefers-color-scheme:light){.list::-webkit-scrollbar-thumb{border-color:var(--code-bg)}}</style></noscript><script>localStorage.getItem("pref-theme")==="dark"?document.querySelector("html").dataset.theme="dark":localStorage.getItem("pref-theme")==="light"?document.querySelector("html").dataset.theme="light":window.matchMedia("(prefers-color-scheme: dark)").matches?document.querySelector("html").dataset.theme="dark":document.querySelector("html").dataset.theme="light"</script><link rel=stylesheet href=/css/tailwind.min.d8dc95e776a60f7f88b7c8f4f2520954d045b06c172271364840ec45ba89db62.css><meta property="og:url" content="https://phy-zhangzl.github.io/posts/opencode_tutorial/"><meta property="og:site_name" content="Prometheus's fire"><meta property="og:title" content="Opencode tutorial for beginners"><meta property="og:description" content="Opencode tutorial for beginners 1. 介绍 Opencode [1] 定位是Claude Code 的开源替代品。
+但在目前LLM发展的趋势下，Claude Code很难独占市场，同时我并不看好A\实施的技术封锁。世面上Coding Agent普遍装配有现在最火的Skills、MCP servers、Agents、Subagents，单一使用Claude Code、Codex、Gemini CLI面临的问题就是锁定该CLI采用的模型。虽然现在[2-3]能够实现在CLI级别下，通过Skills方式在三家CLI之间进行联动，但流程繁琐、上下文管理不够精细、不适用于科研，同时[4]这类切换中转站管理的方式也能解决短期额度不够的问题。
+上述讨论的问题，并不在该教程中深入讨论，Opencode通过后续安装插件能更好解决上述调用多个模型的痛点问题。
+开源软件注定拥有更高的可玩性，但是配置门槛相应会高一些。
+1.1 部署 [1]中仓库给出了opencode的多个平台的Desktop和tui的安装方式，根据喜好进行安装。
+推荐安装：
+Oh-my-opencode[5] Opencode-antigravity-auth[6] 后续会给出推荐理由
+1.2 优势 在介绍中，大概提了两点目前御三家的痛点问题，这在Opencode中正好是完美符合，同时对学生党更加友好，相应的至少有两个优势：
+能够灵活使用多个且多家模型； 对使用API调用模型的用户更友好，配置文件写好即可使用slack command进行模型切换。 上下文窗口有百分比显示，容易对单个对话进行控制。 (补充) 如今已经支持github copilot登陆，通过Opencode-antigravity-auth可使用Google one pro用户在antigravity的额度，不需要通过反代。 2. 配置 开源社区中有丰富的docs，[7]中有详细的配置流程可供参考，官方并未支持中文，差评！A\的docs都支持中文。[8]中有非官方的中文docs，谨慎阅读，容易夹带私货。
+接下来，直接进入穷学生省流配置环节
+2.1 github copilot 在安装好Opencode后，建议不要直接在终端直接运行，而是先运行下面命令。
+opencode auth login 选择对应的model provider进行OAuth登陆，这里穷学生直接选择github copilot的学生包，添加好认证后，就已经可以使用opencode随意探索了。
+注意
+这里面有一个对于我这种强迫症患者必须要做的，不用听有些教程上说的，在auth login选择other手动添加自己的中转站。 对于添加了自己不用的provider，使用opencode autho logout进行相应删除，不然翻遍配置文件，都不知道自己添加的provider到底放在哪个位置。 (重点)：如果发现登陆过后模型不可用，请打开github，在头像中点击settings->copilot->Fetures将需要用的模型打开，同时可以查看当前premium requests查看用量。 2.2 Google one pro 相信很多穷学生都是美国留学生，拥有了Google one pro订阅的账号，虽然额度一调再调，但是对于科研党是完全够用的，不讨论如何获取Google one pro(养美区号，1key认证，咸鱼一刀虚拟卡)。
+在[6]中安装Opencode-antigravity-auth插件，该插件可以将Google one pro订阅用到极致。"><meta property="og:locale" content="en-us"><meta property="og:type" content="article"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-01-31T00:00:00+08:00"><meta property="article:modified_time" content="2026-01-31T00:00:00+08:00"><meta property="article:tag" content="Opencode"><meta property="article:tag" content="Coding Agent"><meta property="article:tag" content="LLM"><meta property="article:tag" content="Tutorial"><meta name=twitter:card content="summary"><meta name=twitter:title content="Opencode tutorial for beginners"><meta name=twitter:description content="Opencode tutorial for beginners
+1. 介绍
+Opencode [1] 定位是Claude Code 的开源替代品。
+但在目前LLM发展的趋势下，Claude Code很难独占市场，同时我并不看好A\实施的技术封锁。世面上Coding Agent普遍装配有现在最火的Skills、MCP servers、Agents、Subagents，单一使用Claude Code、Codex、Gemini CLI面临的问题就是锁定该CLI采用的模型。虽然现在[2-3]能够实现在CLI级别下，通过Skills方式在三家CLI之间进行联动，但流程繁琐、上下文管理不够精细、不适用于科研，同时[4]这类切换中转站管理的方式也能解决短期额度不够的问题。
+上述讨论的问题，并不在该教程中深入讨论，Opencode通过后续安装插件能更好解决上述调用多个模型的痛点问题。
+
+开源软件注定拥有更高的可玩性，但是配置门槛相应会高一些。
+
+1.1 部署
+[1]中仓库给出了opencode的多个平台的Desktop和tui的安装方式，根据喜好进行安装。
+推荐安装：
+
+Oh-my-opencode[5]
+Opencode-antigravity-auth[6]
+
+后续会给出推荐理由
+1.2 优势
+在介绍中，大概提了两点目前御三家的痛点问题，这在Opencode中正好是完美符合，同时对学生党更加友好，相应的至少有两个优势：
+
+能够灵活使用多个且多家模型；
+对使用API调用模型的用户更友好，配置文件写好即可使用slack command进行模型切换。
+上下文窗口有百分比显示，容易对单个对话进行控制。
+(补充) 如今已经支持github copilot登陆，通过Opencode-antigravity-auth可使用Google one pro用户在antigravity的额度，不需要通过反代。
+
+2. 配置
+开源社区中有丰富的docs，[7]中有详细的配置流程可供参考，官方并未支持中文，差评！A\的docs都支持中文。[8]中有非官方的中文docs，谨慎阅读，容易夹带私货。
+接下来，直接进入穷学生省流配置环节
+2.1 github copilot
+在安装好Opencode后，建议不要直接在终端直接运行，而是先运行下面命令。
+opencode auth login
+选择对应的model provider进行OAuth登陆，这里穷学生直接选择github copilot的学生包，添加好认证后，就已经可以使用opencode随意探索了。
+注意
+
+这里面有一个对于我这种强迫症患者必须要做的，不用听有些教程上说的，在auth login选择other手动添加自己的中转站。
+对于添加了自己不用的provider，使用opencode autho logout进行相应删除，不然翻遍配置文件，都不知道自己添加的provider到底放在哪个位置。
+(重点)：如果发现登陆过后模型不可用，请打开github，在头像中点击settings->copilot->Fetures将需要用的模型打开，同时可以查看当前premium requests查看用量。
+
+2.2 Google one pro
+相信很多穷学生都是美国留学生，拥有了Google one pro订阅的账号，虽然额度一调再调，但是对于科研党是完全够用的，不讨论如何获取Google one pro(养美区号，1key认证，咸鱼一刀虚拟卡)。
+在[6]中安装Opencode-antigravity-auth插件，该插件可以将Google one pro订阅用到极致。"><script type=application/ld+json>{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Posts","item":"https://phy-zhangzl.github.io/posts/"},{"@type":"ListItem","position":2,"name":"Opencode tutorial for beginners","item":"https://phy-zhangzl.github.io/posts/opencode_tutorial/"}]}</script><script type=application/ld+json>{"@context":"https://schema.org","@type":"BlogPosting","headline":"Opencode tutorial for beginners","name":"Opencode tutorial for beginners","description":"Opencode tutorial for beginners 1. 介绍 Opencode [1] 定位是Claude Code 的开源替代品。\n但在目前LLM发展的趋势下，Claude Code很难独占市场，同时我并不看好A\\实施的技术封锁。世面上Coding Agent普遍装配有现在最火的Skills、MCP servers、Agents、Subagents，单一使用Claude Code、Codex、Gemini CLI面临的问题就是锁定该CLI采用的模型。虽然现在[2-3]能够实现在CLI级别下，通过Skills方式在三家CLI之间进行联动，但流程繁琐、上下文管理不够精细、不适用于科研，同时[4]这类切换中转站管理的方式也能解决短期额度不够的问题。\n上述讨论的问题，并不在该教程中深入讨论，Opencode通过后续安装插件能更好解决上述调用多个模型的痛点问题。\n开源软件注定拥有更高的可玩性，但是配置门槛相应会高一些。\n1.1 部署 [1]中仓库给出了opencode的多个平台的Desktop和tui的安装方式，根据喜好进行安装。\n推荐安装：\nOh-my-opencode[5] Opencode-antigravity-auth[6] 后续会给出推荐理由\n1.2 优势 在介绍中，大概提了两点目前御三家的痛点问题，这在Opencode中正好是完美符合，同时对学生党更加友好，相应的至少有两个优势：\n能够灵活使用多个且多家模型； 对使用API调用模型的用户更友好，配置文件写好即可使用slack command进行模型切换。 上下文窗口有百分比显示，容易对单个对话进行控制。 (补充) 如今已经支持github copilot登陆，通过Opencode-antigravity-auth可使用Google one pro用户在antigravity的额度，不需要通过反代。 2. 配置 开源社区中有丰富的docs，[7]中有详细的配置流程可供参考，官方并未支持中文，差评！A\\的docs都支持中文。[8]中有非官方的中文docs，谨慎阅读，容易夹带私货。\n接下来，直接进入穷学生省流配置环节\n2.1 github copilot 在安装好Opencode后，建议不要直接在终端直接运行，而是先运行下面命令。\nopencode auth login 选择对应的model provider进行OAuth登陆，这里穷学生直接选择github copilot的学生包，添加好认证后，就已经可以使用opencode随意探索了。\n注意\n这里面有一个对于我这种强迫症患者必须要做的，不用听有些教程上说的，在auth login选择other手动添加自己的中转站。 对于添加了自己不用的provider，使用opencode autho logout进行相应删除，不然翻遍配置文件，都不知道自己添加的provider到底放在哪个位置。 (重点)：如果发现登陆过后模型不可用，请打开github，在头像中点击settings-\u0026gt;copilot-\u0026gt;Fetures将需要用的模型打开，同时可以查看当前premium requests查看用量。 2.2 Google one pro 相信很多穷学生都是美国留学生，拥有了Google one pro订阅的账号，虽然额度一调再调，但是对于科研党是完全够用的，不讨论如何获取Google one pro(养美区号，1key认证，咸鱼一刀虚拟卡)。\n在[6]中安装Opencode-antigravity-auth插件，该插件可以将Google one pro订阅用到极致。\n","keywords":["Opencode","Coding Agent","LLM","Tutorial"],"articleBody":"Opencode tutorial for beginners 1. 介绍 Opencode [1] 定位是Claude Code 的开源替代品。\n但在目前LLM发展的趋势下，Claude Code很难独占市场，同时我并不看好A\\实施的技术封锁。世面上Coding Agent普遍装配有现在最火的Skills、MCP servers、Agents、Subagents，单一使用Claude Code、Codex、Gemini CLI面临的问题就是锁定该CLI采用的模型。虽然现在[2-3]能够实现在CLI级别下，通过Skills方式在三家CLI之间进行联动，但流程繁琐、上下文管理不够精细、不适用于科研，同时[4]这类切换中转站管理的方式也能解决短期额度不够的问题。\n上述讨论的问题，并不在该教程中深入讨论，Opencode通过后续安装插件能更好解决上述调用多个模型的痛点问题。\n开源软件注定拥有更高的可玩性，但是配置门槛相应会高一些。\n1.1 部署 [1]中仓库给出了opencode的多个平台的Desktop和tui的安装方式，根据喜好进行安装。\n推荐安装：\nOh-my-opencode[5] Opencode-antigravity-auth[6] 后续会给出推荐理由\n1.2 优势 在介绍中，大概提了两点目前御三家的痛点问题，这在Opencode中正好是完美符合，同时对学生党更加友好，相应的至少有两个优势：\n能够灵活使用多个且多家模型； 对使用API调用模型的用户更友好，配置文件写好即可使用slack command进行模型切换。 上下文窗口有百分比显示，容易对单个对话进行控制。 (补充) 如今已经支持github copilot登陆，通过Opencode-antigravity-auth可使用Google one pro用户在antigravity的额度，不需要通过反代。 2. 配置 开源社区中有丰富的docs，[7]中有详细的配置流程可供参考，官方并未支持中文，差评！A\\的docs都支持中文。[8]中有非官方的中文docs，谨慎阅读，容易夹带私货。\n接下来，直接进入穷学生省流配置环节\n2.1 github copilot 在安装好Opencode后，建议不要直接在终端直接运行，而是先运行下面命令。\nopencode auth login 选择对应的model provider进行OAuth登陆，这里穷学生直接选择github copilot的学生包，添加好认证后，就已经可以使用opencode随意探索了。\n注意\n这里面有一个对于我这种强迫症患者必须要做的，不用听有些教程上说的，在auth login选择other手动添加自己的中转站。 对于添加了自己不用的provider，使用opencode autho logout进行相应删除，不然翻遍配置文件，都不知道自己添加的provider到底放在哪个位置。 (重点)：如果发现登陆过后模型不可用，请打开github，在头像中点击settings-\u003ecopilot-\u003eFetures将需要用的模型打开，同时可以查看当前premium requests查看用量。 2.2 Google one pro 相信很多穷学生都是美国留学生，拥有了Google one pro订阅的账号，虽然额度一调再调，但是对于科研党是完全够用的，不讨论如何获取Google one pro(养美区号，1key认证，咸鱼一刀虚拟卡)。\n在[6]中安装Opencode-antigravity-auth插件，该插件可以将Google one pro订阅用到极致。\n2.2.1 多账户设置 使用上述登陆命令，可以添加实现多账户登陆，一个家庭组就是六个人。\n2 account(s) saved: 1. user1@gmail.com 2. user2@gmail.com (a)dd new account(s) or (f)resh start? [a/f]: 注意： 这个插件下使用Gemini模型可以先使用antigravity的额度，限额后可以自动切换到Gemini CLI的额度。\n配置文件存储在~/.config/opencode/antigravity-accounts.json，以明文形式储存账户凭证，涉及敏感信息。\n2.2.2 模型配置 目前在antigravity中支持的模型\n模型名称 (Model) 变体 (Variants) 说明 (Notes) antigravity-gemini-3-pro low, high Gemini 3 Pro (支持思维链/thinking) antigravity-gemini-3-flash minimal, low, medium, high Gemini 3 Flash (支持思维链/thinking) antigravity-claude-sonnet-4-5 — Claude Sonnet 4.5 antigravity-claude-sonnet-4-5-thinking low, max Claude Sonnet (支持长文本思维链) antigravity-claude-opus-4-5-thinking low, max Claude Opus (支持长文本思维链) 下面提供一个配置文件可以叫AI帮忙写入。\n{ \"google\": { \"name\": \"Google\", \"models\": { \"antigravity-gemini-3-pro-high\": { \"name\": \"Gemini 3 Pro High (Antigravity)\", \"thinking\": true, \"attachment\": true, \"limit\": { \"context\": 1048576, \"output\": 65535 }, \"modalities\": { \"input\": [\"text\", \"image\", \"pdf\"], \"output\": [\"text\"] } }, \"antigravity-gemini-3-pro-low\": { \"name\": \"Gemini 3 Pro Low (Antigravity)\", \"thinking\": true, \"attachment\": true, \"limit\": { \"context\": 1048576, \"output\": 65535 }, \"modalities\": { \"input\": [\"text\", \"image\", \"pdf\"], \"output\": [\"text\"] } }, \"antigravity-gemini-3-flash\": { \"name\": \"Gemini 3 Flash (Antigravity)\", \"attachment\": true, \"limit\": { \"context\": 1048576, \"output\": 65536 }, \"modalities\": { \"input\": [\"text\", \"image\", \"pdf\"], \"output\": [\"text\"] } }, \"antigravity-claude-sonnet-4-5-thinking\": { \"name\": \"Claude Sonnet 4.5 Thinking\", \"limit\": { \"context\": 200000, \"output\": 64000 }, \"modalities\": { \"input\": [\"text\", \"image\", \"pdf\"], \"output\": [\"text\"] }, \"variants\": { \"low\": { \"thinkingConfig\": { \"thinkingBudget\": 8192 } }, \"max\": { \"thinkingConfig\": { \"thinkingBudget\": 32768 } } } }, \"antigravity-claude-opus-4-5-thinking\": { \"name\": \"Claude Opus 4.5 Thinking\", \"limit\": { \"context\": 200000, \"output\": 64000 }, \"modalities\": { \"input\": [\"text\", \"image\", \"pdf\"], \"output\": [\"text\"] }, \"variants\": { \"low\": { \"thinkingConfig\": { \"thinkingBudget\": 8192 } }, \"max\": { \"thinkingConfig\": { \"thinkingBudget\": 32768 } } } }, \"antigravity-claude-sonnet-4-5\": { \"name\": \"Claude Sonnet 4.5\", \"limit\": { \"context\": 200000, \"output\": 64000 }, \"modalities\": { \"input\": [\"text\", \"image\", \"pdf\"], \"output\": [\"text\"] } } } } } 而这个配置文件是放在~/.config/opencode/opencode.json文件中，如果出现安装了opencode但是没有找到这个文件，那么让AI建一个。\n官方docs中给出了模版\n{ \"$schema\": \"https://opencode.ai/config.json\", // Theme configuration \"theme\": \"opencode\", \"model\": \"anthropic/claude-sonnet-4-5\", \"autoupdate\": true, } 2.3 中转站API 上述github copilot和Google one pro就已经覆盖当前市面上最强的三家模型，同时opencode中还提供Minimax 2.1和GLM-4.7的国产免费模型，如果这都还不够，那么就添加中转站API来满足用量。\n还是在~/.config/opencode/opencode.json中直接写入下面模版内容，手动添加baseURL和apiKey，同时核对中转站模型名称。\n{ \"provider\": { \"custom-anthropic-provider\": { \"options\": { \"baseURL\": \"https:///v1\", \"apiKey\": \"sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" }, \"models\": { \"claude-opus-4-5-20251101\": { \"name\": \"Claude Opus 4.5\" }, \"claude-sonnet-4-5-20250929\": { \"name\": \"Claude Sonnet 4.5\" }, \"claude-haiku-4-5-20251001\": { \"name\": \"Claude Haiku 4.5\" } } }, \"custom-openai-provider\": { \"name\": \"Provider Name\", \"options\": { \"baseURL\": \"https:///v1\", \"apiKey\": \"sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\" }, \"models\": { \"gpt-5.2-codex\": { \"name\": \"GPT 5.2 Codex\", \"options\": { \"reasoningEffort\": \"high\", \"store\": false }, \"variants\": { \"low\": { \"options\": { \"reasoningEffort\": \"low\" } }, \"medium\": { \"options\": { \"reasoningEffort\": \"medium\" } }, \"high\": { \"options\": { \"reasoningEffort\": \"high\" } } } } } } } } 注意：\n该配置文件就体现出它的优点了，可以写入多个provider的模型，而后面只需要/models就能轻松切换 这种方式是采用明文形式存储，在官方文档中给出另外两种更安全的方式。 { \"$schema\": \"https://opencode.ai/config.json\", \"model\": \"{env:OPENCODE_MODEL}\", # [\"./custom-instructions.md\"], \"provider\": { \"anthropic\": { \"models\": {}, \"options\": { \"apiKey\": \"{env:ANTHROPIC_API_KEY}\" # [\"./custom-instructions.md\"], } } } } 3. 插件 opencode中可以安装各种plugins，可根据自己的需求进行安装，目前推荐的就是下面两个必装插件。\n3.1 opencode-antigravity-auth 在2.2中已经详细介绍了，这里仅为了保持行文的结构性。\n3.2 oh-my-opencode 3.2.1 安装 [5]中给了该插件的仓库，懒人方法是直接进入opencode，告诉它，在在全局或者在当前项目下安装，即可。可以预见的未来，github仓库就不再是放源码，而是放一堆markdown文件，AI已经具备复现项目的能力。\n3.2.2 配置 同样全局安装该插件后会生成~/.config/opencode/oh-my-opencode.json的配置文件\n下面直接给配置模板\n{ \"$schema\": \"https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json\", \"google_auth\": false, \"agents\": { \"Sisyphus\": { \"model\": \"antigravity-claude-opus-4-5-thinking\" }, \"oracle\": { \"model\": \"antigravity-claude-sonnet-4.5-thinking\" }, \"librarian\": { \"model\": \"your_provider/claude-sonnet-4-5-20250929\" }, \"explore\": { \"model\": \"google/antigravity-gemini-3-flash\" }, \"frontend-ui-ux-engineer\": { \"model\": \"google/antigravity-gemini-3-pro-high\" }, \"document-writer\": { \"model\": \"google/antigravity-gemini-3-flash\" }, \"multimodal-looker\": { \"model\": \"google/antigravity-gemini-3-pro-high\" } } } 注意：\n这里的model设置要与opencode.json文件对应，该问题可以直接通过AI进行校对。 每个模型对应的权限可以单独设置，这里采用项目的默认设置. (重点)安装这个插件会默认关闭opencode自带的两个Agents，Plan and Build，可以在[7]中重新开启。 后面的内容不是这次教程的重点，oh-my-opencode是一个非常强大的插件，内置了很多Agents，skills，MCP servers，Hooks。\n4. 提示词 Opencode 支持三种作用域的规则\n作用域 文件位置 适用场景 全局规则 ~/.config/opencode/AGENTS.md 所有项目通用的个人偏好（ 项目规则 项目根目录 AGENTS.md 特定项目专用的规范 配置文件 opencode.json 的 instructions 字段 用于引用多个规则文件，或者配置更复杂的指令集。 注意：同时兼容Claude Code的CLAUDE.md\n5. 进阶 下次出一个进阶版教程。\n参考文献 https://github.com/anomalyco/opencode https://github.com/GuDaStudio/skills https://github.com/fengshao1227/ccg-workflow https://github.com/farion1231/cc-switch https://github.com/code-yeongyu/oh-my-opencode https://github.com/NoeFabris/opencode-antigravity-auth https://opencode.ai/docs https://www.opencodecn.com/ ","wordCount":"585","inLanguage":"en","datePublished":"2026-01-31T00:00:00+08:00","dateModified":"2026-01-31T00:00:00+08:00","mainEntityOfPage":{"@type":"WebPage","@id":"https://phy-zhangzl.github.io/posts/opencode_tutorial/"},"publisher":{"@type":"Organization","name":"Prometheus's fire","logo":{"@type":"ImageObject","url":"https://phy-zhangzl.github.io/favicon.ico"}}}</script></head><body id=top><header class=header><nav class=nav><div class=logo><a href=https://phy-zhangzl.github.io/ accesskey=h title="Prometheus's fire (Alt + H)">Prometheus's fire</a><div class=logo-switches><button id=theme-toggle accesskey=t title="(Alt + T)" aria-label="Toggle theme">
+<svg id="moon" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+<svg id="sun" width="24" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button></div></div><ul id=menu><li><a href=https://phy-zhangzl.github.io/posts/ title=Posts><span>Posts</span></a></li><li><a href=https://phy-zhangzl.github.io/tags/ title=Tags><span>Tags</span></a></li><li><a href=https://phy-zhangzl.github.io/search/ title="Search (Alt + /)" accesskey=/><span>Search</span></a></li><li><a href=https://phy-zhangzl.github.io/archives/ title=Archives><span>Archives</span></a></li></ul></nav></header><main class=main><article class=post-single><header class=post-header><h1 class="post-title entry-hint-parent">Opencode tutorial for beginners</h1><div class=post-meta><span title='2026-01-31 00:00:00 +0800 +0800'>January 31, 2026</span>&nbsp;·&nbsp;<span>3 min</span></div></header><div class=post-content><h1 id=opencode-tutorial-for-beginners>Opencode tutorial for beginners<a hidden class=anchor aria-hidden=true href=#opencode-tutorial-for-beginners>#</a></h1><h2 id=1-介绍>1. 介绍<a hidden class=anchor aria-hidden=true href=#1-介绍>#</a></h2><p>Opencode [1] 定位是Claude Code 的开源替代品。</p><p>但在目前LLM发展的趋势下，Claude Code很难独占市场，同时我并不看好A\实施的技术封锁。世面上Coding Agent普遍装配有现在最火的Skills、MCP servers、Agents、Subagents，单一使用Claude Code、Codex、Gemini CLI面临的问题就是锁定该CLI采用的模型。虽然现在[2-3]能够实现在CLI级别下，通过Skills方式在三家CLI之间进行联动，但流程繁琐、上下文管理不够精细、不适用于科研，同时[4]这类切换中转站管理的方式也能解决短期额度不够的问题。</p><p>上述讨论的问题，并不在该教程中深入讨论，Opencode通过后续安装插件能更好解决上述调用多个模型的痛点问题。</p><blockquote><p>开源软件注定拥有更高的可玩性，但是配置门槛相应会高一些。</p></blockquote><h3 id=11-部署>1.1 部署<a hidden class=anchor aria-hidden=true href=#11-部署>#</a></h3><p>[1]中仓库给出了opencode的多个平台的Desktop和tui的安装方式，根据喜好进行安装。</p><p>推荐安装：</p><ul><li>Oh-my-opencode[5]</li><li>Opencode-antigravity-auth[6]</li></ul><p>后续会给出推荐理由</p><h3 id=12-优势>1.2 优势<a hidden class=anchor aria-hidden=true href=#12-优势>#</a></h3><p>在介绍中，大概提了两点目前御三家的痛点问题，这在Opencode中正好是完美符合，同时对学生党更加友好，相应的至少有两个优势：</p><ul><li>能够灵活使用多个且多家模型；</li><li>对使用API调用模型的用户更友好，配置文件写好即可使用slack command进行模型切换。</li><li>上下文窗口有百分比显示，容易对单个对话进行控制。</li><li>(补充) 如今已经支持github copilot登陆，通过Opencode-antigravity-auth可使用Google one pro用户在antigravity的额度，不需要通过反代。</li></ul><h2 id=2-配置>2. 配置<a hidden class=anchor aria-hidden=true href=#2-配置>#</a></h2><p>开源社区中有丰富的docs，[7]中有详细的配置流程可供参考，官方并未支持中文，差评！A\的docs都支持中文。[8]中有非官方的中文docs，谨慎阅读，容易夹带私货。</p><p>接下来，直接进入穷学生省流配置环节</p><h3 id=21-github-copilot>2.1 github copilot<a hidden class=anchor aria-hidden=true href=#21-github-copilot>#</a></h3><p>在安装好Opencode后，建议不要直接在终端直接运行，而是先运行下面命令。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span>opencode auth login
+</span></span></code></pre></div><p>选择对应的model provider进行OAuth登陆，这里穷学生直接选择github copilot的学生包，添加好认证后，就已经可以使用opencode随意探索了。</p><p><em>注意</em></p><ul><li>这里面有一个对于我这种强迫症患者必须要做的，不用听有些教程上说的，在<code>auth login</code>选择<code>other</code>手动添加自己的中转站。</li><li>对于添加了自己不用的provider，使用<code>opencode autho logout</code>进行相应删除，不然翻遍配置文件，都不知道自己添加的provider到底放在哪个位置。</li><li>(重点)：如果发现登陆过后模型不可用，请打开github，在头像中点击<code>settings->copilot->Fetures</code>将需要用的模型打开，同时可以查看当前premium requests查看用量。</li></ul><h3 id=22-google-one-pro>2.2 Google one pro<a hidden class=anchor aria-hidden=true href=#22-google-one-pro>#</a></h3><p>相信很多穷学生都是美国留学生，拥有了Google one pro订阅的账号，虽然额度一调再调，但是对于科研党是完全够用的，不讨论如何获取Google one pro(养美区号，1key认证，咸鱼一刀虚拟卡)。</p><p>在[6]中安装Opencode-antigravity-auth插件，该插件可以将Google one pro订阅用到极致。</p><h4 id=221-多账户设置>2.2.1 多账户设置<a hidden class=anchor aria-hidden=true href=#221-多账户设置>#</a></h4><p>使用上述登陆命令，可以添加实现多账户登陆，一个家庭组就是六个人。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-bash data-lang=bash><span style=display:flex><span><span style=color:#ae81ff>2</span> account<span style=color:#f92672>(</span>s<span style=color:#f92672>)</span> saved:
+</span></span><span style=display:flex><span>  1. user1@gmail.com
+</span></span><span style=display:flex><span>  2. user2@gmail.com
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span><span style=color:#f92672>(</span>a<span style=color:#f92672>)</span>dd new account<span style=color:#f92672>(</span>s<span style=color:#f92672>)</span> or <span style=color:#f92672>(</span>f<span style=color:#f92672>)</span>resh start? <span style=color:#f92672>[</span>a/f<span style=color:#f92672>]</span>:
+</span></span></code></pre></div><p><em>注意</em>： 这个插件下使用Gemini模型可以先使用antigravity的额度，限额后可以自动切换到Gemini CLI的额度。</p><p>配置文件存储在<code>~/.config/opencode/antigravity-accounts.json</code>，以明文形式储存账户凭证，涉及敏感信息。</p><h4 id=222-模型配置>2.2.2 模型配置<a hidden class=anchor aria-hidden=true href=#222-模型配置>#</a></h4><p>目前在antigravity中支持的模型</p><table><thead><tr><th><strong>模型名称 (Model)</strong></th><th><strong>变体 (Variants)</strong></th><th><strong>说明 (Notes)</strong></th></tr></thead><tbody><tr><td><code>antigravity-gemini-3-pro</code></td><td>low, high</td><td>Gemini 3 Pro (支持思维链/thinking)</td></tr><tr><td><code>antigravity-gemini-3-flash</code></td><td>minimal, low, medium, high</td><td>Gemini 3 Flash (支持思维链/thinking)</td></tr><tr><td><code>antigravity-claude-sonnet-4-5</code></td><td>—</td><td>Claude Sonnet 4.5</td></tr><tr><td><code>antigravity-claude-sonnet-4-5-thinking</code></td><td>low, max</td><td>Claude Sonnet (支持长文本思维链)</td></tr><tr><td><code>antigravity-claude-opus-4-5-thinking</code></td><td>low, max</td><td>Claude Opus (支持长文本思维链)</td></tr></tbody></table><p>下面提供一个配置文件可以叫AI帮忙写入。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span> {
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;google&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Google&#34;</span>,
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;models&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;antigravity-gemini-3-pro-high&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Gemini 3 Pro High (Antigravity)&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;thinking&#34;</span>: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;attachment&#34;</span>: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;limit&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;context&#34;</span>: <span style=color:#ae81ff>1048576</span>,
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: <span style=color:#ae81ff>65535</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;modalities&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;input&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>, <span style=color:#e6db74>&#34;image&#34;</span>, <span style=color:#e6db74>&#34;pdf&#34;</span>],
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>]
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      },
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;antigravity-gemini-3-pro-low&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Gemini 3 Pro Low (Antigravity)&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;thinking&#34;</span>: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;attachment&#34;</span>: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;limit&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;context&#34;</span>: <span style=color:#ae81ff>1048576</span>,
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: <span style=color:#ae81ff>65535</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;modalities&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;input&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>, <span style=color:#e6db74>&#34;image&#34;</span>, <span style=color:#e6db74>&#34;pdf&#34;</span>],
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>]
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      },
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;antigravity-gemini-3-flash&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Gemini 3 Flash (Antigravity)&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;attachment&#34;</span>: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;limit&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;context&#34;</span>: <span style=color:#ae81ff>1048576</span>,
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: <span style=color:#ae81ff>65536</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;modalities&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;input&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>, <span style=color:#e6db74>&#34;image&#34;</span>, <span style=color:#e6db74>&#34;pdf&#34;</span>],
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>]
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      },
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;antigravity-claude-sonnet-4-5-thinking&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Claude Sonnet 4.5 Thinking&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;limit&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;context&#34;</span>: <span style=color:#ae81ff>200000</span>,
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: <span style=color:#ae81ff>64000</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;modalities&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;input&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>, <span style=color:#e6db74>&#34;image&#34;</span>, <span style=color:#e6db74>&#34;pdf&#34;</span>],
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>]
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;variants&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;low&#34;</span>: {
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;thinkingConfig&#34;</span>: {
+</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;thinkingBudget&#34;</span>: <span style=color:#ae81ff>8192</span>
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>          },
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;max&#34;</span>: {
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;thinkingConfig&#34;</span>: {
+</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;thinkingBudget&#34;</span>: <span style=color:#ae81ff>32768</span>
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>          }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      },
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;antigravity-claude-opus-4-5-thinking&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Claude Opus 4.5 Thinking&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;limit&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;context&#34;</span>: <span style=color:#ae81ff>200000</span>,
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: <span style=color:#ae81ff>64000</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;modalities&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;input&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>, <span style=color:#e6db74>&#34;image&#34;</span>, <span style=color:#e6db74>&#34;pdf&#34;</span>],
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>]
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;variants&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;low&#34;</span>: {
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;thinkingConfig&#34;</span>: {
+</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;thinkingBudget&#34;</span>: <span style=color:#ae81ff>8192</span>
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>          },
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;max&#34;</span>: {
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;thinkingConfig&#34;</span>: {
+</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;thinkingBudget&#34;</span>: <span style=color:#ae81ff>32768</span>
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>          }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      },
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;antigravity-claude-sonnet-4-5&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Claude Sonnet 4.5&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;limit&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;context&#34;</span>: <span style=color:#ae81ff>200000</span>,
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: <span style=color:#ae81ff>64000</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;modalities&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;input&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>, <span style=color:#e6db74>&#34;image&#34;</span>, <span style=color:#e6db74>&#34;pdf&#34;</span>],
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;output&#34;</span>: [<span style=color:#e6db74>&#34;text&#34;</span>]
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p>而这个配置文件是放在<code>~/.config/opencode/opencode.json</code>文件中，如果出现安装了opencode但是没有找到这个文件，那么让AI建一个。</p><p>官方docs中给出了模版</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;$schema&#34;</span>: <span style=color:#e6db74>&#34;https://opencode.ai/config.json&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#75715e>// Theme configuration
+</span></span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;theme&#34;</span>: <span style=color:#e6db74>&#34;opencode&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;anthropic/claude-sonnet-4-5&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;autoupdate&#34;</span>: <span style=color:#66d9ef>true</span>,
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h3 id=23-中转站api>2.3 中转站API<a hidden class=anchor aria-hidden=true href=#23-中转站api>#</a></h3><p>上述github copilot和Google one pro就已经覆盖当前市面上最强的三家模型，同时opencode中还提供Minimax 2.1和GLM-4.7的国产免费模型，如果这都还不够，那么就添加中转站API来满足用量。</p><p>还是在<code>~/.config/opencode/opencode.json</code>中直接写入下面模版内容，手动添加<code>baseURL</code>和<code>apiKey</code>，同时核对中转站模型名称。</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;provider&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;custom-anthropic-provider&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;options&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;baseURL&#34;</span>: <span style=color:#e6db74>&#34;https://&lt;YOUR_API_PROXY_ENDPOINT&gt;/v1&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;apiKey&#34;</span>: <span style=color:#e6db74>&#34;sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span>
+</span></span><span style=display:flex><span>      },
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;models&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;claude-opus-4-5-20251101&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Claude Opus 4.5&#34;</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;claude-sonnet-4-5-20250929&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Claude Sonnet 4.5&#34;</span>
+</span></span><span style=display:flex><span>        },
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;claude-haiku-4-5-20251001&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Claude Haiku 4.5&#34;</span>
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;custom-openai-provider&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;Provider Name&#34;</span>,
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;options&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;baseURL&#34;</span>: <span style=color:#e6db74>&#34;https://&lt;YOUR_API_PROXY_ENDPOINT&gt;/v1&#34;</span>,
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;apiKey&#34;</span>: <span style=color:#e6db74>&#34;sk-xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx&#34;</span>
+</span></span><span style=display:flex><span>      },
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;models&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;gpt-5.2-codex&#34;</span>: {
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;name&#34;</span>: <span style=color:#e6db74>&#34;GPT 5.2 Codex&#34;</span>,
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;options&#34;</span>: {
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;reasoningEffort&#34;</span>: <span style=color:#e6db74>&#34;high&#34;</span>,
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;store&#34;</span>: <span style=color:#66d9ef>false</span>
+</span></span><span style=display:flex><span>          },
+</span></span><span style=display:flex><span>          <span style=color:#f92672>&#34;variants&#34;</span>: {
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;low&#34;</span>: {
+</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;options&#34;</span>: {
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&#34;reasoningEffort&#34;</span>: <span style=color:#e6db74>&#34;low&#34;</span>
+</span></span><span style=display:flex><span>              }
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;medium&#34;</span>: {
+</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;options&#34;</span>: {
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&#34;reasoningEffort&#34;</span>: <span style=color:#e6db74>&#34;medium&#34;</span>
+</span></span><span style=display:flex><span>              }
+</span></span><span style=display:flex><span>            },
+</span></span><span style=display:flex><span>            <span style=color:#f92672>&#34;high&#34;</span>: {
+</span></span><span style=display:flex><span>              <span style=color:#f92672>&#34;options&#34;</span>: {
+</span></span><span style=display:flex><span>                <span style=color:#f92672>&#34;reasoningEffort&#34;</span>: <span style=color:#e6db74>&#34;high&#34;</span>
+</span></span><span style=display:flex><span>              }
+</span></span><span style=display:flex><span>            }
+</span></span><span style=display:flex><span>          }
+</span></span><span style=display:flex><span>        }
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><em>注意</em>：</p><ul><li>该配置文件就体现出它的优点了，可以写入多个provider的模型，而后面只需要<code>/models</code>就能轻松切换</li><li>这种方式是采用明文形式存储，在官方文档中给出另外两种更安全的方式。</li></ul><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;$schema&#34;</span>: <span style=color:#e6db74>&#34;https://opencode.ai/config.json&#34;</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;{env:OPENCODE_MODEL}&#34;</span>, <span style=color:#960050;background-color:#1e0010>#</span> <span style=color:#960050;background-color:#1e0010>[</span><span style=color:#f92672>&#34;./custom-instructions.md&#34;</span><span style=color:#960050;background-color:#1e0010>]</span>,
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;provider&#34;</span>: {
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;anthropic&#34;</span>: {
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;models&#34;</span>: {},
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;options&#34;</span>: {
+</span></span><span style=display:flex><span>        <span style=color:#f92672>&#34;apiKey&#34;</span>: <span style=color:#e6db74>&#34;{env:ANTHROPIC_API_KEY}&#34;</span> <span style=color:#960050;background-color:#1e0010>#</span> [<span style=color:#e6db74>&#34;./custom-instructions.md&#34;</span>],
+</span></span><span style=display:flex><span>      }
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><h2 id=3-插件>3. 插件<a hidden class=anchor aria-hidden=true href=#3-插件>#</a></h2><p>opencode中可以安装各种plugins，可根据自己的需求进行安装，目前推荐的就是下面两个必装插件。</p><h3 id=31-opencode-antigravity-auth>3.1 opencode-antigravity-auth<a hidden class=anchor aria-hidden=true href=#31-opencode-antigravity-auth>#</a></h3><p>在2.2中已经详细介绍了，这里仅为了保持行文的结构性。</p><h3 id=32-oh-my-opencode>3.2 oh-my-opencode<a hidden class=anchor aria-hidden=true href=#32-oh-my-opencode>#</a></h3><h4 id=321-安装>3.2.1 安装<a hidden class=anchor aria-hidden=true href=#321-安装>#</a></h4><p>[5]中给了该插件的仓库，懒人方法是直接进入opencode，告诉它，在在全局或者在当前项目下安装，即可。可以预见的未来，github仓库就不再是放源码，而是放一堆markdown文件，AI已经具备复现项目的能力。</p><h4 id=322-配置>3.2.2 配置<a hidden class=anchor aria-hidden=true href=#322-配置>#</a></h4><p>同样全局安装该插件后会生成<code>~/.config/opencode/oh-my-opencode.json</code>的配置文件</p><p>下面直接给配置模板</p><div class=highlight><pre tabindex=0 style=color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none><code class=language-json data-lang=json><span style=display:flex><span>{
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;$schema&#34;</span>: <span style=color:#e6db74>&#34;https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json&#34;</span>,
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;google_auth&#34;</span>: <span style=color:#66d9ef>false</span>,
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  <span style=color:#f92672>&#34;agents&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;Sisyphus&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;antigravity-claude-opus-4-5-thinking&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;oracle&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;antigravity-claude-sonnet-4.5-thinking&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;librarian&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;your_provider/claude-sonnet-4-5-20250929&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;explore&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;google/antigravity-gemini-3-flash&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;frontend-ui-ux-engineer&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;google/antigravity-gemini-3-pro-high&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;document-writer&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;google/antigravity-gemini-3-flash&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    },
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    <span style=color:#f92672>&#34;multimodal-looker&#34;</span>: {
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>      <span style=color:#f92672>&#34;model&#34;</span>: <span style=color:#e6db74>&#34;google/antigravity-gemini-3-pro-high&#34;</span>
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>    }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>  }
+</span></span><span style=display:flex><span>
+</span></span><span style=display:flex><span>}
+</span></span></code></pre></div><p><em>注意</em>：</p><ul><li>这里的model设置要与<code>opencode.json</code>文件对应，该问题可以直接通过AI进行校对。</li><li>每个模型对应的权限可以单独设置，这里采用项目的默认设置.</li><li>(重点)安装这个插件会默认关闭opencode自带的两个Agents，<code>Plan</code> and <code>Build</code>，可以在[7]中重新开启。</li></ul><p>后面的内容不是这次教程的重点，<code>oh-my-opencode</code>是一个非常强大的插件，内置了很多Agents，skills，MCP servers，Hooks。</p><h2 id=4-提示词>4. 提示词<a hidden class=anchor aria-hidden=true href=#4-提示词>#</a></h2><p>Opencode 支持三种作用域的规则</p><table><thead><tr><th><strong>作用域</strong></th><th><strong>文件位置</strong></th><th><strong>适用场景</strong></th></tr></thead><tbody><tr><td><strong>全局规则</strong></td><td><code>~/.config/opencode/AGENTS.md</code></td><td><strong>所有项目通用</strong>的个人偏好（</td></tr><tr><td><strong>项目规则</strong></td><td>项目根目录 <code>AGENTS.md</code></td><td><strong>特定项目专用</strong>的规范</td></tr><tr><td><strong>配置文件</strong></td><td><code>opencode.json</code> 的 <code>instructions</code> 字段</td><td>用于<strong>引用多个规则文件</strong>，或者配置更复杂的指令集。</td></tr></tbody></table><p><em>注意</em>：同时兼容Claude Code的<code>CLAUDE.md</code></p><h2 id=5-进阶>5. 进阶<a hidden class=anchor aria-hidden=true href=#5-进阶>#</a></h2><p><del>下次出一个进阶版教程。</del></p><h2 id=参考文献>参考文献<a hidden class=anchor aria-hidden=true href=#参考文献>#</a></h2><ol><li><a href=https://github.com/anomalyco/opencode>https://github.com/anomalyco/opencode</a></li><li><a href=https://github.com/GuDaStudio/skills>https://github.com/GuDaStudio/skills</a></li><li><a href=https://github.com/fengshao1227/ccg-workflow>https://github.com/fengshao1227/ccg-workflow</a></li><li><a href=https://github.com/farion1231/cc-switch>https://github.com/farion1231/cc-switch</a></li><li><a href=https://github.com/code-yeongyu/oh-my-opencode>https://github.com/code-yeongyu/oh-my-opencode</a></li><li><a href=https://github.com/NoeFabris/opencode-antigravity-auth>https://github.com/NoeFabris/opencode-antigravity-auth</a></li><li><a href=https://opencode.ai/docs>https://opencode.ai/docs</a></li><li><a href=https://www.opencodecn.com/>https://www.opencodecn.com/</a></li></ol></div><footer class=post-footer><ul class=post-tags><li><a href=https://phy-zhangzl.github.io/tags/opencode/>Opencode</a></li><li><a href=https://phy-zhangzl.github.io/tags/coding-agent/>Coding Agent</a></li><li><a href=https://phy-zhangzl.github.io/tags/llm/>LLM</a></li><li><a href=https://phy-zhangzl.github.io/tags/tutorial/>Tutorial</a></li></ul><ul class=share-buttons><li><a target=_blank rel="noopener noreferrer" aria-label="share Opencode tutorial for beginners on x" href="https://x.com/intent/tweet/?text=Opencode%20tutorial%20for%20beginners&amp;url=https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f&amp;hashtags=Opencode%2cCodingAgent%2cLLM%2cTutorial"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentColor"><path d="M512 62.554V449.446C512 483.97 483.97 512 449.446 512H62.554C28.03 512 0 483.97.0 449.446V62.554C0 28.03 28.029.0 62.554.0H449.446C483.971.0 512 28.03 512 62.554zM269.951 190.75 182.567 75.216H56L207.216 272.95 63.9 436.783h61.366L235.9 310.383l96.667 126.4H456L298.367 228.367l134-153.151H371.033zM127.633 110h36.468l219.38 290.065H349.5z"/></svg></a></li><li><a target=_blank rel="noopener noreferrer" aria-label="share Opencode tutorial for beginners on linkedin" href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f&amp;title=Opencode%20tutorial%20for%20beginners&amp;summary=Opencode%20tutorial%20for%20beginners&amp;source=https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentColor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM160.461 423.278V197.561h-75.04v225.717h75.04zm270.539.0V293.839c0-69.333-37.018-101.586-86.381-101.586-39.804.0-57.634 21.891-67.617 37.266v-31.958h-75.021c.995 21.181.0 225.717.0 225.717h75.02V297.222c0-6.748.486-13.492 2.474-18.315 5.414-13.475 17.767-27.434 38.494-27.434 27.135.0 38.007 20.707 38.007 51.037v120.768H431zM123.448 88.722C97.774 88.722 81 105.601 81 127.724c0 21.658 16.264 39.002 41.455 39.002h.484c26.165.0 42.452-17.344 42.452-39.002-.485-22.092-16.241-38.954-41.943-39.002z"/></svg></a></li><li><a target=_blank rel="noopener noreferrer" aria-label="share Opencode tutorial for beginners on reddit" href="https://reddit.com/submit?url=https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f&title=Opencode%20tutorial%20for%20beginners"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentColor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zM446 265.638c0-22.964-18.616-41.58-41.58-41.58-11.211.0-21.361 4.457-28.841 11.666-28.424-20.508-67.586-33.757-111.204-35.278l18.941-89.121 61.884 13.157c.756 15.734 13.642 28.29 29.56 28.29 16.407.0 29.706-13.299 29.706-29.701.0-16.403-13.299-29.702-29.706-29.702-11.666.0-21.657 6.792-26.515 16.578l-69.105-14.69c-1.922-.418-3.939-.042-5.585 1.036-1.658 1.073-2.811 2.761-3.224 4.686l-21.152 99.438c-44.258 1.228-84.046 14.494-112.837 35.232-7.468-7.164-17.589-11.591-28.757-11.591-22.965.0-41.585 18.616-41.585 41.58.0 16.896 10.095 31.41 24.568 37.918-.639 4.135-.99 8.328-.99 12.576.0 63.977 74.469 115.836 166.33 115.836s166.334-51.859 166.334-115.836c0-4.218-.347-8.387-.977-12.493 14.564-6.47 24.735-21.034 24.735-38.001zM326.526 373.831c-20.27 20.241-59.115 21.816-70.534 21.816-11.428.0-50.277-1.575-70.522-21.82-3.007-3.008-3.007-7.882.0-10.889 3.003-2.999 7.882-3.003 10.885.0 12.777 12.781 40.11 17.317 59.637 17.317 19.522.0 46.86-4.536 59.657-17.321 3.016-2.999 7.886-2.995 10.885.008 3.008 3.011 3.003 7.882-.008 10.889zm-5.23-48.781c-16.373.0-29.701-13.324-29.701-29.698.0-16.381 13.328-29.714 29.701-29.714 16.378.0 29.706 13.333 29.706 29.714.0 16.374-13.328 29.698-29.706 29.698zM160.91 295.348c0-16.381 13.328-29.71 29.714-29.71 16.369.0 29.689 13.329 29.689 29.71.0 16.373-13.32 29.693-29.689 29.693-16.386.0-29.714-13.32-29.714-29.693z"/></svg></a></li><li><a target=_blank rel="noopener noreferrer" aria-label="share Opencode tutorial for beginners on facebook" href="https://facebook.com/sharer/sharer.php?u=https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentColor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H342.978V319.085h66.6l12.672-82.621h-79.272v-53.617c0-22.603 11.073-44.636 46.58-44.636H425.6v-70.34s-32.71-5.582-63.982-5.582c-65.288.0-107.96 39.569-107.96 111.204v62.971h-72.573v82.621h72.573V512h-191.104c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892z"/></svg></a></li><li><a target=_blank rel="noopener noreferrer" aria-label="share Opencode tutorial for beginners on whatsapp" href="https://api.whatsapp.com/send?text=Opencode%20tutorial%20for%20beginners%20-%20https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f"><svg viewBox="0 0 512 512" height="30" width="30" fill="currentColor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554v386.892C512 483.97 483.97 512 449.446 512H62.554c-34.524.0-62.554-28.03-62.554-62.554V62.554c0-34.524 28.029-62.554 62.554-62.554h386.892zm-58.673 127.703c-33.842-33.881-78.847-52.548-126.798-52.568-98.799.0-179.21 80.405-179.249 179.234-.013 31.593 8.241 62.428 23.927 89.612l-25.429 92.884 95.021-24.925c26.181 14.28 55.659 21.807 85.658 21.816h.074c98.789.0 179.206-80.413 179.247-179.243.018-47.895-18.61-92.93-52.451-126.81zM263.976 403.485h-.06c-26.734-.01-52.954-7.193-75.828-20.767l-5.441-3.229-56.386 14.792 15.05-54.977-3.542-5.637c-14.913-23.72-22.791-51.136-22.779-79.287.033-82.142 66.867-148.971 149.046-148.971 39.793.014 77.199 15.531 105.329 43.692 28.128 28.16 43.609 65.592 43.594 105.4-.034 82.149-66.866 148.983-148.983 148.984zm81.721-111.581c-4.479-2.242-26.499-13.075-30.604-14.571-4.105-1.495-7.091-2.241-10.077 2.241-2.986 4.483-11.569 14.572-14.182 17.562-2.612 2.988-5.225 3.364-9.703 1.12-4.479-2.241-18.91-6.97-36.017-22.23C231.8 264.15 222.81 249.484 220.198 245s-.279-6.908 1.963-9.14c2.016-2.007 4.48-5.232 6.719-7.847 2.24-2.615 2.986-4.484 4.479-7.472 1.493-2.99.747-5.604-.374-7.846-1.119-2.241-10.077-24.288-13.809-33.256-3.635-8.733-7.327-7.55-10.077-7.688-2.609-.13-5.598-.158-8.583-.158-2.986.0-7.839 1.121-11.944 5.604-4.105 4.484-15.675 15.32-15.675 37.364.0 22.046 16.048 43.342 18.287 46.332 2.24 2.99 31.582 48.227 76.511 67.627 10.685 4.615 19.028 7.371 25.533 9.434 10.728 3.41 20.492 2.929 28.209 1.775 8.605-1.285 26.499-10.833 30.231-21.295 3.732-10.464 3.732-19.431 2.612-21.298-1.119-1.869-4.105-2.99-8.583-5.232z"/></svg></a></li><li><a target=_blank rel="noopener noreferrer" aria-label="share Opencode tutorial for beginners on telegram" href="https://telegram.me/share/url?text=Opencode%20tutorial%20for%20beginners&amp;url=https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f"><svg viewBox="2 2 28 28" height="30" width="30" fill="currentColor"><path d="M26.49 29.86H5.5a3.37 3.37.0 01-2.47-1 3.35 3.35.0 01-1-2.47V5.48A3.36 3.36.0 013 3 3.37 3.37.0 015.5 2h21A3.38 3.38.0 0129 3a3.36 3.36.0 011 2.46V26.37a3.35 3.35.0 01-1 2.47 3.38 3.38.0 01-2.51 1.02zm-5.38-6.71a.79.79.0 00.85-.66L24.73 9.24a.55.55.0 00-.18-.46.62.62.0 00-.41-.17q-.08.0-16.53 6.11a.59.59.0 00-.41.59.57.57.0 00.43.52l4 1.24 1.61 4.83a.62.62.0 00.63.43.56.56.0 00.4-.17L16.54 20l4.09 3A.9.9.0 0021.11 23.15zM13.8 20.71l-1.21-4q8.72-5.55 8.78-5.55c.15.0.23.0.23.16a.18.18.0 010 .06s-2.51 2.3-7.52 6.8z"/></svg></a></li><li><a target=_blank rel="noopener noreferrer" aria-label="share Opencode tutorial for beginners on ycombinator" href="https://news.ycombinator.com/submitlink?t=Opencode%20tutorial%20for%20beginners&u=https%3a%2f%2fphy-zhangzl.github.io%2fposts%2fopencode_tutorial%2f"><svg width="30" height="30" viewBox="0 0 512 512" fill="currentColor"><path d="M449.446.0C483.971.0 512 28.03 512 62.554V449.446C512 483.97 483.97 512 449.446 512H62.554C28.03 512 0 483.97.0 449.446V62.554C0 28.03 28.029.0 62.554.0H449.446zM183.8767 87.9921h-62.034L230.6673 292.4508V424.0079h50.6655V292.4508L390.1575 87.9921H328.1233L256 238.2489z"/></svg></a></li></ul></footer></article></main><footer class=footer><span>&copy; 2026 <a href=https://phy-zhangzl.github.io/>Prometheus's fire</a></span> ·
+<span>Powered by
+<a href=https://gohugo.io/ rel="noopener noreferrer" target=_blank>Hugo</a> &
+<a href=https://github.com/adityatelange/hugo-PaperMod/ rel=noopener target=_blank>PaperMod</a></span></footer><a href=#top aria-label="go to top" title="Go to Top (Alt + G)" class=top-link id=top-link accesskey=g><svg viewBox="0 0 12 6" fill="currentColor"><path d="M12 6H0l6-6z"/></svg>
+</a><script>let menu=document.getElementById("menu");if(menu){const e=localStorage.getItem("menu-scroll-position");e&&(menu.scrollLeft=parseInt(e,10)),menu.onscroll=function(){localStorage.setItem("menu-scroll-position",menu.scrollLeft)}}document.querySelectorAll('a[href^="#"]').forEach(e=>{e.addEventListener("click",function(e){e.preventDefault();var t=this.getAttribute("href").substr(1);window.matchMedia("(prefers-reduced-motion: reduce)").matches?document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView():document.querySelector(`[id='${decodeURIComponent(t)}']`).scrollIntoView({behavior:"smooth"}),t==="top"?history.replaceState(null,null," "):history.pushState(null,null,`#${t}`)})})</script><script>var mybutton=document.getElementById("top-link");window.onscroll=function(){document.body.scrollTop>800||document.documentElement.scrollTop>800?(mybutton.style.visibility="visible",mybutton.style.opacity="1"):(mybutton.style.visibility="hidden",mybutton.style.opacity="0")}</script><script>document.getElementById("theme-toggle").addEventListener("click",()=>{const e=document.querySelector("html");e.dataset.theme==="dark"?(e.dataset.theme="light",localStorage.setItem("pref-theme","light")):(e.dataset.theme="dark",localStorage.setItem("pref-theme","dark"))})</script></body></html>

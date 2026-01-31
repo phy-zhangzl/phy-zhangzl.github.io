@@ -1,1 +1,40 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on Prometheus's fire</title><link>https://phy-zhangzl.github.io/posts/</link><description>Recent content in Posts on Prometheus's fire</description><generator>Hugo -- 0.155.1</generator><language>en-us</language><lastBuildDate>Tue, 30 Jan 2024 12:00:00 +0800</lastBuildDate><atom:link href="https://phy-zhangzl.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Hello World</title><link>https://phy-zhangzl.github.io/posts/hello-world/</link><pubDate>Tue, 30 Jan 2024 12:00:00 +0800</pubDate><guid>https://phy-zhangzl.github.io/posts/hello-world/</guid><description>&lt;p&gt;Welcome to my new blog! This is a sample post to test the configuration.&lt;/p&gt;</description></item></channel></rss>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Posts on Prometheus's fire</title><link>https://phy-zhangzl.github.io/posts/</link><description>Recent content in Posts on Prometheus's fire</description><generator>Hugo -- 0.155.1</generator><language>en-us</language><lastBuildDate>Sat, 31 Jan 2026 00:00:00 +0800</lastBuildDate><atom:link href="https://phy-zhangzl.github.io/posts/index.xml" rel="self" type="application/rss+xml"/><item><title>Opencode tutorial for beginners</title><link>https://phy-zhangzl.github.io/posts/opencode_tutorial/</link><pubDate>Sat, 31 Jan 2026 00:00:00 +0800</pubDate><guid>https://phy-zhangzl.github.io/posts/opencode_tutorial/</guid><description>&lt;h1 id="opencode-tutorial-for-beginners"&gt;Opencode tutorial for beginners&lt;/h1&gt;
+&lt;h2 id="1-介绍"&gt;1. 介绍&lt;/h2&gt;
+&lt;p&gt;Opencode [1] 定位是Claude Code 的开源替代品。&lt;/p&gt;
+&lt;p&gt;但在目前LLM发展的趋势下，Claude Code很难独占市场，同时我并不看好A\实施的技术封锁。世面上Coding Agent普遍装配有现在最火的Skills、MCP servers、Agents、Subagents，单一使用Claude Code、Codex、Gemini CLI面临的问题就是锁定该CLI采用的模型。虽然现在[2-3]能够实现在CLI级别下，通过Skills方式在三家CLI之间进行联动，但流程繁琐、上下文管理不够精细、不适用于科研，同时[4]这类切换中转站管理的方式也能解决短期额度不够的问题。&lt;/p&gt;
+&lt;p&gt;上述讨论的问题，并不在该教程中深入讨论，Opencode通过后续安装插件能更好解决上述调用多个模型的痛点问题。&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;开源软件注定拥有更高的可玩性，但是配置门槛相应会高一些。&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id="11-部署"&gt;1.1 部署&lt;/h3&gt;
+&lt;p&gt;[1]中仓库给出了opencode的多个平台的Desktop和tui的安装方式，根据喜好进行安装。&lt;/p&gt;
+&lt;p&gt;推荐安装：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Oh-my-opencode[5]&lt;/li&gt;
+&lt;li&gt;Opencode-antigravity-auth[6]&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;后续会给出推荐理由&lt;/p&gt;
+&lt;h3 id="12-优势"&gt;1.2 优势&lt;/h3&gt;
+&lt;p&gt;在介绍中，大概提了两点目前御三家的痛点问题，这在Opencode中正好是完美符合，同时对学生党更加友好，相应的至少有两个优势：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;能够灵活使用多个且多家模型；&lt;/li&gt;
+&lt;li&gt;对使用API调用模型的用户更友好，配置文件写好即可使用slack command进行模型切换。&lt;/li&gt;
+&lt;li&gt;上下文窗口有百分比显示，容易对单个对话进行控制。&lt;/li&gt;
+&lt;li&gt;(补充) 如今已经支持github copilot登陆，通过Opencode-antigravity-auth可使用Google one pro用户在antigravity的额度，不需要通过反代。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id="2-配置"&gt;2. 配置&lt;/h2&gt;
+&lt;p&gt;开源社区中有丰富的docs，[7]中有详细的配置流程可供参考，官方并未支持中文，差评！A\的docs都支持中文。[8]中有非官方的中文docs，谨慎阅读，容易夹带私货。&lt;/p&gt;
+&lt;p&gt;接下来，直接进入穷学生省流配置环节&lt;/p&gt;
+&lt;h3 id="21-github-copilot"&gt;2.1 github copilot&lt;/h3&gt;
+&lt;p&gt;在安装好Opencode后，建议不要直接在终端直接运行，而是先运行下面命令。&lt;/p&gt;
+&lt;div class="highlight"&gt;&lt;pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-text-size-adjust:none;"&gt;&lt;code class="language-bash" data-lang="bash"&gt;&lt;span style="display:flex;"&gt;&lt;span&gt;opencode auth login
+&lt;/span&gt;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;选择对应的model provider进行OAuth登陆，这里穷学生直接选择github copilot的学生包，添加好认证后，就已经可以使用opencode随意探索了。&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;注意&lt;/em&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;这里面有一个对于我这种强迫症患者必须要做的，不用听有些教程上说的，在&lt;code&gt;auth login&lt;/code&gt;选择&lt;code&gt;other&lt;/code&gt;手动添加自己的中转站。&lt;/li&gt;
+&lt;li&gt;对于添加了自己不用的provider，使用&lt;code&gt;opencode autho logout&lt;/code&gt;进行相应删除，不然翻遍配置文件，都不知道自己添加的provider到底放在哪个位置。&lt;/li&gt;
+&lt;li&gt;(重点)：如果发现登陆过后模型不可用，请打开github，在头像中点击&lt;code&gt;settings-&amp;gt;copilot-&amp;gt;Fetures&lt;/code&gt;将需要用的模型打开，同时可以查看当前premium requests查看用量。&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3 id="22-google-one-pro"&gt;2.2 Google one pro&lt;/h3&gt;
+&lt;p&gt;相信很多穷学生都是美国留学生，拥有了Google one pro订阅的账号，虽然额度一调再调，但是对于科研党是完全够用的，不讨论如何获取Google one pro(养美区号，1key认证，咸鱼一刀虚拟卡)。&lt;/p&gt;
+&lt;p&gt;在[6]中安装Opencode-antigravity-auth插件，该插件可以将Google one pro订阅用到极致。&lt;/p&gt;</description></item></channel></rss>

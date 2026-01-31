@@ -37,6 +37,9 @@ theme = "PaperMod"
   ShowShareButtons = true
   ShowReadingTime = true
   mainSections = ["posts"]
+  ShowToc = true
+  TocOpen = true
+  comments = true
 
   [params.homeInfoParams]
     Title = "Zeal"

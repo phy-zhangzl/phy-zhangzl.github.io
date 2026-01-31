@@ -1,0 +1,9 @@
+<div id="reading-progress"></div>
+<script>
+window.addEventListener('scroll', function() {
+  var p = document.getElementById('reading-progress');
+  if (!p) return;
+  var h = document.body.scrollHeight - window.innerHeight;
+  p.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+});
+</script>

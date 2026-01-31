@@ -45,6 +45,13 @@
           {{- if (ne (.Param "hideSummary") true) }}
           <p class="timeline-summary">{{ .Summary | plainify | htmlUnescape }}</p>
           {{- end }}
+          {{- with .GetTerms "tags" }}
+          <div class="timeline-tags">
+            {{- range . }}
+            <a href="{{ .Permalink }}" class="timeline-tag">{{ .LinkTitle }}</a>
+            {{- end }}
+          </div>
+          {{- end }}
         </div>
       </article>
       {{- end }}

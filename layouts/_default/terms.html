@@ -1,0 +1,32 @@
+{{- define "main" }}
+
+{{- if .Title }}
+<header class="page-header">
+    <h1>{{ .Title }}</h1>
+    {{- if .Description }}
+    <div class="post-description">
+        {{ .Description }}
+    </div>
+    {{- end }}
+</header>
+{{- end }}
+
+{{- $type := .Type }}
+{{- $max := 1 }}
+{{- range $key, $value := .Data.Terms.Alphabetical }}
+  {{- if gt .Count $max }}{{ $max = .Count }}{{ end }}
+{{- end }}
+<div class="tag-cloud">
+    {{- range $key, $value := .Data.Terms.Alphabetical }}
+    {{- $name := .Name }}
+    {{- $count := .Count }}
+    {{- $size := add 80 (mul (div (mul (sub $count 1) 100) $max) 1) }}
+    {{- with site.GetPage (printf "/%s/%s" $type $name) }}
+    <a href="{{ .Permalink }}" class="tag-cloud-item" style="font-size: {{ $size }}%">
+        {{ .Name }} <sup>{{ $count }}</sup>
+    </a>
+    {{- end }}
+    {{- end }}
+</div>
+
+{{- end }}{{/* end main */ -}}

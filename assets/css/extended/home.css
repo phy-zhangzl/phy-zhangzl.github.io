@@ -5,7 +5,7 @@ body.list .main:has(.home-split) {
 
 .home-split {
   display: grid;
-  grid-template-columns: 260px 1fr;
+  grid-template-columns: 320px 1fr;
   gap: 2.5rem;
   max-width: 90rem;
   margin: 0 auto;

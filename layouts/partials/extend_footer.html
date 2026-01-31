@@ -7,3 +7,28 @@ window.addEventListener('scroll', function() {
   p.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
 });
 </script>
+<script>
+(function() {
+  var toc = document.getElementById('toc-nav');
+  if (!toc) return;
+  var links = toc.querySelectorAll('a[href^="#"]');
+  if (!links.length) return;
+  var headings = [];
+  links.forEach(function(a) {
+    var id = a.getAttribute('href').slice(1);
+    var el = document.getElementById(id);
+    if (el) headings.push({ el: el, link: a });
+  });
+  function update() {
+    var scrollY = window.scrollY + 100;
+    var current = null;
+    for (var i = 0; i < headings.length; i++) {
+      if (headings[i].el.offsetTop <= scrollY) current = headings[i];
+    }
+    links.forEach(function(a) { a.classList.remove('active'); });
+    if (current) current.link.classList.add('active');
+  }
+  window.addEventListener('scroll', update, { passive: true });
+  update();
+})();
+</script>

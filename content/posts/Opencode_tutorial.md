@@ -4,7 +4,6 @@ date: 2026-01-31T00:00:00+08:00
 draft: false
 tags: ["Opencode", "Coding Agent", "LLM", "Tutorial"]
 ---
-# Opencode tutorial for beginners
 
 ## 1. 介绍
 

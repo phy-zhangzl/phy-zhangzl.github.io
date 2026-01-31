@@ -1,0 +1,86 @@
+{{- define "main" }}
+<div class="home-split">
+  <!-- Left: Profile Card -->
+  <aside>
+    <div class="profile-card">
+      {{- with site.Params.homeInfoParams }}
+      <img src="/lyy.jpg" alt="Avatar" class="profile-avatar">
+      <h1 class="profile-name">{{ .Title }}</h1>
+      <p class="profile-bio">{{ .Content | markdownify }}</p>
+      {{- end }}
+
+      <!-- Hitokoto 一言 -->
+      <div class="hitokoto-widget">
+        <p class="hitokoto-text" id="hitokoto">Loading...</p>
+        <p class="hitokoto-from" id="hitokoto-from"></p>
+      </div>
+
+      <footer class="profile-footer">
+        {{ partial "social_icons.html" (dict "align" site.Params.homeInfoParams.AlignSocialIconsTo) }}
+        {{- if hugo.IsProduction }}
+        <!-- Visitor Counter 不蒜子 (production only) -->
+        <div class="visitor-counter">
+          <span>👀 <span id="busuanzi_value_site_pv">--</span> views</span>
+        </div>
+        {{- end }}
+      </footer>
+    </div>
+  </aside>
+
+  <!-- Right: Timeline -->
+  <section>
+    {{- $pages := where site.RegularPages "Type" "in" site.Params.mainSections }}
+    {{- $pages = where $pages "Params.hiddenInHomeList" "!=" "true" }}
+    {{- $paginator := .Paginate $pages }}
+
+    <div class="timeline">
+      {{- range $paginator.Pages }}
+      <article class="timeline-item">
+        <div class="timeline-dot"></div>
+        <div class="timeline-card">
+          <time class="timeline-date">{{ .Date.Format "2006-01-02" }}</time>
+          <h2 class="timeline-title">
+            <a href="{{ .Permalink }}">{{ .Title }}</a>
+          </h2>
+          {{- if (ne (.Param "hideSummary") true) }}
+          <p class="timeline-summary">{{ .Summary | plainify | htmlUnescape }}</p>
+          {{- end }}
+        </div>
+      </article>
+      {{- end }}
+    </div>
+
+    {{- if gt $paginator.TotalPages 1 }}
+    <footer class="page-footer">
+      <nav class="pagination">
+        {{- if $paginator.HasPrev }}
+        <a href="{{ $paginator.Prev.URL | absURL }}">&larr; {{ i18n "prev_page" }}</a>
+        {{- else }}
+        <span></span>
+        {{- end }}
+        {{- if $paginator.HasNext }}
+        <a href="{{ $paginator.Next.URL | absURL }}">{{ i18n "next_page" }} &rarr;</a>
+        {{- end }}
+      </nav>
+    </footer>
+    {{- end }}
+  </section>
+</div>
+
+<!-- Scripts -->
+{{- if hugo.IsProduction }}
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+{{- end }}
+<script>
+fetch('https://v1.hitokoto.cn?c=a&c=b&c=d&c=i&c=k')
+  .then(r => r.json())
+  .then(d => {
+    document.getElementById('hitokoto').innerText = '「' + d.hitokoto + '」';
+    document.getElementById('hitokoto-from').innerText = '—— ' + (d.from_who || d.from || '');
+  })
+  .catch(() => {
+    document.getElementById('hitokoto').innerText = '「代码是写给人看的，顺便能在机器上运行。」';
+    document.getElementById('hitokoto-from').innerText = '—— Harold Abelson';
+  });
+</script>
+{{- end }}

@@ -3,6 +3,27 @@ languageCode = 'en-us'
 title = "Prometheus's fire"
 theme = "PaperMod"
 
+[menu]
+  [[menu.main]]
+    name = "Posts"
+    url = "/posts/"
+    weight = 1
+
+  [[menu.main]]
+    name = "Tags"
+    url = "/tags/"
+    weight = 2
+
+  [[menu.main]]
+    name = "Search"
+    url = "/search/"
+    weight = 3
+
+  [[menu.main]]
+    name = "Archives"
+    url = "/archives/"
+    weight = 4
+
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
@@ -10,14 +31,18 @@ theme = "PaperMod"
   defaultTheme = "auto"
   ShowShareButtons = true
   ShowReadingTime = true
+  mainSections = ["posts"]
   
   [params.profileMode]
-    enabled = true
+    enabled = false
     title = "zeal"
-    subtitle = "This is zeal's blog. contact with me by phyzeal@linux.do"
-    # imageUrl = "" # User will add later
+    subtitle = "This is zeal's blog. Contact with me by phyzeal@linux.do"
     imageWidth = 120
     imageHeight = 120
+
+  [params.homeInfoParams]
+    Title = "Zeal"
+    Content = "Focus: Vibe Engineering, AI Agent."
   
   [[params.socialIcons]]
     name = "email"

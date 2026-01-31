@@ -37,6 +37,11 @@ theme = "PaperMod"
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
+[markup.highlight]
+  lineNos = true
+  lineNumbersInTable = true
+  noClasses = false
+
 [params]
   defaultTheme = "auto"
   ShowShareButtons = true

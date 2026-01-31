@@ -55,6 +55,34 @@
       {{- end }}
     </footer>
 
+    {{- /* Related Posts */ -}}
+    {{- $related := slice }}
+    {{- $currentTags := .GetTerms "tags" }}
+    {{- if $currentTags }}
+      {{- $currentPage := . }}
+      {{- range $currentTags }}
+        {{- range .Pages }}
+          {{- if ne .Permalink $currentPage.Permalink }}
+            {{- $related = $related | append . }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+      {{- $related = $related | uniq | first 3 }}
+    {{- end }}
+    {{- if $related }}
+    <section class="related-posts">
+      <h3>Related Posts</h3>
+      <div class="related-grid">
+        {{- range $related }}
+        <a href="{{ .Permalink }}" class="related-card">
+          <span class="related-title">{{ .Title }}</span>
+          <time class="related-date">{{ .Date.Format "2006-01-02" }}</time>
+        </a>
+        {{- end }}
+      </div>
+    </section>
+    {{- end }}
+
     {{- if (.Param "comments") }}
     {{- partial "comments.html" . }}
     {{- end }}

@@ -38,7 +38,7 @@
       <article class="timeline-item">
         <div class="timeline-dot"></div>
         <div class="timeline-card">
-          <time class="timeline-date">{{ .Date.Format "2006-01-02" }}</time>
+          <time class="timeline-date">{{ .Date.Format "2006-01-02" }} · {{ .ReadingTime }} min</time>
           <h2 class="timeline-title">
             <a href="{{ .Permalink }}">{{ .Title }}</a>
           </h2>

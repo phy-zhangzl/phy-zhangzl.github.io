@@ -10,18 +10,93 @@
   --card-glass-border: rgba(255, 255, 255, 0.3);
   --glow-primary: rgba(102, 126, 234, 0.4);
   --glow-accent: rgba(79, 172, 254, 0.5);
+  /* Code block with subtle purple tint */
+  --code-block-bg: #f9f8fc;
 }
 
-.dark {
-  --gradient-subtle: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+.dark,
+:root[data-theme="dark"] {
+  --gradient-subtle: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
   --bg-pattern:
-    radial-gradient(ellipse at 20% 0%, rgba(102, 126, 234, 0.12) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 100%, rgba(118, 75, 162, 0.1) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 50%, rgba(79, 172, 254, 0.06) 0%, transparent 60%);
-  --card-glass: rgba(30, 30, 30, 0.7);
-  --card-glass-border: rgba(255, 255, 255, 0.1);
-  --glow-primary: rgba(102, 126, 234, 0.3);
-  --glow-accent: rgba(79, 172, 254, 0.4);
+    radial-gradient(ellipse at 20% 0%, rgba(102, 126, 234, 0.1) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 100%, rgba(118, 75, 162, 0.08) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 50%, rgba(79, 172, 254, 0.05) 0%, transparent 60%);
+  --card-glass: rgba(35, 35, 40, 0.8);
+  --card-glass-border: rgba(255, 255, 255, 0.08);
+  --glow-primary: rgba(102, 126, 234, 0.25);
+  --glow-accent: rgba(79, 172, 254, 0.35);
+  --code-block-bg: #1e1e1e;
+}
+
+/* Dark mode Mac-style code block */
+.dark .highlight::before,
+:root[data-theme="dark"] .highlight::before {
+  background: linear-gradient(180deg, #3a3a3c 0%, #2c2c2e 100%);
+  border-bottom-color: #1c1c1e;
+}
+
+.dark .chroma,
+.dark .bg,
+.dark .highlight pre,
+.dark .highlight .chroma,
+.dark .post-content pre code,
+:root[data-theme="dark"] .chroma,
+:root[data-theme="dark"] .bg,
+:root[data-theme="dark"] .highlight pre,
+:root[data-theme="dark"] .highlight .chroma,
+:root[data-theme="dark"] .post-content pre code {
+  color: #abb2bf !important;
+  background-color: #1e1e1e !important;
+}
+
+.dark .highlight .lntd:first-child pre,
+:root[data-theme="dark"] .highlight .lntd:first-child pre {
+  background-color: #1a1a1a !important;
+}
+
+/* Dark syntax colors (One Dark) */
+.dark .chroma .k, .dark .chroma .kc, .dark .chroma .kd, .dark .chroma .kn, .dark .chroma .kp, .dark .chroma .kr,
+:root[data-theme="dark"] .chroma .k, :root[data-theme="dark"] .chroma .kc, :root[data-theme="dark"] .chroma .kd, :root[data-theme="dark"] .chroma .kn, :root[data-theme="dark"] .chroma .kp, :root[data-theme="dark"] .chroma .kr { color: #c678dd !important; }
+
+.dark .chroma .kt,
+:root[data-theme="dark"] .chroma .kt { color: #e5c07b !important; }
+
+.dark .chroma .n, .dark .chroma .nv, .dark .chroma .nx, .dark .chroma .bp,
+:root[data-theme="dark"] .chroma .n, :root[data-theme="dark"] .chroma .nv, :root[data-theme="dark"] .chroma .nx, :root[data-theme="dark"] .chroma .bp { color: #abb2bf !important; }
+
+.dark .chroma .na, .dark .chroma .nb, .dark .chroma .nc, .dark .chroma .no, .dark .chroma .nd, .dark .chroma .ne, .dark .chroma .nf, .dark .chroma .fm, .dark .chroma .ni,
+:root[data-theme="dark"] .chroma .na, :root[data-theme="dark"] .chroma .nb, :root[data-theme="dark"] .chroma .nc, :root[data-theme="dark"] .chroma .no, :root[data-theme="dark"] .chroma .nd, :root[data-theme="dark"] .chroma .ne, :root[data-theme="dark"] .chroma .nf, :root[data-theme="dark"] .chroma .fm, :root[data-theme="dark"] .chroma .ni { color: #61afef !important; }
+
+.dark .chroma .s, .dark .chroma .sa, .dark .chroma .sb, .dark .chroma .sc, .dark .chroma .dl, .dark .chroma .sd, .dark .chroma .s2, .dark .chroma .se, .dark .chroma .sh, .dark .chroma .si, .dark .chroma .sx, .dark .chroma .sr, .dark .chroma .s1, .dark .chroma .ss,
+:root[data-theme="dark"] .chroma .s, :root[data-theme="dark"] .chroma .sa, :root[data-theme="dark"] .chroma .sb, :root[data-theme="dark"] .chroma .sc, :root[data-theme="dark"] .chroma .dl, :root[data-theme="dark"] .chroma .sd, :root[data-theme="dark"] .chroma .s2, :root[data-theme="dark"] .chroma .se, :root[data-theme="dark"] .chroma .sh, :root[data-theme="dark"] .chroma .si, :root[data-theme="dark"] .chroma .sx, :root[data-theme="dark"] .chroma .sr, :root[data-theme="dark"] .chroma .s1, :root[data-theme="dark"] .chroma .ss { color: #98c379 !important; }
+
+.dark .chroma .m, .dark .chroma .mb, .dark .chroma .mf, .dark .chroma .mh, .dark .chroma .mi, .dark .chroma .mo, .dark .chroma .il,
+:root[data-theme="dark"] .chroma .m, :root[data-theme="dark"] .chroma .mb, :root[data-theme="dark"] .chroma .mf, :root[data-theme="dark"] .chroma .mh, :root[data-theme="dark"] .chroma .mi, :root[data-theme="dark"] .chroma .mo, :root[data-theme="dark"] .chroma .il { color: #d19a66 !important; }
+
+.dark .chroma .o, .dark .chroma .ow, .dark .chroma .p,
+:root[data-theme="dark"] .chroma .o, :root[data-theme="dark"] .chroma .ow, :root[data-theme="dark"] .chroma .p { color: #abb2bf !important; }
+
+.dark .chroma .c, .dark .chroma .ch, .dark .chroma .cm, .dark .chroma .c1, .dark .chroma .cs, .dark .chroma .cp, .dark .chroma .cpf,
+:root[data-theme="dark"] .chroma .c, :root[data-theme="dark"] .chroma .ch, :root[data-theme="dark"] .chroma .cm, :root[data-theme="dark"] .chroma .c1, :root[data-theme="dark"] .chroma .cs, :root[data-theme="dark"] .chroma .cp, :root[data-theme="dark"] .chroma .cpf { color: #5c6370 !important; font-style: italic; }
+
+.dark .chroma .gd, :root[data-theme="dark"] .chroma .gd { color: #e06c75 !important; }
+.dark .chroma .gi, :root[data-theme="dark"] .chroma .gi { color: #98c379 !important; }
+.dark .chroma .gh, .dark .chroma .gu, :root[data-theme="dark"] .chroma .gh, :root[data-theme="dark"] .chroma .gu { color: #61afef !important; }
+.dark .chroma .lnt, .dark .chroma .ln, :root[data-theme="dark"] .chroma .lnt, :root[data-theme="dark"] .chroma .ln { color: #636d83 !important; }
+.dark .chroma .err, :root[data-theme="dark"] .chroma .err { color: #e06c75 !important; }
+.dark .chroma .line, .dark .chroma .cl, :root[data-theme="dark"] .chroma .line, :root[data-theme="dark"] .chroma .cl { color: #abb2bf; }
+
+.dark .copy-btn,
+:root[data-theme="dark"] .copy-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.15);
+  color: #aaa;
+}
+
+.dark .copy-btn:hover,
+:root[data-theme="dark"] .copy-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
 }
 
 body,

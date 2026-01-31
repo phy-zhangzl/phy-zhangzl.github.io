@@ -15,19 +15,24 @@ theme = "PaperMod"
     weight = 1
 
   [[menu.main]]
+    name = "Daily Reading"
+    url = "/dailyreading/"
+    weight = 2
+
+  [[menu.main]]
     name = "Tags"
     url = "/tags/"
-    weight = 2
+    weight = 3
 
   [[menu.main]]
     name = "Search"
     url = "/search/"
-    weight = 3
+    weight = 4
 
   [[menu.main]]
     name = "Archives"
     url = "/archives/"
-    weight = 4
+    weight = 5
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]

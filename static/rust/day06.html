@@ -1,0 +1,1026 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 06 - struct、impl、方法与 Debug - Rust Tutor</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-78628fb8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-9a2da176.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Tutor</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="day-06---structimpl方法与-debug"><a class="header" href="#day-06---structimpl方法与-debug">Day 06 - <code>struct</code>、<code>impl</code>、方法与 <code>Debug</code></a></h1>
+<p>日期：2026-05-15</p>
+<h2 id="今日目标"><a class="header" href="#今日目标">今日目标</a></h2>
+<p>Day 6 进入 Rust 中组织数据和行为的核心机制：</p>
+<ul>
+<li>定义 <code>struct</code></li>
+<li>创建结构体实例</li>
+<li>字段访问与字段修改</li>
+<li><code>#[derive(Debug)]</code></li>
+<li><code>impl</code> 定义方法</li>
+<li><code>&amp;self</code> / <code>&amp;mut self</code> / <code>self</code></li>
+<li>关联函数与 <code>Self</code></li>
+<li>构造函数模式 <code>Type::new(...)</code></li>
+<li>struct update syntax：<code>..old_value</code></li>
+<li>结构体与所有权</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day06_structs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day06_structs
+cargo run
+</code></pre>
+<h2 id="1-定义-struct"><a class="header" href="#1-定义-struct">1. 定义 struct</a></h2>
+<p>Rust 用 <code>struct</code> 定义自定义数据类型。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+<span class="boring">}</span></code></pre>
+<p>这表示定义了一个 <code>User</code> 类型，它有三个字段：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>字段</th><th>类型</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>name</code></td><td><code>String</code></td><td>用户名，拥有字符串数据</td></tr>
+<tr><td><code>age</code></td><td><code>u32</code></td><td>年龄</td></tr>
+<tr><td><code>active</code></td><td><code>bool</code></td><td>是否活跃</td></tr>
+</tbody>
+</table>
+</div>
+<p>创建实例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let user1 = User {
+        name: String::from("Alice"),
+        age: 20,
+        active: true,
+    };
+
+    println!("name = {}", user1.name);
+    println!("age = {}", user1.age);
+    println!("active = {}", user1.active);
+}
+
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}</code></pre>
+<p>字段访问使用点号：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>user1.name
+user1.age
+user1.active
+<span class="boring">}</span></code></pre>
+<h2 id="2-修改字段需要-mut"><a class="header" href="#2-修改字段需要-mut">2. 修改字段需要 <code>mut</code></a></h2>
+<p>如果要修改字段，变量绑定本身必须是 <code>mut</code>：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 20,
+        active: true,
+    };
+
+    user1.age += 1;
+    user1.active = false;
+
+    println!("name = {}", user1.name);
+    println!("age = {}", user1.age);
+    println!("active = {}", user1.active);
+}
+
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}</code></pre>
+<p>注意 Rust 不是给单个字段加 <code>mut</code>，而是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut user1 = ...;
+<span class="boring">}</span></code></pre>
+<p>表示 <code>user1</code> 这个绑定可变，于是可以修改它的字段。</p>
+<h2 id="3-debug-与-derivedebug"><a class="header" href="#3-debug-与-derivedebug">3. <code>Debug</code> 与 <code>#[derive(Debug)]</code></a></h2>
+<p>单独打印字段可以用 <code>{}</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("name = {}", user1.name);
+<span class="boring">}</span></code></pre>
+<p>但如果想直接打印整个结构体：</p>
+<pre><code class="language-rust ignore">println!("user1 = {:?}", user1);</code></pre>
+<p>如果没有实现 <code>Debug</code>，编译器会报错：</p>
+<pre><code class="language-text">`User` cannot be formatted using `{:?}` because it doesn't implement `Debug`
+help: consider annotating `User` with `#[derive(Debug)]`
+</code></pre>
+<p>修复方式是在 <code>struct</code> 上方添加：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug)]
+<span class="boring">}</span></code></pre>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 20,
+        active: true,
+    };
+
+    user1.age += 1;
+    user1.active = false;
+
+    println!("user1 = {:?}", user1);
+}</code></pre>
+<p>输出类似：</p>
+<pre><code class="language-text">user1 = User { name: "Alice", age: 21, active: false }
+</code></pre>
+<p>更漂亮的多行调试输出使用 <code>{:#?}</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("user1 = {:#?}", user1);
+<span class="boring">}</span></code></pre>
+<p>输出类似：</p>
+<pre><code class="language-text">user1 = User {
+    name: "Alice",
+    age: 21,
+    active: false,
+}
+</code></pre>
+<p>格式化规则：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>写法</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>{}</code></td><td><code>Display</code>，面向用户的普通显示</td></tr>
+<tr><td><code>{:?}</code></td><td><code>Debug</code>，面向开发者的调试显示</td></tr>
+<tr><td><code>{:#?}</code></td><td>pretty <code>Debug</code>，多行调试显示</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="4-impl给类型定义方法"><a class="header" href="#4-impl给类型定义方法">4. <code>impl</code>：给类型定义方法</a></h2>
+<p><code>impl User</code> 表示给 <code>User</code> 类型实现函数或方法。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn greet(&amp;self) {
+        println!("Hello, my name is {}.", self.name);
+    }
+
+    fn is_adult(&amp;self) -&gt; bool {
+        self.age &gt;= 18
+    }
+}
+
+fn main() {
+    let user1 = User {
+        name: String::from("Alice"),
+        age: 21,
+        active: true,
+    };
+
+    user1.greet();
+    println!("is adult? {}", user1.is_adult());
+    println!("user1 = {:#?}", user1);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn greet(&amp;self)
+<span class="boring">}</span></code></pre>
+<p>表示只读借用当前对象。</p>
+<p>可以把：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>user1.greet();
+<span class="boring">}</span></code></pre>
+<p>大致理解成：</p>
+<pre><code class="language-rust ignore">User::greet(&amp;user1);</code></pre>
+<p><code>is_adult</code> 返回 <code>bool</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn is_adult(&amp;self) -&gt; bool {
+    self.age &gt;= 18
+}
+<span class="boring">}</span></code></pre>
+<p>最后一行没有分号，因此是表达式，作为返回值。</p>
+<p>如果写成：</p>
+<pre><code class="language-rust ignore">fn is_adult(&amp;self) -&gt; bool {
+    self.age &gt;= 18;
+}</code></pre>
+<p>会得到类似错误：</p>
+<pre><code class="language-text">expected `bool`, found `()`
+</code></pre>
+<p>这复习了 Day 4 的规则：</p>
+<pre><code class="language-text">没有分号的表达式产生值；
+带分号的语句通常产生 ()。
+</code></pre>
+<h2 id="5-mut-self方法修改结构体"><a class="header" href="#5-mut-self方法修改结构体">5. <code>&amp;mut self</code>：方法修改结构体</a></h2>
+<p>如果方法要修改结构体字段，就使用 <code>&amp;mut self</code>：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn greet(&amp;self) {
+        println!("Hello, my name is {}.", self.name);
+    }
+
+    fn is_adult(&amp;self) -&gt; bool {
+        self.age &gt;= 18
+    }
+
+    fn birthday(&amp;mut self) {
+        self.age += 1;
+        println!("Happy birthday, {}!", self.name);
+    }
+
+    fn deactivate(&amp;mut self) {
+        self.active = false;
+    }
+}
+
+fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 17,
+        active: true,
+    };
+
+    println!("before = {:#?}", user1);
+
+    user1.greet();
+    println!("is adult? {}", user1.is_adult());
+
+    user1.birthday();
+    println!("after birthday = {:#?}", user1);
+    println!("is adult now? {}", user1.is_adult());
+
+    user1.deactivate();
+    println!("after deactivate = {:#?}", user1);
+}</code></pre>
+<p>因为 <code>birthday</code> 和 <code>deactivate</code> 需要可变借用，变量必须声明为：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut user1 = ...;
+<span class="boring">}</span></code></pre>
+<p>如果写成：</p>
+<pre><code class="language-rust ignore">let user1 = User { ... };
+user1.birthday();</code></pre>
+<p>编译器会提示类似：</p>
+<pre><code class="language-text">cannot borrow `user1` as mutable, as it is not declared as mutable
+help: consider changing this to be mutable
+</code></pre>
+<h2 id="6-self消耗结构体"><a class="header" href="#6-self消耗结构体">6. <code>self</code>：消耗结构体</a></h2>
+<p>第三种方法接收者是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>self
+<span class="boring">}</span></code></pre>
+<p>它表示直接拿走整个对象的所有权。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn greet(&amp;self) {
+        println!("Hello, my name is {}.", self.name);
+    }
+
+    fn birthday(&amp;mut self) {
+        self.age += 1;
+    }
+
+    fn into_name(self) -&gt; String {
+        self.name
+    }
+}
+
+fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 17,
+        active: true,
+    };
+
+    user1.greet();
+
+    user1.birthday();
+    println!("after birthday = {:#?}", user1);
+
+    let name = user1.into_name();
+    println!("name = {}", name);
+
+    // user1 已经被 into_name() 消耗，不能再使用
+    // println!("user1 = {:#?}", user1);
+}</code></pre>
+<p><code>into_name</code> 的签名是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn into_name(self) -&gt; String
+<span class="boring">}</span></code></pre>
+<p>调用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let name = user1.into_name();
+<span class="boring">}</span></code></pre>
+<p>大致等价于：</p>
+<pre><code class="language-rust ignore">let name = User::into_name(user1);</code></pre>
+<p>也就是 <code>user1</code> 被 move 进方法。方法内部把 <code>self.name</code> 移出并返回。</p>
+<p>常见命名习惯：</p>
+<pre><code class="language-text">into_xxx
+</code></pre>
+<p>通常表示：</p>
+<pre><code class="language-text">消耗旧值，把它转换成新值。
+</code></pre>
+<p>例如标准库中的：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("abc");
+let bytes = s.into_bytes();
+
+// s 之后不能再用
+<span class="boring">}</span></code></pre>
+<h2 id="7-selfmut-selfself-对比"><a class="header" href="#7-selfmut-selfself-对比">7. <code>&amp;self</code>、<code>&amp;mut self</code>、<code>self</code> 对比</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>写法</th><th>等价理解</th><th>含义</th><th>调用后原对象还能用吗</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&amp;self</code></td><td><code>self: &amp;User</code></td><td>只读借用</td><td>能</td></tr>
+<tr><td><code>&amp;mut self</code></td><td><code>self: &amp;mut User</code></td><td>可变借用</td><td>能</td></tr>
+<tr><td><code>self</code></td><td><code>self: User</code></td><td>拿走所有权</td><td>通常不能</td></tr>
+</tbody>
+</table>
+</div>
+<p>判断方法：</p>
+<pre><code class="language-text">这个方法调用后，原对象还应该继续使用吗？
+</code></pre>
+<p>如果只是读取：用 <code>&amp;self</code>。</p>
+<p>如果要原地修改：用 <code>&amp;mut self</code>。</p>
+<p>如果要转换、拆包、终结对象生命周期：用 <code>self</code>。</p>
+<h2 id="8-借用名字克隆名字消耗名字"><a class="header" href="#8-借用名字克隆名字消耗名字">8. 借用名字、克隆名字、消耗名字</a></h2>
+<p>同样是“得到名字”，可以有三种不同设计：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn name(&amp;self) -&gt; &amp;str {
+        &amp;self.name
+    }
+
+    fn cloned_name(&amp;self) -&gt; String {
+        self.name.clone()
+    }
+
+    fn into_name(self) -&gt; String {
+        self.name
+    }
+}
+
+fn main() {
+    let user1 = User {
+        name: String::from("Alice"),
+        age: 21,
+        active: true,
+    };
+
+    let borrowed_name = user1.name();
+    println!("borrowed_name = {}", borrowed_name);
+    println!("user1 after name() = {:#?}", user1);
+
+    let copied_name = user1.cloned_name();
+    println!("copied_name = {}", copied_name);
+    println!("user1 after cloned_name() = {:#?}", user1);
+
+    let owned_name = user1.into_name();
+    println!("owned_name = {}", owned_name);
+
+    // user1 已经被消耗
+    // println!("user1 after into_name() = {:#?}", user1);
+}</code></pre>
+<p>对比：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>返回</th><th>是否复制</th><th>是否消耗 <code>user1</code></th></tr>
+</thead>
+<tbody>
+<tr><td><code>name(&amp;self)</code></td><td><code>&amp;str</code></td><td>不复制</td><td>不消耗</td></tr>
+<tr><td><code>cloned_name(&amp;self)</code></td><td><code>String</code></td><td>复制</td><td>不消耗</td></tr>
+<tr><td><code>into_name(self)</code></td><td><code>String</code></td><td>不额外复制</td><td>消耗</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="9-关联函数与构造函数模式"><a class="header" href="#9-关联函数与构造函数模式">9. 关联函数与构造函数模式</a></h2>
+<p>在 <code>impl</code> 中，如果函数没有 <code>self</code> 参数，它就是关联函数。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, age: u32) -&gt; User {
+        User {
+            name: name.to_string(),
+            age,
+            active: true,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", 21);
+    println!("user1 = {:#?}", user1);
+}</code></pre>
+<p>调用方式是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>User::new("Alice", 21)
+<span class="boring">}</span></code></pre>
+<p>不是：</p>
+<pre><code class="language-rust ignore">user1.new(...)</code></pre>
+<p>Rust 没有固定的构造函数语法，但社区常用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TypeName::new(...)
+<span class="boring">}</span></code></pre>
+<p>作为构造函数模式。</p>
+<h2 id="10-self当前类型"><a class="header" href="#10-self当前类型">10. <code>Self</code>：当前类型</a></h2>
+<p>在：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl User {
+    ...
+}
+<span class="boring">}</span></code></pre>
+<p>内部，<code>Self</code> 表示当前类型，也就是 <code>User</code>。</p>
+<p>因此常见写法是：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, age: u32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            age,
+            active: true,
+        }
+    }
+
+    fn guest() -&gt; Self {
+        Self {
+            name: String::from("guest"),
+            age: 0,
+            active: false,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", 21);
+    let guest = User::guest();
+
+    println!("user1 = {:#?}", user1);
+    println!("guest = {:#?}", guest);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn new(...) -&gt; Self
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn new(...) -&gt; User
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Self { ... }
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>User { ... }
+<span class="boring">}</span></code></pre>
+<h2 id="11-字段初始化简写"><a class="header" href="#11-字段初始化简写">11. 字段初始化简写</a></h2>
+<p>如果字段名和变量名相同，可以简写。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn new(name: &amp;str, age: u32) -&gt; Self {
+    Self {
+        name: name.to_string(),
+        age,
+        active: true,
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>其中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>age,
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>age: age,
+<span class="boring">}</span></code></pre>
+<h2 id="12-struct-update-syntaxuser1"><a class="header" href="#12-struct-update-syntaxuser1">12. struct update syntax：<code>..user1</code></a></h2>
+<p>Rust 可以基于旧结构体创建新结构体：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, age: u32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            age,
+            active: true,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", 21);
+
+    let user2 = User {
+        name: String::from("Bob"),
+        ..user1
+    };
+
+    println!("user2 = {:#?}", user2);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>..user1
+<span class="boring">}</span></code></pre>
+<p>表示剩余字段从 <code>user1</code> 补齐。</p>
+<p>在上面的例子中，<code>age: u32</code> 和 <code>active: bool</code> 都是 <code>Copy</code> 类型，因此复制即可。</p>
+<p>如果没有被覆盖的字段里包含 <code>String</code>，就会发生 move：</p>
+<pre><code class="language-rust ignore">#[derive(Debug)]
+struct User {
+    name: String,
+    email: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, email: &amp;str, age: u32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            email: email.to_string(),
+            age,
+            active: true,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", "alice@example.com", 21);
+
+    let user2 = User {
+        name: String::from("Bob"),
+        ..user1
+    };
+
+    println!("user2 = {:#?}", user2);
+
+    // user1.email 已经被 move 到 user2，user1 不能再整体使用
+    println!("user1 = {:#?}", user1);
+}</code></pre>
+<p>核心规则：</p>
+<pre><code class="language-text">struct update syntax 会从旧对象补齐字段；
+Copy 字段会复制；
+非 Copy 字段会 move。
+</code></pre>
+<h2 id="13-builder-风格消耗并返回-self"><a class="header" href="#13-builder-风格消耗并返回-self">13. Builder 风格：消耗并返回 <code>Self</code></a></h2>
+<p><code>self</code> 的一个常见用途是 builder 模式。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Config {
+    batch_size: usize,
+    learning_rate: f64,
+    device: String,
+}
+
+impl Config {
+    fn new() -&gt; Self {
+        Self {
+            batch_size: 1,
+            learning_rate: 0.01,
+            device: String::from("cpu"),
+        }
+    }
+
+    fn with_batch_size(mut self, batch_size: usize) -&gt; Self {
+        self.batch_size = batch_size;
+        self
+    }
+
+    fn with_learning_rate(mut self, learning_rate: f64) -&gt; Self {
+        self.learning_rate = learning_rate;
+        self
+    }
+
+    fn with_device(mut self, device: &amp;str) -&gt; Self {
+        self.device = device.to_string();
+        self
+    }
+}
+
+fn main() {
+    let config = Config::new()
+        .with_batch_size(32)
+        .with_learning_rate(0.001)
+        .with_device("cuda");
+
+    println!("config = {:#?}", config);
+}</code></pre>
+<p>每个 <code>with_xxx</code> 都消耗旧的 <code>Config</code>，修改后返回新的 <code>Config</code>，因此可以链式调用。</p>
+<h2 id="14-科学计算风格示例particle"><a class="header" href="#14-科学计算风格示例particle">14. 科学计算风格示例：<code>Particle</code></a></h2>
+<p>下面的例子把今天的内容组合起来：</p>
+<pre><code class="language-text">struct 表示状态
+impl 表示状态上的操作
+&amp;self 读取状态
+&amp;mut self 更新状态
+self 消耗并转换状态
+</code></pre>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Particle {
+    position: f64,
+    velocity: f64,
+    mass: f64,
+}
+
+impl Particle {
+    fn new(position: f64, velocity: f64, mass: f64) -&gt; Self {
+        Self {
+            position,
+            velocity,
+            mass,
+        }
+    }
+
+    fn kinetic_energy(&amp;self) -&gt; f64 {
+        0.5 * self.mass * self.velocity * self.velocity
+    }
+
+    fn momentum(&amp;self) -&gt; f64 {
+        self.mass * self.velocity
+    }
+
+    fn is_moving(&amp;self) -&gt; bool {
+        self.velocity != 0.0
+    }
+
+    fn apply_force(&amp;mut self, force: f64, dt: f64) {
+        let acceleration = force / self.mass;
+        self.velocity += acceleration * dt;
+    }
+
+    fn step(&amp;mut self, dt: f64) {
+        self.position += self.velocity * dt;
+    }
+
+    fn stop(&amp;mut self) {
+        self.velocity = 0.0;
+    }
+
+    fn into_tuple(self) -&gt; (f64, f64, f64) {
+        (self.position, self.velocity, self.mass)
+    }
+}
+
+fn main() {
+    let mut p = Particle::new(0.0, 2.0, 1.5);
+
+    println!("initial particle = {:#?}", p);
+    println!("kinetic energy = {}", p.kinetic_energy());
+    println!("momentum = {}", p.momentum());
+    println!("is moving? {}", p.is_moving());
+
+    p.apply_force(3.0, 0.1);
+    p.step(0.1);
+
+    println!("after update = {:#?}", p);
+    println!("kinetic energy = {}", p.kinetic_energy());
+    println!("momentum = {}", p.momentum());
+
+    p.stop();
+    println!("after stop = {:#?}", p);
+    println!("is moving? {}", p.is_moving());
+
+    let raw = p.into_tuple();
+    println!("raw tuple = {:?}", raw);
+
+    // p 已经被 into_tuple() 消耗，不能再使用
+    // println!("p after into_tuple = {:#?}", p);
+}</code></pre>
+<p>这个例子和科学计算、模拟代码的思路相似：</p>
+<pre><code class="language-text">状态数据：position, velocity, mass
+只读计算：kinetic_energy, momentum, is_moving
+原地更新：apply_force, step, stop
+转换输出：into_tuple
+</code></pre>
+<h2 id="今日总结"><a class="header" href="#今日总结">今日总结</a></h2>
+<p>Day 6 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>struct</code></td><td>定义自己的数据类型</td></tr>
+<tr><td>字段访问</td><td><code>value.field</code></td></tr>
+<tr><td>字段修改</td><td>变量绑定需要 <code>mut</code></td></tr>
+<tr><td><code>#[derive(Debug)]</code></td><td>自动生成调试打印能力</td></tr>
+<tr><td><code>impl Type</code></td><td>给类型定义方法和关联函数</td></tr>
+<tr><td><code>&amp;self</code></td><td>只读借用当前对象</td></tr>
+<tr><td><code>&amp;mut self</code></td><td>可变借用当前对象</td></tr>
+<tr><td><code>self</code></td><td>消耗当前对象</td></tr>
+<tr><td>关联函数</td><td>没有 <code>self</code> 参数，使用 <code>Type::function()</code> 调用</td></tr>
+<tr><td><code>Self</code></td><td>当前类型的别名</td></tr>
+<tr><td><code>new</code></td><td>常见构造函数模式，不是语言关键字</td></tr>
+<tr><td><code>..old_value</code></td><td>struct update syntax，可能复制或 move 字段</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">Rust 用 struct 组织数据，用 impl 组织行为，并通过 &amp;self / &amp;mut self / self 明确表达方法如何使用所有权。
+</code></pre>
+<h2 id="下次继续"><a class="header" href="#下次继续">下次继续</a></h2>
+<p>Day 7 建议主题：<code>enum</code> / <code>match</code> / <code>Option</code> 深入。</p>
+<p>建议内容：</p>
+<ul>
+<li>定义 <code>enum</code></li>
+<li>带数据的 enum variant</li>
+<li><code>match</code> 穷尽匹配</li>
+<li><code>Option&lt;T&gt;</code> 的结构本质</li>
+<li><code>if let</code></li>
+<li>用 enum 表达状态</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day05.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="stage01_rust_workflow.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day05.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="stage01_rust_workflow.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

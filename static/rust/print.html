@@ -1,0 +1,3677 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Rust Tutor</title>
+        <meta name="robots" content="noindex">
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-78628fb8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-9a2da176.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Tutor</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="day-01---rust-基础开发体验"><a class="header" href="#day-01---rust-基础开发体验">Day 01 - Rust 基础开发体验</a></h1>
+<p>日期：2026-05-10</p>
+<h2 id="今日目标"><a class="header" href="#今日目标">今日目标</a></h2>
+<ul>
+<li>在 iTerm2 中运行 Rust 项目</li>
+<li>理解 Cargo 项目的基本结构</li>
+<li>理解 <code>let</code>、<code>mut</code>、shadowing</li>
+<li>初步理解 Rust 类型：<code>i32</code>、<code>f64</code>、<code>bool</code>、<code>char</code>、<code>&amp;str</code>、<code>Vec&lt;i32&gt;</code>、<code>&amp;[i32]</code></li>
+<li>初步理解 <code>vec!</code>、<code>println!</code> 这些带 <code>!</code> 的宏</li>
+<li>初步理解 <code>{}</code> 和 <code>{:?}</code> 的区别</li>
+</ul>
+<h2 id="当前项目"><a class="header" href="#当前项目">当前项目</a></h2>
+<p>项目路径：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day01_basics
+</code></pre>
+<p>常用命令：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day01_basics
+cargo check
+cargo run
+cargo build
+cargo run --release
+</code></pre>
+<h2 id="rust-项目结构"><a class="header" href="#rust-项目结构">Rust 项目结构</a></h2>
+<pre><code class="language-text">day01_basics/
+  Cargo.toml      # 项目配置：项目名、版本、edition、依赖
+  Cargo.lock      # 锁定依赖版本，由 Cargo 维护
+  src/
+    main.rs       # 二进制程序入口，包含 fn main()
+  target/         # 编译产物，可删除，不应提交 git
+</code></pre>
+<h2 id="cargo-命令"><a class="header" href="#cargo-命令">Cargo 命令</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>命令</th><th>作用</th></tr>
+</thead>
+<tbody>
+<tr><td><code>cargo run</code></td><td>编译并运行，默认 debug 模式</td></tr>
+<tr><td><code>cargo check</code></td><td>只检查，不生成最终可执行文件，速度快</td></tr>
+<tr><td><code>cargo build</code></td><td>编译生成 debug 可执行文件</td></tr>
+<tr><td><code>cargo run --release</code></td><td>release 模式编译并运行，适合性能测试</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="当前练习代码核心"><a class="header" href="#当前练习代码核心">当前练习代码核心</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn max_number(nums: &amp;[i32]) -&gt; i32 {
+    let mut max = nums[0];
+
+    for &amp;x in nums {
+        if x &gt; max {
+            max = x;
+        }
+    }
+
+    max
+}
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<ul>
+<li><code>nums: &amp;[i32]</code>：参数名是 <code>nums</code>，类型是 <code>&amp;[i32]</code>，即“借用一段 i32 序列”。</li>
+<li><code>-&gt; i32</code>：函数返回一个 <code>i32</code>。</li>
+<li><code>let mut max</code>：<code>max</code> 是可变变量，因为后续要更新最大值。</li>
+<li>函数最后的 <code>max</code> 没有分号，表示作为返回值。</li>
+</ul>
+<h2 id="let-和-mut"><a class="header" href="#let-和-mut"><code>let</code> 和 <code>mut</code></a></h2>
+<p>Rust 变量默认不可变：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let ans = 8;
+ans = 100; // 编译错误
+<span class="boring">}</span></code></pre>
+<p>如果需要修改，需要写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut ans = 8;
+ans = 100;
+<span class="boring">}</span></code></pre>
+<p>判断原则：</p>
+<ul>
+<li>如果一个变量代表“会逐步变化的状态”，用 <code>mut</code>。</li>
+<li>如果只是值转换，优先考虑 shadowing。</li>
+</ul>
+<h2 id="shadowing"><a class="header" href="#shadowing">Shadowing</a></h2>
+<p>Rust 允许重新绑定同名变量：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let input = "42";
+let input: i32 = input.parse().unwrap();
+<span class="boring">}</span></code></pre>
+<p>这不是修改原变量，而是创建一个新的同名变量，遮住旧变量。</p>
+<p>合理使用场景：</p>
+<ul>
+<li>原始字符串转换成数字</li>
+<li>原始配置转换成结构体</li>
+<li>trim 后再 parse</li>
+</ul>
+<p>不合理例子：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let ans = max_number(&amp;nums);
+let ans = 100;
+<span class="boring">}</span></code></pre>
+<p>如果第一个 <code>ans</code> 没被使用，编译器会 warning：</p>
+<pre><code class="language-text">warning: unused variable: `ans`
+</code></pre>
+<h2 id="类型初步"><a class="header" href="#类型初步">类型初步</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>Rust 类型</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>i32</code></td><td>32 位有符号整数，整数默认常见推断类型</td></tr>
+<tr><td><code>usize</code></td><td>无符号整数，常用于长度和下标</td></tr>
+<tr><td><code>f64</code></td><td>64 位浮点数，浮点默认常见推断类型</td></tr>
+<tr><td><code>bool</code></td><td><code>true</code> / <code>false</code></td></tr>
+<tr><td><code>char</code></td><td>单个 Unicode 字符，用单引号，例如 <code>'R'</code></td></tr>
+<tr><td><code>&amp;str</code></td><td>字符串切片，常用于字符串字面量，例如 <code>"rust"</code></td></tr>
+<tr><td><code>String</code></td><td>拥有所有权的字符串，可增长、可修改</td></tr>
+<tr><td><code>Vec&lt;i32&gt;</code></td><td>装 <code>i32</code> 的动态数组</td></tr>
+<tr><td><code>&amp;[i32]</code></td><td>借用一段 <code>i32</code> 序列，切片引用</td></tr>
+</tbody>
+</table>
+</div>
+<p>例子：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a = 10;              // i32
+let b = 3.14;            // f64
+let c = true;            // bool
+let name = "rust";       // &amp;str
+let ch = 'R';            // char
+let nums = vec![1, 2, 3]; // Vec&lt;i32&gt;
+let first = nums[0];     // i32
+<span class="boring">}</span></code></pre>
+<h2 id="veci32-和-vec"><a class="header" href="#veci32-和-vec"><code>Vec&lt;i32&gt;</code> 和 <code>vec![]</code></a></h2>
+<ul>
+<li><code>Vec&lt;i32&gt;</code> 是类型，表示“装 i32 的动态数组”。</li>
+<li><code>vec![1, 2, 3]</code> 是创建 Vec 的宏。</li>
+</ul>
+<p><code>!</code> 表示宏 macro，例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("hello");
+vec![1, 2, 3];
+dbg!(x);
+format!("x = {}", x);
+<span class="boring">}</span></code></pre>
+<p>宏可以理解为“编译期展开代码的工具”。</p>
+<h2 id="i32-和-nums"><a class="header" href="#i32-和-nums"><code>&amp;[i32]</code> 和 <code>&amp;nums</code></a></h2>
+<p>函数参数：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn max_number(nums: &amp;[i32]) -&gt; i32
+<span class="boring">}</span></code></pre>
+<p>表示函数只借用一段整数序列，不拿走所有权。</p>
+<p>调用时：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let nums = vec![3, 1, 8, 2, 5];
+let ans = max_number(&amp;nums);
+<span class="boring">}</span></code></pre>
+<p><code>&amp;nums</code> 表示“借用 nums”。</p>
+<p>粗略类比 C++：</p>
+<pre><code class="language-cpp">int max_number(const std::vector&lt;int&gt;&amp; nums)
+</code></pre>
+<p>更底层类比：</p>
+<pre><code class="language-cpp">int max_number(const int* nums, size_t len)
+</code></pre>
+<p>区别是 Rust 的切片引用 <code>&amp;[i32]</code> 自带长度，并受借用规则保护。</p>
+<h2 id="println-的--和-"><a class="header" href="#println-的--和-"><code>println!</code> 的 <code>{}</code> 和 <code>{:?}</code></a></h2>
+<p>讲解片段：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("name = {}", name);
+println!("numbers = {:?}", nums);
+<span class="boring">}</span></code></pre>
+<p>这里假设前面已经定义了：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let name = "rust";
+let nums = vec![1, 2, 3];
+<span class="boring">}</span></code></pre>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let name = "rust";
+    let nums = vec![1, 2, 3];
+
+    println!("name = {}", name);
+    println!("numbers = {:?}", nums);
+}</code></pre>
+<ul>
+<li><code>{}</code> 使用 <code>Display</code>，适合普通展示。</li>
+<li><code>{:?}</code> 使用 <code>Debug</code>，适合调试输出。</li>
+</ul>
+<p>基础类型如 <code>i32</code>、<code>f64</code>、<code>bool</code>、<code>char</code>、<code>&amp;str</code> 通常可以用 <code>{}</code>。</p>
+<p><code>Vec&lt;i32&gt;</code> 通常不能用 <code>{}</code>，要用 <code>{:?}</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("numbers = {:?}", nums);
+<span class="boring">}</span></code></pre>
+<p>如果要测试 <code>Vec&lt;i32&gt;</code> 不能用 <code>{}</code> 打印，应该使用完整实验代码：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let nums = vec![1, 2, 3];
+
+    println!("numbers = {}", nums);
+}</code></pre>
+<p>这时会看到类似错误：</p>
+<pre><code class="language-text">`Vec&lt;{integer}&gt;` doesn't implement `std::fmt::Display`
+</code></pre>
+<p>如果只运行下面这一行：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("numbers = {}", nums);
+<span class="boring">}</span></code></pre>
+<p>但没有定义 <code>nums</code>，则会先看到另一个错误：</p>
+<pre><code class="language-text">error[E0425]: cannot find value `nums` in this scope
+</code></pre>
+<p>这个错误的原因是变量不存在，而不是 <code>{}</code> / <code>{:?}</code> 的问题。</p>
+<h2 id="今日重要心智模型"><a class="header" href="#今日重要心智模型">今日重要心智模型</a></h2>
+<ol>
+<li>Rust 项目用 Cargo 管理。</li>
+<li><code>src/main.rs</code> 是二进制程序入口。</li>
+<li>Rust 默认不可变，需要变才写 <code>mut</code>。</li>
+<li><code>mut</code> 是修改同一个变量，shadowing 是创建新的同名变量。</li>
+<li><code>Vec&lt;T&gt;</code> 拥有数据，<code>&amp;[T]</code> 借用一段数据。</li>
+<li><code>&amp;</code> 在类型中表示引用类型，在表达式中表示借用。</li>
+<li>带 <code>!</code> 的一般是宏。</li>
+<li>Rust 编译器 warning 很有价值，常能发现无效计算或无用变量。</li>
+</ol>
+<h2 id="今日完成的两个报错实验"><a class="header" href="#今日完成的两个报错实验">今日完成的两个报错实验</a></h2>
+<h3 id="实验-1-vs-"><a class="header" href="#实验-1-vs-">实验 1：<code>{}</code> vs <code>{:?}</code></a></h3>
+<p>把：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("numbers = {:?}", nums);
+<span class="boring">}</span></code></pre>
+<p>改成：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("numbers = {}", nums);
+<span class="boring">}</span></code></pre>
+<p>会触发格式化相关错误。核心原因：</p>
+<ul>
+<li><code>{}</code> 需要类型实现 <code>Display</code>。</li>
+<li><code>Vec&lt;i32&gt;</code> 通常没有 <code>Display</code>。</li>
+<li><code>Vec&lt;i32&gt;</code> 实现了 <code>Debug</code>，所以调试打印用 <code>{:?}</code>。</li>
+</ul>
+<h3 id="实验-2nums-vs-nums"><a class="header" href="#实验-2nums-vs-nums">实验 2：<code>&amp;nums</code> vs <code>nums</code></a></h3>
+<p>函数签名：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn max_number(nums: &amp;[i32]) -&gt; i32
+<span class="boring">}</span></code></pre>
+<p>调用应该是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let ans = max_number(&amp;nums);
+<span class="boring">}</span></code></pre>
+<p>如果写成：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let ans = max_number(nums);
+<span class="boring">}</span></code></pre>
+<p>会触发类型不匹配。核心原因：</p>
+<ul>
+<li>函数需要 <code>&amp;[i32]</code>，即借用一段 <code>i32</code> 序列。</li>
+<li><code>nums</code> 本身是 <code>Vec&lt;i32&gt;</code>。</li>
+<li><code>&amp;nums</code> 可以借用 <code>Vec&lt;i32&gt;</code>，并转换成切片引用 <code>&amp;[i32]</code>。</li>
+</ul>
+<p>这类报错重点看三块：</p>
+<pre><code class="language-text">expected ...  # 编译器期望的类型
+found ...     # 实际传入的类型
+help ...      # 编译器建议的修复方式
+</code></pre>
+<h2 id="下次继续"><a class="header" href="#下次继续">下次继续</a></h2>
+<p>Day 2 建议主题：所有权 ownership 入门。</p>
+<p>核心实验：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+let t = s;
+println!("{}", s);
+<span class="boring">}</span></code></pre>
+<p>对比：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let x = 10;
+let y = x;
+println!("{}", x);
+<span class="boring">}</span></code></pre>
+<p>目标：理解 <code>String</code> 为什么会 move，而 <code>i32</code> 为什么可以 copy。</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-02---所有权-ownership-入门"><a class="header" href="#day-02---所有权-ownership-入门">Day 02 - 所有权 Ownership 入门</a></h1>
+<p>日期：2026-05-10</p>
+<h2 id="今日目标-1"><a class="header" href="#今日目标-1">今日目标</a></h2>
+<p>理解 Rust 最核心的所有权模型入门：</p>
+<ul>
+<li><code>i32</code> 这类简单类型为什么赋值后还能继续使用</li>
+<li><code>String</code> 为什么赋值后原变量会失效</li>
+<li><code>clone()</code> 什么时候需要</li>
+<li>函数传参时什么时候会 move</li>
+<li>只读借用 <code>&amp;str</code></li>
+<li>可变借用 <code>&amp;mut String</code></li>
+<li>可变借用的独占性</li>
+</ul>
+<p>Day 2 在 Rust 全貌中的位置：</p>
+<pre><code class="language-text">所有权 ownership 是 Rust 内存安全模型的地基。
+后面的 String、Vec、struct、enum、Result、iterator、文件读取、并发，都会反复遇到所有权和借用。
+</code></pre>
+<p>今天不追求掌握所有细节，但要建立一张地图：</p>
+<pre><code class="language-text">值怎么传递？
+谁拥有数据？
+谁只是借用？
+谁可以修改？
+什么时候需要 clone？
+</code></pre>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day02_ownership
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day02_ownership
+cargo run
+</code></pre>
+<h2 id="1-i32赋值时-copy"><a class="header" href="#1-i32赋值时-copy">1. <code>i32</code>：赋值时 Copy</a></h2>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let x = 10;
+    let y = x;
+
+    println!("x = {}", x);
+    println!("y = {}", y);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">x = 10
+y = 10
+</code></pre>
+<p>这里 <code>let y = x;</code> 会把 <code>x</code> 的值复制一份给 <code>y</code>。</p>
+<p>原因是 <code>i32</code> 实现了 <code>Copy</code>。对于 <code>i32</code>、<code>bool</code>、<code>char</code>、浮点数等简单类型，复制成本低，Rust 允许自动复制。</p>
+<p>关键点：</p>
+<pre><code class="language-text">let y = x;
+</code></pre>
+<p>不是修改 <code>x</code>，而是用 <code>x</code> 初始化一个新变量 <code>y</code>。</p>
+<h2 id="2-string赋值时-move"><a class="header" href="#2-string赋值时-move">2. <code>String</code>：赋值时 Move</a></h2>
+<p>错误实验：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");
+    let t = s;
+
+    println!("s = {}", s);
+    println!("t = {}", t);
+}</code></pre>
+<p>编译错误核心：</p>
+<pre><code class="language-text">error[E0382]: borrow of moved value: `s`
+
+move occurs because `s` has type `String`, which does not implement the `Copy` trait
+value moved here
+value borrowed here after move
+</code></pre>
+<p>解释：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let t = s;
+<span class="boring">}</span></code></pre>
+<p>这句会把 <code>s</code> 的所有权移动给 <code>t</code>。之后：</p>
+<pre><code class="language-text">t 有效
+s 失效
+</code></pre>
+<p>所以后面再打印 <code>s</code> 会报错。</p>
+<p>可以运行的 move 版本：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");
+    let t = s;
+
+    println!("t = {}", t);
+}</code></pre>
+<p>这里没有再使用 <code>s</code>，所以没有问题。</p>
+<h2 id="3-为什么-string-不默认-copy"><a class="header" href="#3-为什么-string-不默认-copy">3. 为什么 <code>String</code> 不默认 Copy？</a></h2>
+<p><code>String</code> 管理堆内存。可以粗略理解成：</p>
+<pre><code class="language-text">String {
+    ptr,
+    len,
+    capacity,
+}
+</code></pre>
+<p>如果 Rust 默认复制这三个字段，就可能出现两个 <code>String</code> 指向同一块堆内存。离开作用域时，两者都想释放同一块内存，可能造成 double free。</p>
+<p>Rust 的选择是：</p>
+<pre><code class="language-text">默认 move 所有权，不默认深拷贝堆数据。
+</code></pre>
+<p>这也是 Rust 的性能哲学：</p>
+<pre><code class="language-text">便宜的复制可以自动发生。
+昂贵的复制必须显式写出来。
+</code></pre>
+<h2 id="4-clone显式深拷贝"><a class="header" href="#4-clone显式深拷贝">4. <code>clone()</code>：显式深拷贝</a></h2>
+<p>如果确实希望 <code>s</code> 和 <code>t</code> 都拥有一份字符串内容，可以使用 <code>clone()</code>。</p>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");
+    let t = s.clone();
+
+    println!("s = {}", s);
+    println!("t = {}", t);
+}</code></pre>
+<p>含义：</p>
+<pre><code class="language-text">s 保留原字符串
+t 得到一份新的字符串拷贝
+</code></pre>
+<p>代价：</p>
+<pre><code class="language-text">额外分配内存
+复制字符串内容
+</code></pre>
+<p>看到 <code>.clone()</code> 时，要逐渐养成一个习惯：</p>
+<pre><code class="language-text">这里真的需要复制吗？能不能改成借用？
+</code></pre>
+<p>初学阶段不必害怕 <code>clone()</code>，但要知道它不是免费的。</p>
+<h2 id="5-函数传参也可能-move"><a class="header" href="#5-函数传参也可能-move">5. 函数传参也可能 Move</a></h2>
+<p>错误实验：</p>
+<pre class="playground"><code class="language-rust">fn take_ownership(s: String) {
+    println!("inside function: {}", s);
+}
+
+fn main() {
+    let s = String::from("hello");
+
+    take_ownership(s);
+
+    println!("after function: {}", s);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>take_ownership(s);
+<span class="boring">}</span></code></pre>
+<p>会把 <code>main</code> 里的 <code>s</code> 移动到函数参数 <code>s</code>。</p>
+<p>可以理解成：</p>
+<pre><code class="language-text">main::s -&gt; take_ownership::s
+</code></pre>
+<p>函数结束时，函数参数 <code>s</code> 离开作用域，字符串被释放。回到 <code>main</code> 后，原来的 <code>s</code> 已经失效。</p>
+<h2 id="6-只读借用str"><a class="header" href="#6-只读借用str">6. 只读借用：<code>&amp;str</code></a></h2>
+<p>如果函数只是读字符串，不需要拿走所有权，应该使用借用。</p>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn read_string(s: &amp;str) {
+    println!("inside function: {}", s);
+}
+
+fn main() {
+    let s = String::from("hello");
+
+    read_string(&amp;s);
+
+    println!("after function: {}", s);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">inside function: hello
+after function: hello
+</code></pre>
+<p>这里 <code>read_string(&amp;s)</code> 只是借用 <code>s</code>，不拿走所有权，所以函数调用后 <code>s</code> 仍然可用。</p>
+<h3 id="为什么用-str-而不是-string"><a class="header" href="#为什么用-str-而不是-string">为什么用 <code>&amp;str</code> 而不是 <code>&amp;String</code>？</a></h3>
+<p><code>&amp;String</code> 可以用，但 <code>&amp;str</code> 更通用。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn read_string(s: &amp;str)
+<span class="boring">}</span></code></pre>
+<p>既可以接收：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+read_string(&amp;s);
+<span class="boring">}</span></code></pre>
+<p>也可以接收：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>read_string("hello");
+<span class="boring">}</span></code></pre>
+<p>所以只读字符串时，优先考虑 <code>&amp;str</code>。</p>
+<h2 id="7-可变借用mut-string"><a class="header" href="#7-可变借用mut-string">7. 可变借用：<code>&amp;mut String</code></a></h2>
+<p>如果函数要修改原字符串，需要可变借用。</p>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn add_suffix(s: &amp;mut String) {
+    s.push_str(" world");
+}
+
+fn main() {
+    let mut s = String::from("hello");
+
+    add_suffix(&amp;mut s);
+
+    println!("s = {}", s);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">s = hello world
+</code></pre>
+<p>这里有三处要对应：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut s = String::from("hello"); // 变量本身允许被修改
+fn add_suffix(s: &amp;mut String)       // 函数接收可变引用
+add_suffix(&amp;mut s);                 // 调用时传可变借用
+<span class="boring">}</span></code></pre>
+<p>如果变量没有声明为 <code>mut</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+add_suffix(&amp;mut s);
+<span class="boring">}</span></code></pre>
+<p>会报错，核心意思是：</p>
+<pre><code class="language-text">cannot borrow `s` as mutable, as it is not declared as mutable
+</code></pre>
+<h2 id="8-可变借用是独占的"><a class="header" href="#8-可变借用是独占的">8. 可变借用是独占的</a></h2>
+<p>错误实验：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    let r = &amp;mut s;
+
+    println!("s = {}", s);
+    println!("r = {}", r);
+}</code></pre>
+<p>这里不允许，因为 <code>r</code> 是对 <code>s</code> 的可变借用，而且后面还要继续使用 <code>r</code>。</p>
+<p>核心规则：</p>
+<pre><code class="language-text">可变借用存在期间，不能同时通过原变量或其他引用访问同一份数据。
+</code></pre>
+<p>更口语化：</p>
+<pre><code class="language-text">借给 r 改的时候，就别同时从 s 这边插手。
+等 r 用完了，再回到 s。
+</code></pre>
+<p>可运行修复版本：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    let r = &amp;mut s;
+    r.push_str(" world");
+    println!("r = {}", r);
+
+    println!("s = {}", s);
+}</code></pre>
+<p>这里 <code>r</code> 最后一次使用在：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("r = {}", r);
+<span class="boring">}</span></code></pre>
+<p>之后借用结束，所以可以继续使用 <code>s</code>。</p>
+<p>也可以用作用域明确结束借用：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    {
+        let r = &amp;mut s;
+        r.push_str(" world");
+        println!("r = {}", r);
+    }
+
+    println!("s = {}", s);
+}</code></pre>
+<h2 id="9-所有权地图传值借用可变借用"><a class="header" href="#9-所有权地图传值借用可变借用">9. 所有权地图：传值、借用、可变借用</a></h2>
+<p>Rust 里函数参数设计可以先用这张地图理解：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数想做什么</th><th>参数类型</th><th>调用方式</th><th>数据归属</th></tr>
+</thead>
+<tbody>
+<tr><td>拿走整数等 Copy 值</td><td><code>i32</code></td><td><code>f(x)</code></td><td>复制一份，原值还可用</td></tr>
+<tr><td>拿走堆数据</td><td><code>String</code></td><td><code>f(s)</code></td><td>move 所有权，原变量失效</td></tr>
+<tr><td>只读字符串</td><td><code>&amp;str</code></td><td><code>f(&amp;s)</code> 或 <code>f("hi")</code></td><td>借用，不拿走</td></tr>
+<tr><td>修改原字符串</td><td><code>&amp;mut String</code></td><td><code>f(&amp;mut s)</code></td><td>可变借用，独占修改</td></tr>
+<tr><td>只读数组/Vec 内容</td><td><code>&amp;[T]</code></td><td><code>f(&amp;nums)</code></td><td>借用一段连续数据</td></tr>
+</tbody>
+</table>
+</div>
+<p>今天先记住三个最核心的：</p>
+<pre><code class="language-text">传 String：把所有权交出去。
+传 &amp;str：借给函数看一下。
+传 &amp;mut String：借给函数改一下。
+</code></pre>
+<h3 id="参数选择的初步原则"><a class="header" href="#参数选择的初步原则">参数选择的初步原则</a></h3>
+<p>如果你在写一个函数，可以先问：</p>
+<pre><code class="language-text">1. 函数是否需要拥有这个值？
+   - 需要：传 `T`，例如 `String`。
+   - 不需要：传引用。
+
+2. 函数是否需要修改调用者的数据？
+   - 需要：传 `&amp;mut T`。
+   - 不需要：传 `&amp;T`、`&amp;str` 或 `&amp;[T]`。
+
+3. 这个参数是不是字符串？
+   - 只读字符串优先用 `&amp;str`。
+
+4. 这个参数是不是数组/Vec？
+   - 只读一段连续数据优先用 `&amp;[T]`。
+</code></pre>
+<p>这不是最终完整规则，但足够支撑第一轮 Rust 学习。</p>
+<h2 id="10-copymovecloneborrow-的关系"><a class="header" href="#10-copymovecloneborrow-的关系">10. Copy、Move、Clone、Borrow 的关系</a></h2>
+<p>可以把今天学的四个词放在一起：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>词</th><th>含义</th><th>典型例子</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Copy</code></td><td>便宜复制，赋值后原变量还能用</td><td><code>i32</code>, <code>bool</code>, <code>char</code>, <code>f64</code></td></tr>
+<tr><td><code>Move</code></td><td>所有权转移，原变量失效</td><td><code>String</code>, <code>Vec&lt;T&gt;</code></td></tr>
+<tr><td><code>Clone</code></td><td>显式深拷贝或自定义复制</td><td><code>s.clone()</code></td></tr>
+<tr><td><code>Borrow</code></td><td>借用，不拿走所有权</td><td><code>&amp;s</code>, <code>&amp;mut s</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>它们解决的是同一个问题：</p>
+<pre><code class="language-text">数据到底怎么在程序中流动？
+</code></pre>
+<p>Rust 不希望昂贵复制偷偷发生，所以：</p>
+<pre><code class="language-text">小值可以 Copy。
+堆数据默认 Move。
+真的要复制就 Clone。
+只是用一下就 Borrow。
+</code></pre>
+<h2 id="11-和-c-的关键区别"><a class="header" href="#11-和-c-的关键区别">11. 和 C++ 的关键区别</a></h2>
+<p>C++ 中：</p>
+<pre><code class="language-cpp">void f(std::string s);
+</code></pre>
+<p>调用：</p>
+<pre><code class="language-cpp">std::string name = "hello";
+f(name);
+</code></pre>
+<p>通常是拷贝一份，<code>name</code> 还能用。</p>
+<p>Rust 中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f(s: String) {}
+
+let name = String::from("hello");
+f(name);
+<span class="boring">}</span></code></pre>
+<p>默认是 move，<code>name</code> 之后不能再用。</p>
+<p>如果 Rust 想复制，要显式写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>f(name.clone());
+<span class="boring">}</span></code></pre>
+<p>如果只是读，要写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>f(&amp;name);
+<span class="boring">}</span></code></pre>
+<h2 id="今日总结"><a class="header" href="#今日总结">今日总结</a></h2>
+<p>Day 2 的核心模型：</p>
+<ol>
+<li><code>i32</code> 等简单类型赋值时 Copy。</li>
+<li><code>String</code> 赋值或传参时默认 Move。</li>
+<li><code>clone()</code> 表示显式深拷贝，可能有性能成本。</li>
+<li>函数只读字符串时，优先用 <code>&amp;str</code>。</li>
+<li>函数要修改字符串时，用 <code>&amp;mut String</code>。</li>
+<li>可变借用是独占的，不能和原变量访问穿插使用。</li>
+</ol>
+<p>更高层的理解：</p>
+<pre><code class="language-text">Rust 学习的主线之一，就是不断训练函数签名设计：
+T、&amp;T、&amp;mut T、&amp;str、&amp;[T] 到底该选哪个？
+</code></pre>
+<p>这条主线会贯穿后续：</p>
+<pre><code class="language-text">String / Vec / struct / enum / Result / iterator / 文件读取 / 并发
+</code></pre>
+<h2 id="下次继续-1"><a class="header" href="#下次继续-1">下次继续</a></h2>
+<p>Day 3 建议主题：借用规则继续深入。</p>
+<p>建议实验：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+let r1 = &amp;s;
+let r2 = &amp;s;
+println!("{} {}", r1, r2);
+<span class="boring">}</span></code></pre>
+<p>对比：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut s = String::from("hello");
+let r1 = &amp;s;
+let r2 = &amp;mut s;
+println!("{} {}", r1, r2);
+<span class="boring">}</span></code></pre>
+<p>目标：理解“多个只读引用可以共存，但只读引用和可变引用不能随意混用”。</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-03---借用规则slice-与-str"><a class="header" href="#day-03---借用规则slice-与-str">Day 03 - 借用规则、slice 与 <code>&amp;str</code></a></h1>
+<p>日期：2026-05-12</p>
+<h2 id="今日目标-2"><a class="header" href="#今日目标-2">今日目标</a></h2>
+<p>Day 3 在 Day 2 所有权入门的基础上，继续深入 Rust 的借用模型：</p>
+<ul>
+<li>多个只读引用为什么可以共存</li>
+<li>可变引用为什么是独占的</li>
+<li>引用的作用域为什么通常到最后一次使用为止</li>
+<li><code>&amp;[T]</code> 如何表示一段数组或 <code>Vec</code> 的借用</li>
+<li><code>&amp;str</code> 如何表示一段字符串的借用</li>
+<li>函数如何返回输入数据中的一段 slice</li>
+<li>写函数签名时如何在 <code>T</code>、<code>&amp;T</code>、<code>&amp;mut T</code>、<code>&amp;[T]</code>、<code>&amp;str</code> 之间选择</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day03_borrowing
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day03_borrowing
+cargo run
+</code></pre>
+<h2 id="1-借用规则的核心模型"><a class="header" href="#1-借用规则的核心模型">1. 借用规则的核心模型</a></h2>
+<p>Day 2 已经学过：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let r = &amp;mut s;
+<span class="boring">}</span></code></pre>
+<p>可以理解为：</p>
+<pre><code class="language-text">r 是指向 s 的可变引用。
+s 仍然拥有数据。
+r 临时、独占地借用 s，并可以通过 r 修改 s。
+</code></pre>
+<p>Rust 的借用规则可以先记成一句话：</p>
+<pre><code class="language-text">同一份数据：可以有多个只读引用，或者有一个可变引用，但二者不能重叠。
+</code></pre>
+<p>也就是常说的：</p>
+<pre><code class="language-text">many readers OR one writer
+多个读者，或者一个写者
+</code></pre>
+<h2 id="2-多个只读引用可以共存"><a class="header" href="#2-多个只读引用可以共存">2. 多个只读引用可以共存</a></h2>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");
+
+    let r1 = &amp;s;
+    let r2 = &amp;s;
+
+    println!("r1 = {}", r1);
+    println!("r2 = {}", r2);
+    println!("s = {}", s);
+}</code></pre>
+<p>这段代码可以正常通过。</p>
+<p>原因是：</p>
+<pre><code class="language-text">r1 和 r2 都只是读，不会修改数据。
+多个只读引用同时存在是安全的。
+</code></pre>
+<p>可以类比成：</p>
+<pre><code class="language-text">很多人同时看同一本书：可以。
+</code></pre>
+<h2 id="3-可变引用可以修改原数据"><a class="header" href="#3-可变引用可以修改原数据">3. 可变引用可以修改原数据</a></h2>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    let r = &amp;mut s;
+
+    r.push_str(" world");
+
+    println!("r = {}", r);
+}</code></pre>
+<p>这里有两处要区分：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut s = String::from("hello");
+<span class="boring">}</span></code></pre>
+<p>表示变量 <code>s</code> 绑定的值允许被修改。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let r = &amp;mut s;
+<span class="boring">}</span></code></pre>
+<p>表示创建一个对 <code>s</code> 的可变引用。</p>
+<p><code>r</code> 不是 owner，<code>s</code> 才是 owner；但是在借用期间，<code>r</code> 可以修改 <code>s</code> 拥有的那份字符串。</p>
+<h2 id="4-可变引用存在时不能同时使用原变量"><a class="header" href="#4-可变引用存在时不能同时使用原变量">4. 可变引用存在时不能同时使用原变量</a></h2>
+<p>错误示例：</p>
+<pre><code class="language-rust ignore">fn main() {
+    let mut s = String::from("hello");
+
+    let r = &amp;mut s;
+
+    println!("s = {}", s);
+    println!("r = {}", r);
+}</code></pre>
+<p>典型错误信息类似：</p>
+<pre><code class="language-text">cannot borrow `s` as immutable because it is also borrowed as mutable
+mutable borrow occurs here
+immutable borrow occurs here
+mutable borrow later used here
+</code></pre>
+<p>原因是：</p>
+<pre><code class="language-text">r 还要继续使用，所以 r 对 s 的可变借用还没有结束。
+在这段时间里，不能再通过 s 访问同一份数据。
+</code></pre>
+<p>可以类比成：</p>
+<pre><code class="language-text">书已经被一个人拿去修改批注了，在他还没还之前，别人不能同时拿这本书读。
+</code></pre>
+<h2 id="5-引用通常活到最后一次使用"><a class="header" href="#5-引用通常活到最后一次使用">5. 引用通常活到最后一次使用</a></h2>
+<p>下面这个版本可以通过：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    let r = &amp;mut s;
+    r.push_str(" world");
+    println!("r = {}", r);
+
+    println!("s = {}", s);
+}</code></pre>
+<p>原因是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("r = {}", r);
+<span class="boring">}</span></code></pre>
+<p>是 <code>r</code> 的最后一次使用。之后可变借用结束，所以可以重新使用 <code>s</code>。</p>
+<p>现代 Rust 的引用作用域通常不是简单地持续到代码块结尾，而是到最后一次使用为止。这叫：</p>
+<pre><code class="language-text">NLL: Non-Lexical Lifetimes
+非词法生命周期
+</code></pre>
+<p>初学阶段不需要深入生命周期语法，只需要记住：</p>
+<pre><code class="language-text">引用通常活到最后一次使用。
+最后一次使用之后，原变量可以重新被使用。
+</code></pre>
+<h2 id="6-只读引用和可变引用不能重叠"><a class="header" href="#6-只读引用和可变引用不能重叠">6. 只读引用和可变引用不能重叠</a></h2>
+<p>可以先只读，再可变，只要只读引用后面不再使用：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    let r1 = &amp;s;
+    println!("r1 = {}", r1);
+
+    let r2 = &amp;mut s;
+    r2.push_str(" world");
+
+    println!("r2 = {}", r2);
+}</code></pre>
+<p>但如果只读引用和可变引用重叠，就会失败：</p>
+<pre><code class="language-rust ignore">fn main() {
+    let mut s = String::from("hello");
+
+    let r1 = &amp;s;
+    let r2 = &amp;mut s;
+
+    println!("r1 = {}", r1);
+    println!("r2 = {}", r2);
+}</code></pre>
+<p>因为 <code>r1</code> 在创建 <code>r2</code> 之后还要继续使用，所以只读借用和可变借用的作用范围重叠了。</p>
+<h2 id="7-t借用一段数组或-vec"><a class="header" href="#7-t借用一段数组或-vec">7. <code>&amp;[T]</code>：借用一段数组或 <code>Vec</code></a></h2>
+<p>如果函数只是读一段连续元素，参数优先写成 <code>&amp;[T]</code>。</p>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn print_slice(nums: &amp;[i32]) {
+    println!("slice = {:?}", nums);
+    println!("len = {}", nums.len());
+
+    if !nums.is_empty() {
+        println!("first = {}", nums[0]);
+    }
+}
+
+fn main() {
+    let nums = vec![10, 20, 30, 40, 50];
+
+    print_slice(&amp;nums);
+    print_slice(&amp;nums[1..4]);
+    print_slice(&amp;nums[..2]);
+    print_slice(&amp;nums[2..]);
+    print_slice(&amp;nums[..]);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>nums: &amp;[i32]
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">借用一段连续的 i32。
+</code></pre>
+<p>它既可以接收整个 <code>Vec</code>，也可以接收 <code>Vec</code> 的一部分。</p>
+<h2 id="8-slice-范围语法"><a class="header" href="#8-slice-范围语法">8. slice 范围语法</a></h2>
+<p>对于：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let nums = vec![10, 20, 30, 40, 50];
+
+    println!("{:?}", &amp;nums[1..4]);
+    println!("{:?}", &amp;nums[..2]);
+    println!("{:?}", &amp;nums[2..]);
+    println!("{:?}", &amp;nums[..]);
+}</code></pre>
+<p>含义是：</p>
+<pre><code class="language-text">&amp;nums[1..4]  -&gt; [20, 30, 40]
+&amp;nums[..2]   -&gt; [10, 20]
+&amp;nums[2..]   -&gt; [30, 40, 50]
+&amp;nums[..]    -&gt; [10, 20, 30, 40, 50]
+</code></pre>
+<p>Rust 的范围通常是左闭右开：</p>
+<pre><code class="language-text">[start, end)
+</code></pre>
+<p>所以 <code>1..4</code> 包含索引 <code>1</code>、<code>2</code>、<code>3</code>，不包含索引 <code>4</code>。</p>
+<h2 id="9-为什么优先用-t-而不是-vect"><a class="header" href="#9-为什么优先用-t-而不是-vect">9. 为什么优先用 <code>&amp;[T]</code> 而不是 <code>&amp;Vec&lt;T&gt;</code></a></h2>
+<p>求和函数可以写成：</p>
+<pre class="playground"><code class="language-rust">fn sum_slice(nums: &amp;[i32]) -&gt; i32 {
+    let mut total = 0;
+
+    for &amp;x in nums {
+        total += x;
+    }
+
+    total
+}
+
+fn main() {
+    let nums = vec![10, 20, 30, 40, 50];
+
+    let total = sum_slice(&amp;nums[1..4]);
+
+    println!("sum = {}", total);
+    println!("nums after borrowing = {:?}", nums);
+}</code></pre>
+<p><code>&amp;[i32]</code> 比 <code>&amp;Vec&lt;i32&gt;</code> 更通用：</p>
+<pre><code class="language-text">&amp;Vec&lt;i32&gt;  = 我必须借一个 Vec
+&amp;[i32]     = 我只需要借一段 i32
+</code></pre>
+<p>所以函数只读 <code>Vec</code> 内容时，优先使用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f(xs: &amp;[T])
+<span class="boring">}</span></code></pre>
+<p>而不是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f(xs: &amp;Vec&lt;T&gt;)
+<span class="boring">}</span></code></pre>
+<h2 id="10-for-x-in-nums-的含义"><a class="header" href="#10-for-x-in-nums-的含义">10. <code>for &amp;x in nums</code> 的含义</a></h2>
+<p>在这个函数里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn sum_slice(nums: &amp;[i32]) -&gt; i32 {
+    let mut total = 0;
+
+    for &amp;x in nums {
+        total += x;
+    }
+
+    total
+}
+<span class="boring">}</span></code></pre>
+<p><code>nums</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;[i32]
+<span class="boring">}</span></code></pre>
+<p>遍历 <code>nums</code> 时，每个元素的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;i32
+<span class="boring">}</span></code></pre>
+<p>所以：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for &amp;x in nums
+<span class="boring">}</span></code></pre>
+<p>表示把 <code>&amp;i32</code> 解开，得到 <code>i32</code>。</p>
+<p>等价写法是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn sum_slice(nums: &amp;[i32]) -&gt; i32 {
+    let mut total = 0;
+
+    for x in nums {
+        total += *x;
+    }
+
+    total
+}
+<span class="boring">}</span></code></pre>
+<p>因为 <code>i32</code> 是 <code>Copy</code>，所以复制一个整数很便宜。</p>
+<h2 id="11-str字符串-slice"><a class="header" href="#11-str字符串-slice">11. <code>&amp;str</code>：字符串 slice</a></h2>
+<p><code>&amp;str</code> 表示一段 UTF-8 字符串的只读视图。</p>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn print_text(text: &amp;str) {
+    println!("text = {}", text);
+    println!("len in bytes = {}", text.len());
+}
+
+fn main() {
+    let s = String::from("hello rust");
+
+    let first = &amp;s[..5];
+    let second = &amp;s[6..];
+
+    print_text(&amp;s);
+    print_text(first);
+    print_text(second);
+    print_text("literal string");
+}</code></pre>
+<p>这里 <code>print_text</code> 可以接收：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>print_text(&amp;s);               // String 的全部内容
+print_text(&amp;s[..5]);          // String 的一部分
+print_text("literal string"); // 字符串字面量
+<span class="boring">}</span></code></pre>
+<p>所以只读字符串时，优先使用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f(s: &amp;str)
+<span class="boring">}</span></code></pre>
+<p>而不是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f(s: &amp;String)
+<span class="boring">}</span></code></pre>
+<h2 id="12-stringstringstr-的关系"><a class="header" href="#12-stringstringstr-的关系">12. <code>String</code>、<code>&amp;String</code>、<code>&amp;str</code> 的关系</a></h2>
+<p>可以先这样理解：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>String</code></td><td>拥有字符串数据</td></tr>
+<tr><td><code>&amp;String</code></td><td>借用整个 <code>String</code> 对象</td></tr>
+<tr><td><code>&amp;str</code></td><td>借用字符串内容的一段</td></tr>
+</tbody>
+</table>
+</div>
+<p>一般函数只读文本时，优先写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn print_text(text: &amp;str)
+<span class="boring">}</span></code></pre>
+<p>因为 <code>&amp;str</code> 能接收更多来源。</p>
+<h2 id="13-字符串长度是字节数不是字符数"><a class="header" href="#13-字符串长度是字节数不是字符数">13. 字符串长度是字节数，不是字符数</a></h2>
+<p>Rust 字符串是 UTF-8 编码。<code>str.len()</code> 返回的是字节数，不是字符数。</p>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let en = String::from("hello");
+    let zh = String::from("你好");
+
+    println!("en len = {}", en.len());
+    println!("zh len = {}", zh.len());
+}</code></pre>
+<p>输出中，<code>zh.len()</code> 是 <code>6</code>，不是 <code>2</code>，因为中文字符通常每个占 3 个字节。</p>
+<p>字符串 slice 必须切在合法 UTF-8 边界上。下面这个程序会在运行时 panic：</p>
+<pre><code class="language-rust ignore">fn main() {
+    let s = String::from("你好");
+    let part = &amp;s[..1];
+
+    println!("{}", part);
+}</code></pre>
+<p>典型错误信息：</p>
+<pre><code class="language-text">byte index 1 is not a char boundary
+</code></pre>
+<p>说明 Rust 允许用字节范围切 <code>&amp;str</code>，但运行时会检查这个范围是不是合法字符边界。</p>
+<h2 id="14-函数返回-str"><a class="header" href="#14-函数返回-str">14. 函数返回 <code>&amp;str</code></a></h2>
+<p>函数可以接收一个引用，并返回这个引用里面的一部分。</p>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn first_word(text: &amp;str) -&gt; &amp;str {
+    for (index, ch) in text.char_indices() {
+        if ch == ' ' {
+            return &amp;text[..index];
+        }
+    }
+
+    text
+}
+
+fn main() {
+    let sentence = String::from("hello rust world");
+
+    let word = first_word(&amp;sentence);
+
+    println!("first word = {}", word);
+}</code></pre>
+<p>这个函数的意思是：</p>
+<pre><code class="language-text">给我一段字符串 text。
+我不拥有它，只借来看。
+我返回其中第一个单词那一段。
+</code></pre>
+<p><code>word</code> 不是新的字符串，不拥有数据，它只是指向 <code>sentence</code> 内部一段内容的视图。</p>
+<h2 id="15-char_indices-的作用"><a class="header" href="#15-char_indices-的作用">15. <code>char_indices()</code> 的作用</a></h2>
+<p>在函数中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for (index, ch) in text.char_indices() {
+    if ch == ' ' {
+        return &amp;text[..index];
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><code>char_indices()</code> 会遍历字符串里的字符，同时给出每个字符的字节位置。</p>
+<p>对于：</p>
+<pre><code class="language-text">hello rust
+</code></pre>
+<p>可以粗略理解为：</p>
+<pre><code class="language-text">index = 0, ch = 'h'
+index = 1, ch = 'e'
+index = 2, ch = 'l'
+index = 3, ch = 'l'
+index = 4, ch = 'o'
+index = 5, ch = ' '
+</code></pre>
+<p>遇到空格时：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>return &amp;text[..index];
+<span class="boring">}</span></code></pre>
+<p>就返回开头到空格之前的字符串 slice。</p>
+<h2 id="16-返回引用时不能比原数据活得更久"><a class="header" href="#16-返回引用时不能比原数据活得更久">16. 返回引用时，不能比原数据活得更久</a></h2>
+<p>下面这段可以通过：</p>
+<pre class="playground"><code class="language-rust">fn first_word(text: &amp;str) -&gt; &amp;str {
+    for (index, ch) in text.char_indices() {
+        if ch == ' ' {
+            return &amp;text[..index];
+        }
+    }
+
+    text
+}
+
+fn main() {
+    let mut sentence = String::from("hello rust world");
+
+    let word = first_word(&amp;sentence);
+    println!("first word = {}", word);
+
+    sentence.clear();
+    sentence.push_str("borrow checker");
+    println!("sentence = {}", sentence);
+}</code></pre>
+<p>因为：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("first word = {}", word);
+<span class="boring">}</span></code></pre>
+<p>是 <code>word</code> 的最后一次使用。之后 <code>word</code> 不再使用，对 <code>sentence</code> 的只读借用结束，所以可以修改 <code>sentence</code>。</p>
+<p>但下面这段会失败：</p>
+<pre><code class="language-rust ignore">fn first_word(text: &amp;str) -&gt; &amp;str {
+    for (index, ch) in text.char_indices() {
+        if ch == ' ' {
+            return &amp;text[..index];
+        }
+    }
+
+    text
+}
+
+fn main() {
+    let mut sentence = String::from("hello rust world");
+
+    let word = first_word(&amp;sentence);
+
+    sentence.clear();
+
+    println!("word after clear = {}", word);
+}</code></pre>
+<p>典型错误信息类似：</p>
+<pre><code class="language-text">cannot borrow `sentence` as mutable because it is also borrowed as immutable
+</code></pre>
+<p>原因是：</p>
+<pre><code class="language-text">word 借用了 sentence 里面的一段。
+如果后面还要使用 word，那么这段借用必须继续有效。
+sentence.clear() 会可变修改原字符串，所以 Rust 禁止它和 word 的后续使用重叠。
+</code></pre>
+<h2 id="17-函数返回-t"><a class="header" href="#17-函数返回-t">17. 函数返回 <code>&amp;[T]</code></a></h2>
+<p>同样的逻辑也适用于数组或 <code>Vec</code> slice。</p>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn first_two(nums: &amp;[i32]) -&gt; &amp;[i32] {
+    if nums.len() &gt;= 2 {
+        &amp;nums[..2]
+    } else {
+        nums
+    }
+}
+
+fn main() {
+    let nums = vec![10, 20, 30, 40];
+
+    let head = first_two(&amp;nums);
+
+    println!("first two = {:?}", head);
+    println!("nums still usable = {:?}", nums);
+}</code></pre>
+<p>这里：</p>
+<pre><code class="language-text">nums 拥有 Vec。
+head 是借用 nums 前两个元素的 &amp;[i32]。
+</code></pre>
+<p>如果在 <code>head</code> 后续还要使用时修改 <code>nums</code>，就会失败：</p>
+<pre><code class="language-rust ignore">fn first_two(nums: &amp;[i32]) -&gt; &amp;[i32] {
+    if nums.len() &gt;= 2 {
+        &amp;nums[..2]
+    } else {
+        nums
+    }
+}
+
+fn main() {
+    let mut nums = vec![10, 20, 30, 40];
+
+    let head = first_two(&amp;nums);
+
+    nums.push(50);
+
+    println!("first two = {:?}", head);
+}</code></pre>
+<p>原因是：</p>
+<pre><code class="language-text">head 借用了 nums 的内部元素。
+nums.push(50) 可能导致 Vec 重新分配内存。
+如果允许 push 之后继续使用 head，head 可能指向旧内存。
+</code></pre>
+<p>Rust 在编译期禁止这种情况。</p>
+<h2 id="18-返回-string-还是返回-str"><a class="header" href="#18-返回-string-还是返回-str">18. 返回 <code>String</code> 还是返回 <code>&amp;str</code></a></h2>
+<p>如果返回值来自输入数据的一部分，可以返回 <code>&amp;str</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn first_word(text: &amp;str) -&gt; &amp;str {
+    for (index, ch) in text.char_indices() {
+        if ch == ' ' {
+            return &amp;text[..index];
+        }
+    }
+
+    text
+}
+<span class="boring">}</span></code></pre>
+<p>这不会分配新内存，只是返回原字符串的一段视图。</p>
+<p>如果函数内部创建了新的字符串，就返回 <code>String</code>：</p>
+<pre class="playground"><code class="language-rust">fn make_greeting(name: &amp;str) -&gt; String {
+    format!("hello, {}", name)
+}
+
+fn main() {
+    let msg = make_greeting("rust");
+    println!("{}", msg);
+}</code></pre>
+<p>这里不能返回 <code>&amp;str</code>，因为 <code>format!</code> 创建的是函数内部的新字符串。函数结束后，必须把这个新字符串的所有权交给调用者，所以返回 <code>String</code>。</p>
+<h2 id="19-函数参数选择决策表"><a class="header" href="#19-函数参数选择决策表">19. 函数参数选择决策表</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>想做什么</th><th>参数类型</th><th>例子</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>函数要拿走这个值</td><td><code>T</code></td><td><code>fn consume(s: String)</code></td><td>所有权 move 进函数</td></tr>
+<tr><td>函数只读一个普通对象</td><td><code>&amp;T</code></td><td><code>fn print_user(user: &amp;User)</code></td><td>借来看，不修改</td></tr>
+<tr><td>函数要修改调用者的数据</td><td><code>&amp;mut T</code></td><td><code>fn normalize(v: &amp;mut Vec&lt;f64&gt;)</code></td><td>借来改，独占</td></tr>
+<tr><td>函数只读一段数组或 <code>Vec</code></td><td><code>&amp;[T]</code></td><td><code>fn sum(xs: &amp;[i32])</code></td><td>借用一段连续元素</td></tr>
+<tr><td>函数只读字符串</td><td><code>&amp;str</code></td><td><code>fn count_words(s: &amp;str)</code></td><td>借用一段文本</td></tr>
+<tr><td>函数需要返回新字符串</td><td><code>String</code></td><td><code>fn join_name(...) -&gt; String</code></td><td>创建并返回拥有所有权的新数据</td></tr>
+<tr><td>函数需要返回新 <code>Vec</code></td><td><code>Vec&lt;T&gt;</code></td><td><code>fn filter(...) -&gt; Vec&lt;T&gt;</code></td><td>创建并返回新集合</td></tr>
+</tbody>
+</table>
+</div>
+<p>可以用这个流程判断参数类型：</p>
+<pre><code class="language-text">1. 函数是否需要拥有这个值？
+   - 是：用 T，例如 String、Vec&lt;T&gt;
+   - 否：继续
+
+2. 函数是否需要修改调用者的数据？
+   - 是：用 &amp;mut T
+   - 否：继续
+
+3. 参数是不是字符串？
+   - 是：优先用 &amp;str
+   - 否：继续
+
+4. 参数是不是 Vec 或数组内容？
+   - 是：优先用 &amp;[T]
+   - 否：用 &amp;T
+</code></pre>
+<p>返回值可以这样判断：</p>
+<pre><code class="language-text">1. 返回值是不是函数新创建的数据？
+   - 是：返回 String、Vec&lt;T&gt;、T
+
+2. 返回值是不是输入数据的一部分？
+   - 是：返回 &amp;str、&amp;[T]、&amp;T
+</code></pre>
+<h2 id="今日总结-1"><a class="header" href="#今日总结-1">今日总结</a></h2>
+<p>Day 3 的核心概念：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>形式</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&amp;T</code></td><td>只读借用</td></tr>
+<tr><td><code>&amp;mut T</code></td><td>可变借用，独占</td></tr>
+<tr><td><code>&amp;[T]</code></td><td>借用一段连续元素</td></tr>
+<tr><td><code>&amp;str</code></td><td>借用一段 UTF-8 字符串</td></tr>
+</tbody>
+</table>
+</div>
+<p>核心规则：</p>
+<ol>
+<li>多个只读引用可以共存。</li>
+<li>一个可变引用存在时，不能同时有其他引用访问同一份数据。</li>
+<li>引用通常活到最后一次使用。</li>
+<li>slice 是对原数据的一段借用，不拥有数据。</li>
+<li>返回 slice 时，返回值不能比输入数据活得更久。</li>
+<li>只读 <code>Vec</code> 内容时，函数参数优先用 <code>&amp;[T]</code>。</li>
+<li>只读字符串时，函数参数优先用 <code>&amp;str</code>。</li>
+</ol>
+<p>一句话压缩 Day 3：</p>
+<pre><code class="language-text">Rust 不是不让你共享数据，而是要求你明确：谁拥有，谁只读借用，谁独占修改，借用能活多久。
+</code></pre>
+<h2 id="下次继续-2"><a class="header" href="#下次继续-2">下次继续</a></h2>
+<p>Day 4 建议主题：函数、表达式、控制流与模式基础。</p>
+<p>建议内容：</p>
+<ul>
+<li>函数参数与返回值</li>
+<li>语句 statement 与表达式 expression</li>
+<li><code>if</code> / <code>else if</code> / <code>else</code></li>
+<li><code>loop</code> / <code>while</code> / <code>for</code></li>
+<li><code>match</code> 初步</li>
+<li><code>if let</code> 初步</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-04---函数表达式控制流与模式基础"><a class="header" href="#day-04---函数表达式控制流与模式基础">Day 04 - 函数、表达式、控制流与模式基础</a></h1>
+<p>日期：2026-05-13</p>
+<h2 id="今日目标-3"><a class="header" href="#今日目标-3">今日目标</a></h2>
+<p>Day 4 在完成所有权和借用的基础之后，进入 Rust 的程序逻辑组织：</p>
+<ul>
+<li>函数返回值与最后一个表达式</li>
+<li>语句 statement vs 表达式 expression</li>
+<li><code>if</code> 作为表达式</li>
+<li><code>match</code> 分支与模式匹配</li>
+<li><code>for</code> / <code>while</code> / <code>loop</code> 三种循环</li>
+<li><code>Option&lt;T&gt;</code> 处理“可能有值，也可能没有值“</li>
+<li><code>if let</code> / <code>while let</code> / <code>let else</code></li>
+<li>循环标签 <code>'label</code></li>
+<li><code>panic!</code> 与常见 panic 场景</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day04_control_flow
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day04_control_flow
+cargo run
+</code></pre>
+<h2 id="1-函数返回值最后一个表达式"><a class="header" href="#1-函数返回值最后一个表达式">1. 函数返回值：最后一个表达式</a></h2>
+<p>在 Rust 里，函数体最后一个没有分号的表达式就是返回值。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn add(a: i32, b: i32) -&gt; i32 {
+    return a + b;
+}
+<span class="boring">}</span></code></pre>
+<p>但 Rust 更常写前一种风格。</p>
+<p>如果加了分号：</p>
+<pre><code class="language-rust ignore">fn add(a: i32, b: i32) -&gt; i32 {
+    a + b;
+}</code></pre>
+<p>编译器会报错：</p>
+<pre><code class="language-text">expected `i32`, found `()`
+help: remove this semicolon
+</code></pre>
+<h2 id="2-语句-vs-表达式"><a class="header" href="#2-语句-vs-表达式">2. 语句 vs 表达式</a></h2>
+<p>这个区别在 Rust 中非常重要：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th>语句 statement</th><th>表达式 expression</th></tr>
+</thead>
+<tbody>
+<tr><td>做什么</td><td>执行动作</td><td>计算并产生值</td></tr>
+<tr><td>有没有值</td><td>没有可用的值（返回 <code>()</code>）</td><td>有值</td></tr>
+<tr><td>例子</td><td><code>let x = 3;</code></td><td><code>a + b</code>，<code>if ... else ...</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>函数体最后用表达式作为返回值，是 Rust 常见的风格。</p>
+<h2 id="3-if-也是表达式"><a class="header" href="#3-if-也是表达式">3. <code>if</code> 也是表达式</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn describe_number(x: i32) -&gt; &amp;'static str {
+    if x &lt; 0 {
+        "negative"
+    } else if x == 0 {
+        "zero"
+    } else if x % 2 == 0 {
+        "positive even"
+    } else {
+        "positive odd"
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>这里整个 <code>if ... else ...</code> 是函数最后一个表达式，它的结果就是函数返回值。</p>
+<p><code>if</code> 作为表达式时，所有分支必须返回同一种类型。比如这个不行：</p>
+<pre><code class="language-rust ignore">let value = if x &gt; 0 {
+    1
+} else {
+    "negative"
+};</code></pre>
+<p>因为 Rust 需要在编译时确定 <code>value</code> 的类型，但两个分支类型不一样。</p>
+<h2 id="4-match强大的分支表达式"><a class="header" href="#4-match强大的分支表达式">4. <code>match</code>：强大的分支表达式</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn grade(score: i32) -&gt; &amp;'static str {
+    match score {
+        90..=100 =&gt; "A",
+        80..=89 =&gt; "B",
+        70..=79 =&gt; "C",
+        60..=69 =&gt; "D",
+        0..=59 =&gt; "F",
+        _ =&gt; "invalid",
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>关键语法点：</p>
+<pre><code class="language-text">90..=100    包含两端的范围，等价于 [90, 100]
+_           兜底，匹配其他所有情况
+match 必须穷尽所有可能性，所以 _ 很常用
+</code></pre>
+<h3 id="用--匹配多个值"><a class="header" href="#用--匹配多个值">用 <code>|</code> 匹配多个值</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match x {
+    1 | 2 =&gt; println!("one or two"),
+    3 | 4 =&gt; println!("three or four"),
+    5..=10 =&gt; println!("five to ten"),
+    _ =&gt; println!("something else"),
+}
+<span class="boring">}</span></code></pre>
+<p><code>|</code> 表示“或“，<code>..=</code> 表示包含两端的范围。</p>
+<h2 id="5-三种循环"><a class="header" href="#5-三种循环">5. 三种循环</a></h2>
+<h3 id="for"><a class="header" href="#for"><code>for</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for score in [95, 82, 61, 40, 120] {
+    println!("score {} -&gt; grade {}", score, grade(score));
+}
+<span class="boring">}</span></code></pre>
+<p><code>for</code> 也支持 range 语法：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for i in 0..5 { ... }    // 0, 1, 2, 3, 4
+for i in 0..=5 { ... }   // 0, 1, 2, 3, 4, 5
+<span class="boring">}</span></code></pre>
+<h3 id="while"><a class="header" href="#while"><code>while</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut count = 3;
+while count &gt; 0 {
+    println!("count = {}", count);
+    count -= 1;
+}
+<span class="boring">}</span></code></pre>
+<h3 id="loop"><a class="header" href="#loop"><code>loop</code></a></h3>
+<p>无限循环，但可以用 <code>break</code> 返回值：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut n = 0;
+let result = loop {
+    n += 1;
+    if n == 5 {
+        break n * 10;
+    }
+};
+// result = 50
+<span class="boring">}</span></code></pre>
+<p>这里 <code>loop</code> 作为表达式产生值 <code>50</code>。</p>
+<h2 id="6-optiont"><a class="header" href="#6-optiont">6. <code>Option&lt;T&gt;</code></a></h2>
+<p><code>Option&lt;T&gt;</code> 是 Rust 标准库里非常常用的枚举，表示“可能有值，也可能没有值“：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn find_first_even(nums: &amp;[i32]) -&gt; Option&lt;i32&gt; {
+    for &amp;x in nums {
+        if x % 2 == 0 {
+            return Some(x);
+        }
+    }
+
+    None
+}
+<span class="boring">}</span></code></pre>
+<p>两种可能：</p>
+<pre><code class="language-text">Some(value)   -&gt; 有值，value 是具体内容
+None          -&gt; 没有值
+</code></pre>
+<p>用 <code>match</code> 处理：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match first_even {
+    Some(value) =&gt; println!("first even = {}", value),
+    None =&gt; println!("no even number"),
+}
+<span class="boring">}</span></code></pre>
+<h2 id="7-if-let简化单模式匹配"><a class="header" href="#7-if-let简化单模式匹配">7. <code>if let</code>：简化单模式匹配</a></h2>
+<p>如果只关心其中一种模式：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(value) = find_first_even(&amp;[1, 3, 8, 9]) {
+    println!("found even = {}", value);
+}
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match find_first_even(&amp;[1, 3, 8, 9]) {
+    Some(value) =&gt; println!("found even = {}", value),
+    _ =&gt; {}
+}
+<span class="boring">}</span></code></pre>
+<p>带 <code>else</code> 的版本：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(value) = find_first_even(&amp;[1, 3, 7]) {
+    println!("found even = {}", value);
+} else {
+    println!("no even number");
+}
+<span class="boring">}</span></code></pre>
+<h3 id="为什么必须写-let"><a class="header" href="#为什么必须写-let">为什么必须写 <code>let</code>？</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(value) = expr { ... }
+<span class="boring">}</span></code></pre>
+<p>不能省略 <code>let</code>，写成：</p>
+<pre><code class="language-rust ignore">if Some(value) = expr { ... }</code></pre>
+<p>因为普通 <code>if</code> 期望条件是 <code>bool</code>，而 <code>Some(value) = expr</code> 是模式匹配赋值，不是 <code>bool</code>。<code>let</code> 关键字告诉编译器“这一行是模式匹配，不是 bool 判断“。</p>
+<h2 id="8-while-let持续匹配直到失败"><a class="header" href="#8-while-let持续匹配直到失败">8. <code>while let</code>：持续匹配直到失败</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut nums = vec![1, 2, 3, 4, 5];
+
+while let Some(top) = nums.pop() {
+    println!("popped = {}", top);
+}
+<span class="boring">}</span></code></pre>
+<p>逻辑：</p>
+<pre><code class="language-text">nums.pop() 返回 Some(5)，匹配成功，执行循环体
+nums.pop() 返回 Some(4)，匹配成功
+...
+nums.pop() 返回 None，匹配失败，退出循环
+</code></pre>
+<h2 id="9-let-else简化-option-的提前返回"><a class="header" href="#9-let-else简化-option-的提前返回">9. <code>let else</code>：简化 Option 的提前返回</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn try_parse(s: &amp;str) -&gt; Option&lt;i32&gt; {
+    let result: i32 = s.parse().ok()?;
+    Some(result)
+}
+
+fn process(s: &amp;str) {
+    let Some(value) = try_parse(s) else {
+        println!("parse failed: {}", s);
+        return;
+    };
+
+    println!("parsed value = {}", value);
+    println!("value + 10 = {}", value + 10);
+}
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">如果 try_parse(s) 返回 Some(value)，取出 value。
+否则执行 else 块，然后 return。
+</code></pre>
+<p><code>let else</code> 的 <code>else</code> 块必须以 <code>return</code>、<code>break</code>、<code>continue</code> 或 <code>panic!</code> 结尾。</p>
+<h2 id="10-元组解构"><a class="header" href="#10-元组解构">10. 元组解构</a></h2>
+<p><code>let</code> 可以直接解构元组：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let pair = (100, 200);
+let (a, b) = pair;
+// a = 100, b = 200
+
+let (first, _, third) = (1, 2, 3);
+// _ 表示忽略这个位置的值
+<span class="boring">}</span></code></pre>
+<p><code>match</code> 也可以解构元组，并根据内容做不同分支：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let point = (3, 0);
+
+match point {
+    (0, 0) =&gt; println!("origin"),
+    (0, y) =&gt; println!("on y-axis, y = {}", y),
+    (x, 0) =&gt; println!("on x-axis, x = {}", x),
+    (x, y) =&gt; println!("x = {}, y = {}", x, y),
+}
+<span class="boring">}</span></code></pre>
+<p>Rust 从上往下匹配，第一个匹配到的分支会被执行。</p>
+<h2 id="11-match-guard"><a class="header" href="#11-match-guard">11. match guard</a></h2>
+<p>match 分支可以附加条件：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let pair = (10, 20);
+
+match pair {
+    (x, y) if x &gt; y =&gt; println!("(larger, smaller)"),
+    (x, y) if x &lt; y =&gt; println!("(smaller, larger)"),
+    (x, _) =&gt; println!("(equal, value = {})", x),
+}
+<span class="boring">}</span></code></pre>
+<p><code>if x &gt; y</code> 就是 match guard：模式匹配成功后再额外检查条件。</p>
+<h2 id="12-enumerate"><a class="header" href="#12-enumerate">12. <code>enumerate()</code></a></h2>
+<p>遍历集合时同时获取索引：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let colors = vec!["red", "green", "blue"];
+
+for (index, color) in colors.iter().enumerate() {
+    println!("color[{}] = {}", index, color);
+}
+<span class="boring">}</span></code></pre>
+<p>输出：</p>
+<pre><code class="language-text">color[0] = red
+color[1] = green
+color[2] = blue
+</code></pre>
+<h2 id="13-循环标签-label"><a class="header" href="#13-循环标签-label">13. 循环标签 <code>'label</code></a></h2>
+<p>嵌套循环时，可以用标签指定 <code>break</code> 和 <code>continue</code> 的作用范围。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>'outer: for i in 0..3 {
+    for j in 0..3 {
+        if i == 1 &amp;&amp; j == 1 {
+            break 'outer;           // 跳出两层循环
+        }
+        if j == 1 {
+            continue 'outer;        // 跳到外层下一次迭代
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>语法：标签以单引号 <code>'</code> 开头，放在循环关键字之前。</p>
+<p>没有标签时，<code>break</code> 和 <code>continue</code> 只影响最内层循环。</p>
+<h2 id="14-panic程序紧急停止"><a class="header" href="#14-panic程序紧急停止">14. <code>panic!</code>：程序紧急停止</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>panic!("something went wrong");
+<span class="boring">}</span></code></pre>
+<p>效果：</p>
+<pre><code class="language-text">1. 打印 panic 信息（文件名、行号、自定义消息）
+2. 程序立即停止
+3. 后面的代码不会执行
+4. 退出码 101
+</code></pre>
+<h3 id="运行-stack-backtrace"><a class="header" href="#运行-stack-backtrace">运行 stack backtrace</a></h3>
+<pre><code class="language-bash">RUST_BACKTRACE=1 cargo run
+</code></pre>
+<p>会打印调用栈，帮助定位问题来源。</p>
+<h3 id="常见的自动-panic-场景"><a class="header" href="#常见的自动-panic-场景">常见的自动 panic 场景</a></h3>
+<pre><code class="language-rust ignore">let arr = [1, 2, 3];
+arr[10];           // index out of bounds
+
+let x: Option&lt;i32&gt; = None;
+x.unwrap();        // called `Option::unwrap()` on a `None` value</code></pre>
+<h3 id="rust-对-panic-的哲学"><a class="header" href="#rust-对-panic-的哲学">Rust 对 <code>panic!</code> 的哲学</a></h3>
+<pre><code class="language-text">panic! 用于"程序无法继续运行"的情况。
+不用于"预期可能出错"的情况。
+</code></pre>
+<p>常见用法：</p>
+<pre><code class="language-text">数组越界 -&gt; panic
+assert 检查失败 -&gt; panic
+程序配置不合法，无法启动 -&gt; panic
+用户输入非法 -&gt; 不用 panic，用 Result
+文件不存在 -&gt; 不用 panic，用 Result
+</code></pre>
+<p>初学阶段有时为了方便会调用 <code>unwrap()</code>，潜台词是“这里应该不会出问题，如果出问题就 panic 给我看“。</p>
+<h2 id="今日总结-2"><a class="header" href="#今日总结-2">今日总结</a></h2>
+<p>Day 4 覆盖了 Rust 程序逻辑组织的基本工具：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td>函数返回值</td><td>最后一个没有分号的表达式</td></tr>
+<tr><td>表达式 vs 语句</td><td>表达式产生值，语句不产生值</td></tr>
+<tr><td><code>if</code></td><td>可以作为表达式产生值</td></tr>
+<tr><td><code>match</code></td><td>穷尽匹配，支持 <code>..=</code>、`</td></tr>
+<tr><td><code>for</code> / <code>while</code> / <code>loop</code></td><td>三种循环，<code>loop</code> 可以用 <code>break</code> 返回值</td></tr>
+<tr><td><code>Option&lt;T&gt;</code></td><td><code>Some(value)</code> 或 <code>None</code></td></tr>
+<tr><td><code>if let</code> / <code>while let</code></td><td>简化单模式匹配</td></tr>
+<tr><td><code>let else</code></td><td>模式不匹配时提前返回</td></tr>
+<tr><td><code>enumerate()</code></td><td>遍历时获取索引</td></tr>
+<tr><td>循环标签 <code>'label</code></td><td>控制嵌套循环的 <code>break</code> / <code>continue</code></td></tr>
+<tr><td><code>panic!</code></td><td>严重错误时立即停止程序</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="下次继续-3"><a class="header" href="#下次继续-3">下次继续</a></h2>
+<p>Day 5 建议主题：<code>String</code> / <code>Vec</code> / Iterator 初步。</p>
+<p>建议内容：</p>
+<ul>
+<li><code>String</code> 常用方法：<code>push_str()</code>、<code>replace()</code>、<code>contains()</code>、<code>split()</code></li>
+<li><code>Vec</code> 常用方法：<code>push()</code>、<code>pop()</code>、<code>insert()</code>、<code>remove()</code>、<code>contains()</code></li>
+<li>Iterator 基础：<code>.iter()</code>、<code>.map()</code>、<code>.filter()</code>、<code>.collect()</code></li>
+<li>链式调用风格</li>
+<li><code>for</code> 循环与迭代器的关系</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-05---stringvec-与-iterator-初步"><a class="header" href="#day-05---stringvec-与-iterator-初步">Day 05 - <code>String</code>、<code>Vec</code> 与 Iterator 初步</a></h1>
+<p>日期：2026-05-14</p>
+<h2 id="今日目标-4"><a class="header" href="#今日目标-4">今日目标</a></h2>
+<p>Day 5 进入 Rust 中最常用的数据结构和数据处理方式：</p>
+<ul>
+<li><code>String</code> 与 <code>&amp;str</code> 的区别</li>
+<li><code>Vec&lt;T&gt;</code> 常用方法</li>
+<li><code>pop()</code> / <code>get()</code> 与 <code>Option&lt;T&gt;</code></li>
+<li><code>.iter()</code> / <code>.iter_mut()</code> / <code>.into_iter()</code> 的所有权区别</li>
+<li><code>.map()</code> / <code>.filter()</code> / <code>.filter_map()</code> / <code>.collect()</code></li>
+<li><code>Vec&lt;&amp;str&gt;</code> 与 <code>Vec&lt;String&gt;</code></li>
+<li><code>.copied()</code> 与 <code>.cloned()</code></li>
+<li>closure，也就是 Rust 里的 lambda</li>
+<li><code>retain()</code> / <code>sort()</code> / <code>dedup()</code> 等常用原地操作</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day05_collections_iterators
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day05_collections_iterators
+cargo run
+</code></pre>
+<h2 id="1-string-与-str"><a class="header" href="#1-string-与-str">1. <code>String</code> 与 <code>&amp;str</code></a></h2>
+<p>字符串字面量：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = "rust";
+<span class="boring">}</span></code></pre>
+<p>这里 <code>s</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;str
+<span class="boring">}</span></code></pre>
+<p>它是一个只读字符串 slice，不拥有字符串数据，不能修改。</p>
+<p>拥有型字符串：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut s = String::from("rust");
+s.push('!');
+s.push_str(" language");
+<span class="boring">}</span></code></pre>
+<p>这里 <code>s</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>String
+<span class="boring">}</span></code></pre>
+<p><code>String::from("rust")</code> 可以理解成：</p>
+<pre><code class="language-text">从 &amp;str 创建一个拥有所有权、可增长、可修改的 String。
+</code></pre>
+<p>等价常见写法还有：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = "rust".to_string();
+<span class="boring">}</span></code></pre>
+<h2 id="2-vecrust-ai-和-vecstringfrom"><a class="header" href="#2-vecrust-ai-和-vecstringfrom">2. <code>vec!["rust", "ai"]</code> 和 <code>vec![String::from(...)]</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let tags = vec!["rust", "ai", "infra"];
+<span class="boring">}</span></code></pre>
+<p>类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Vec&lt;&amp;str&gt;
+<span class="boring">}</span></code></pre>
+<p>它只适合只读场景。</p>
+<p>如果要修改字符串内容，需要：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut tags = vec![
+    String::from("rust"),
+    String::from("ai"),
+    String::from("infra"),
+];
+
+for tag in &amp;mut tags {
+    tag.push('#');
+}
+<span class="boring">}</span></code></pre>
+<p>此时类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Vec&lt;String&gt;
+<span class="boring">}</span></code></pre>
+<p>可以拥有、修改、移动字符串。</p>
+<h2 id="3-string-常用方法"><a class="header" href="#3-string-常用方法">3. <code>String</code> 常用方法</a></h2>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut name = String::from("rust");
+
+    name.push('!');
+    name.push_str(" language");
+
+    println!("name = {}", name);
+    println!("contains rust? {}", name.contains("rust"));
+    println!("replace = {}", name.replace("rust", "Rust"));
+    println!("original after replace = {}", name);
+}</code></pre>
+<p>要点：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>作用</th></tr>
+</thead>
+<tbody>
+<tr><td><code>push(char)</code></td><td>追加一个字符</td></tr>
+<tr><td><code>push_str(&amp;str)</code></td><td>追加一段字符串</td></tr>
+<tr><td><code>contains(&amp;str)</code></td><td>判断是否包含子串</td></tr>
+<tr><td><code>replace(old, new)</code></td><td>返回替换后的新 <code>String</code>，不修改原字符串</td></tr>
+</tbody>
+</table>
+</div>
+<p>如果要保存替换结果，需要赋值：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>name = name.replace("rust", "Rust");
+<span class="boring">}</span></code></pre>
+<h2 id="4-split_whitespace"><a class="header" href="#4-split_whitespace">4. <code>split_whitespace()</code></a></h2>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "hello rust iterator";
+
+    for word in text.split_whitespace() {
+        println!("word = {:?}", word);
+    }
+}</code></pre>
+<p><code>split_whitespace()</code> 返回 iterator，每个元素是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;str
+<span class="boring">}</span></code></pre>
+<p>它没有复制新字符串，只是返回原字符串中的一段段借用。</p>
+<h2 id="5-vect-常用方法"><a class="header" href="#5-vect-常用方法">5. <code>Vec&lt;T&gt;</code> 常用方法</a></h2>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut nums = vec![10, 20, 30];
+
+    nums.push(40);
+    nums.push(50);
+
+    println!("nums = {:?}", nums);
+    println!("len = {}", nums.len());
+    println!("contains 30? {}", nums.contains(&amp;30));
+
+    let last = nums.pop();
+    println!("last = {:?}", last);
+}</code></pre>
+<p>常用方法：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>作用</th></tr>
+</thead>
+<tbody>
+<tr><td><code>push(value)</code></td><td>追加元素</td></tr>
+<tr><td><code>pop()</code></td><td>弹出最后一个元素，返回 <code>Option&lt;T&gt;</code></td></tr>
+<tr><td><code>len()</code></td><td>返回长度</td></tr>
+<tr><td><code>contains(&amp;value)</code></td><td>判断是否包含某值</td></tr>
+<tr><td><code>insert(index, value)</code></td><td>在指定位置插入</td></tr>
+<tr><td><code>remove(index)</code></td><td>删除指定位置元素并返回</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>contains</code> 使用 <code>&amp;30</code>，因为它只是借用一个值来比较，不拿走所有权。</p>
+<h2 id="6-pop-返回-optiont"><a class="header" href="#6-pop-返回-optiont">6. <code>pop()</code> 返回 <code>Option&lt;T&gt;</code></a></h2>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut nums = vec![10, 20];
+
+    println!("{:?}", nums.pop());
+    println!("{:?}", nums.pop());
+    println!("{:?}", nums.pop());
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">Some(20)
+Some(10)
+None
+</code></pre>
+<p>原因：</p>
+<pre><code class="language-text">Vec 有元素时：pop() 返回 Some(value)
+Vec 为空时：pop() 返回 None
+</code></pre>
+<p>这和 Day 4 的 <code>Option&lt;T&gt;</code> 直接连起来。</p>
+<h2 id="7-vecindex-vs-vecgetindex"><a class="header" href="#7-vecindex-vs-vecgetindex">7. <code>vec[index]</code> vs <code>vec.get(index)</code></a></h2>
+<p>直接索引：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let nums = vec![10, 20, 30];
+println!("{}", nums[1]);
+<span class="boring">}</span></code></pre>
+<p>如果越界，会运行时 panic：</p>
+<pre><code class="language-rust ignore">println!("{}", nums[10]);</code></pre>
+<p>安全访问：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn print_at(nums: &amp;[i32], index: usize) {
+    match nums.get(index) {
+        Some(value) =&gt; println!("nums[{}] = {}", index, value),
+        None =&gt; println!("index {} is out of bounds", index),
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><code>get()</code> 返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Option&lt;&amp;T&gt;
+<span class="boring">}</span></code></pre>
+<p>也就是：</p>
+<pre><code class="language-text">Some(&amp;value)  找到了
+None          越界
+</code></pre>
+<h2 id="8-iter--iter_mut--into_iter"><a class="header" href="#8-iter--iter_mut--into_iter">8. <code>.iter()</code> / <code>.iter_mut()</code> / <code>.into_iter()</code></a></h2>
+<p>这三个方法是 Day 5 的核心。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>产生什么</th><th>是否能修改元素</th><th>循环后原 Vec 还能用吗</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.iter()</code></td><td><code>&amp;T</code></td><td>不能</td><td>能</td></tr>
+<tr><td><code>.iter_mut()</code></td><td><code>&amp;mut T</code></td><td>能</td><td>能</td></tr>
+<tr><td><code>.into_iter()</code></td><td><code>T</code></td><td>拿走所有权</td><td>不能</td></tr>
+</tbody>
+</table>
+</div>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let names = vec![String::from("alice"), String::from("bob")];
+
+for name in names.iter() {
+    println!("borrowed name = {}", name);
+}
+
+println!("names still usable = {:?}", names);
+<span class="boring">}</span></code></pre>
+<p><code>iter()</code> 是借用遍历。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut words = vec![String::from("rust"), String::from("iterator")];
+
+for word in words.iter_mut() {
+    word.push('!');
+}
+<span class="boring">}</span></code></pre>
+<p><code>iter_mut()</code> 是可变借用遍历。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let animals = vec![String::from("cat"), String::from("dog")];
+
+for animal in animals.into_iter() {
+    println!("owned animal = {}", animal);
+}
+<span class="boring">}</span></code></pre>
+<p><code>into_iter()</code> 会把元素 move 出来，原 <code>Vec</code> 之后不能再用。</p>
+<h2 id="9-for-的三种简写"><a class="header" href="#9-for-的三种简写">9. <code>for</code> 的三种简写</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>写法</th><th>大致等价</th><th>是否消耗原集合</th></tr>
+</thead>
+<tbody>
+<tr><td><code>for x in &amp;v</code></td><td><code>v.iter()</code></td><td>不消耗</td></tr>
+<tr><td><code>for x in &amp;mut v</code></td><td><code>v.iter_mut()</code></td><td>不消耗，但可修改元素</td></tr>
+<tr><td><code>for x in v</code></td><td><code>v.into_iter()</code></td><td>消耗</td></tr>
+</tbody>
+</table>
+</div>
+<p>示例：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let nums = vec![1, 2, 3];
+for x in &amp;nums {
+    println!("{}", x);
+}
+println!("{:?}", nums);
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut scores = vec![80, 90, 100];
+for score in &amp;mut scores {
+    *score += 5;
+}
+println!("{:?}", scores);
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let names = vec![String::from("alice"), String::from("bob")];
+for name in names {
+    println!("{}", name);
+}
+// names 已经被 move，不能再用
+<span class="boring">}</span></code></pre>
+<h2 id="10-closurerust-的-lambda"><a class="header" href="#10-closurerust-的-lambda">10. closure：Rust 的 lambda</a></h2>
+<p>Rust 里的匿名函数叫 closure，写法是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>|x| x + 1
+<span class="boring">}</span></code></pre>
+<p>类似 Python：</p>
+<pre><code class="language-python">lambda x: x + 1
+</code></pre>
+<p>也类似 C++：</p>
+<pre><code class="language-cpp">[](int x) { return x + 1; }
+</code></pre>
+<p>示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let add_one = |x| x + 1;
+    println!("{}", add_one(10));
+}</code></pre>
+<p>多个参数：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let add = |a, b| a + b;
+<span class="boring">}</span></code></pre>
+<p>显式类型：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let is_even = |x: i32| -&gt; bool {
+    x % 2 == 0
+};
+<span class="boring">}</span></code></pre>
+<h2 id="11-map"><a class="header" href="#11-map">11. <code>.map()</code></a></h2>
+<p><code>map</code> 用来把每个元素变成另一个元素。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let nums = vec![1, 2, 3];
+
+let doubled: Vec&lt;i32&gt; = nums
+    .iter()
+    .copied()
+    .map(|x| x * 2)
+    .collect();
+<span class="boring">}</span></code></pre>
+<p>流程：</p>
+<pre><code class="language-text">1 -&gt; 2
+2 -&gt; 4
+3 -&gt; 6
+</code></pre>
+<p><code>map</code> 的特点：</p>
+<pre><code class="language-text">输入几个元素，通常输出几个元素。
+元素内容或类型可以改变。
+</code></pre>
+<h2 id="12-filter"><a class="header" href="#12-filter">12. <code>.filter()</code></a></h2>
+<p><code>filter</code> 用来保留满足条件的元素。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let nums = vec![1, 2, 3, 4];
+
+let evens: Vec&lt;i32&gt; = nums
+    .iter()
+    .copied()
+    .filter(|x| *x % 2 == 0)
+    .collect();
+<span class="boring">}</span></code></pre>
+<p><code>filter</code> 的 closure 返回 <code>bool</code>：</p>
+<pre><code class="language-text">true  -&gt; 保留
+false -&gt; 丢弃
+</code></pre>
+<p>为什么这里是 <code>*x</code>？</p>
+<pre><code class="language-text">copied() 后 iterator item 是 i32。
+filter 会把 item 的引用传给 closure。
+所以 x 是 &amp;i32，需要 *x 得到 i32。
+</code></pre>
+<h2 id="13-filter-中的引用层级"><a class="header" href="#13-filter-中的引用层级">13. <code>.filter()</code> 中的引用层级</a></h2>
+<p>如果写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let evens: Vec&lt;i32&gt; = nums
+    .iter()
+    .filter(|x| **x % 2 == 0)
+    .copied()
+    .collect();
+<span class="boring">}</span></code></pre>
+<p>类型流动是：</p>
+<pre><code class="language-text">nums.iter()                Item = &amp;i32
+filter 的参数 x             &amp;&amp;i32
+filter 后保留的 Item 仍然是  &amp;i32
+copied()                   &amp;i32 -&gt; i32
+collect()                  Vec&lt;i32&gt;
+</code></pre>
+<p>关键点：</p>
+<pre><code class="language-text">filter 没有把 &amp;&amp;i32 变成 &amp;i32。
+filter 只是用 &amp;&amp;i32 判断是否保留元素。
+保留下来的元素仍然是原 iterator 的 item，也就是 &amp;i32。
+copied() 才把 &amp;i32 变成 i32。
+</code></pre>
+<p>初学阶段推荐先写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let evens: Vec&lt;i32&gt; = nums
+    .iter()
+    .copied()
+    .filter(|x| *x % 2 == 0)
+    .collect();
+<span class="boring">}</span></code></pre>
+<p>更好理解。</p>
+<h2 id="14-collect-与-turbofish"><a class="header" href="#14-collect-与-turbofish">14. <code>.collect()</code> 与 turbofish</a></h2>
+<p><code>collect()</code> 把 iterator 收集成集合。</p>
+<p>常见写法一：左边标注类型。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let squares: Vec&lt;i32&gt; = nums
+    .iter()
+    .copied()
+    .map(|x| x * x)
+    .collect();
+<span class="boring">}</span></code></pre>
+<p>常见写法二：右边 turbofish。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let squares = nums
+    .iter()
+    .copied()
+    .map(|x| x * x)
+    .collect::&lt;Vec&lt;i32&gt;&gt;();
+<span class="boring">}</span></code></pre>
+<p><code>::&lt;Vec&lt;i32&gt;&gt;</code> 就是在告诉编译器：</p>
+<pre><code class="language-text">请收集成 Vec&lt;i32&gt;。
+</code></pre>
+<h2 id="15-filter_map"><a class="header" href="#15-filter_map">15. <code>.filter_map()</code></a></h2>
+<p><code>filter_map()</code> 可以理解成：</p>
+<pre><code class="language-text">转换 + 丢弃失败项
+</code></pre>
+<p>示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 abc 30 -5 xx";
+
+    let numbers: Vec&lt;i32&gt; = text
+        .split_whitespace()
+        .filter_map(|word| word.parse::&lt;i32&gt;().ok())
+        .collect();
+
+    println!("numbers = {:?}", numbers);
+}</code></pre>
+<p>流程：</p>
+<pre><code class="language-text">"10"  -&gt; Ok(10)  -&gt; Some(10)  -&gt; 保留
+"20"  -&gt; Ok(20)  -&gt; Some(20)  -&gt; 保留
+"abc" -&gt; Err     -&gt; None      -&gt; 丢弃
+"30"  -&gt; Ok(30)  -&gt; Some(30)  -&gt; 保留
+"-5"  -&gt; Ok(-5)  -&gt; Some(-5)  -&gt; 保留
+"xx"  -&gt; Err     -&gt; None      -&gt; 丢弃
+</code></pre>
+<p>结果：</p>
+<pre><code class="language-text">[10, 20, 30, -5]
+</code></pre>
+<p>手写循环版本：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let text = "10 20 bad 30 xx -5";
+let mut numbers = Vec::new();
+
+for word in text.split_whitespace() {
+    match word.parse::&lt;i32&gt;() {
+        Ok(value) =&gt; numbers.push(value),
+        Err(_) =&gt; println!("skip invalid word = {:?}", word),
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>初学阶段建议：先会手写循环，再写 iterator 链。</p>
+<h2 id="16-vecstr-与-vecstring"><a class="header" href="#16-vecstr-与-vecstring">16. <code>Vec&lt;&amp;str&gt;</code> 与 <code>Vec&lt;String&gt;</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let line = "Rust makes Rust safer";
+
+let borrowed_words: Vec&lt;&amp;str&gt; = line.split_whitespace().collect();
+<span class="boring">}</span></code></pre>
+<p>这里没有复制字符串，只是借用 <code>line</code> 中的片段。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let owned_words: Vec&lt;String&gt; = line
+    .split_whitespace()
+    .map(|word| word.to_string())
+    .collect();
+<span class="boring">}</span></code></pre>
+<p>这里每个单词都被复制成新的 <code>String</code>。</p>
+<p>判断原则：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>类型</th><th>含义</th><th>适合场景</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Vec&lt;&amp;str&gt;</code></td><td>借用原字符串片段</td><td>临时分析、只读、不脱离原字符串</td></tr>
+<tr><td><code>Vec&lt;String&gt;</code></td><td>拥有字符串</td><td>要保存、返回、修改、脱离原字符串</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="17-copied-vs-cloned"><a class="header" href="#17-copied-vs-cloned">17. <code>.copied()</code> vs <code>.cloned()</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let nums = vec![1, 2, 3];
+let nums_copy: Vec&lt;i32&gt; = nums.iter().copied().collect();
+<span class="boring">}</span></code></pre>
+<p><code>copied()</code> 用于 <code>Copy</code> 类型，例如：</p>
+<pre><code class="language-text">i32, bool, char, f64
+</code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let names = vec![String::from("alice"), String::from("bob")];
+let names_clone: Vec&lt;String&gt; = names.iter().cloned().collect();
+<span class="boring">}</span></code></pre>
+<p><code>cloned()</code> 用于 <code>Clone</code> 类型，例如 <code>String</code>。它可能分配新内存，有成本。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>用于什么</th><th>例子</th><th>成本</th></tr>
+</thead>
+<tbody>
+<tr><td><code>.copied()</code></td><td><code>T: Copy</code></td><td><code>i32</code>, <code>bool</code>, <code>char</code></td><td>低</td></tr>
+<tr><td><code>.cloned()</code></td><td><code>T: Clone</code></td><td><code>String</code>, <code>Vec&lt;T&gt;</code></td><td>可能高</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="18-retain-原地筛选"><a class="header" href="#18-retain-原地筛选">18. <code>retain()</code> 原地筛选</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut scores = vec![95, 40, 82, 59, 100, 60];
+
+scores.retain(|score| *score &gt;= 60);
+
+println!("{:?}", scores);
+<span class="boring">}</span></code></pre>
+<p>输出：</p>
+<pre><code class="language-text">[95, 82, 100, 60]
+</code></pre>
+<p><code>retain()</code> 会修改原 Vec。</p>
+<p>对比：</p>
+<pre><code class="language-text">filter().collect()  创建新 Vec
+retain()            原地修改 Vec
+</code></pre>
+<h2 id="19-sort-与-dedup"><a class="header" href="#19-sort-与-dedup">19. <code>sort()</code> 与 <code>dedup()</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut words = vec![
+    String::from("rust"),
+    String::from("ai"),
+    String::from("rust"),
+    String::from("infra"),
+    String::from("ai"),
+];
+
+words.sort();
+words.dedup();
+
+println!("{:?}", words);
+<span class="boring">}</span></code></pre>
+<p><code>sort()</code> 原地排序。</p>
+<p><code>dedup()</code> 去掉相邻重复元素。</p>
+<p>因此完整去重通常写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>words.sort();
+words.dedup();
+<span class="boring">}</span></code></pre>
+<h2 id="20-字符串处理流水线"><a class="header" href="#20-字符串处理流水线">20. 字符串处理流水线</a></h2>
+<pre class="playground"><code class="language-rust">fn clean_word(word: &amp;str) -&gt; String {
+    word.trim_matches(|c: char| !c.is_alphanumeric())
+        .to_lowercase()
+}
+
+fn main() {
+    let text = "Rust, rust! makes systems-programming safer.";
+
+    let cleaned: Vec&lt;String&gt; = text
+        .split_whitespace()
+        .map(clean_word)
+        .filter(|word| !word.is_empty())
+        .collect();
+
+    println!("cleaned = {:?}", cleaned);
+}</code></pre>
+<p><code>map(clean_word)</code> 等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>.map(|word| clean_word(word))
+<span class="boring">}</span></code></pre>
+<p>因为函数名也可以作为参数传给 <code>map</code>。</p>
+<h2 id="今日总结-3"><a class="header" href="#今日总结-3">今日总结</a></h2>
+<p>Day 5 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>String</code></td><td>拥有型字符串，可修改</td></tr>
+<tr><td><code>&amp;str</code></td><td>字符串 slice，只读借用</td></tr>
+<tr><td><code>Vec&lt;T&gt;</code></td><td>拥有一组同类型元素</td></tr>
+<tr><td><code>&amp;[T]</code></td><td>借用一段连续元素</td></tr>
+<tr><td><code>.iter()</code></td><td>借用遍历，产生 <code>&amp;T</code></td></tr>
+<tr><td><code>.iter_mut()</code></td><td>可变借用遍历，产生 <code>&amp;mut T</code></td></tr>
+<tr><td><code>.into_iter()</code></td><td>消耗所有权遍历，产生 <code>T</code></td></tr>
+<tr><td><code>.map()</code></td><td>转换每个元素</td></tr>
+<tr><td><code>.filter()</code></td><td>保留满足条件的元素</td></tr>
+<tr><td><code>.filter_map()</code></td><td>转换并丢弃失败项</td></tr>
+<tr><td><code>.collect()</code></td><td>收集 iterator 的结果</td></tr>
+<tr><td><code>.copied()</code></td><td><code>&amp;T -&gt; T</code>，要求 <code>T: Copy</code></td></tr>
+<tr><td><code>.cloned()</code></td><td><code>&amp;T -&gt; T</code>，要求 <code>T: Clone</code></td></tr>
+<tr><td><code>.retain()</code></td><td>原地筛选 Vec</td></tr>
+<tr><td><code>.sort()</code> / <code>.dedup()</code></td><td>排序和相邻去重</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">Day 5 的主线是：Rust 用所有权区分借用遍历、可变遍历、消耗遍历；用 iterator 链表达数据处理流水线。
+</code></pre>
+<h2 id="下次继续-4"><a class="header" href="#下次继续-4">下次继续</a></h2>
+<p>Day 6 建议主题：<code>struct</code> / <code>impl</code> / 方法 / <code>Debug</code>。</p>
+<p>建议内容：</p>
+<ul>
+<li>定义结构体</li>
+<li>创建结构体实例</li>
+<li>字段访问与可变字段</li>
+<li><code>impl</code> 定义方法</li>
+<li><code>&amp;self</code> / <code>&amp;mut self</code> / <code>self</code></li>
+<li><code>#[derive(Debug)]</code></li>
+<li>结构体和所有权</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-06---structimpl方法与-debug"><a class="header" href="#day-06---structimpl方法与-debug">Day 06 - <code>struct</code>、<code>impl</code>、方法与 <code>Debug</code></a></h1>
+<p>日期：2026-05-15</p>
+<h2 id="今日目标-5"><a class="header" href="#今日目标-5">今日目标</a></h2>
+<p>Day 6 进入 Rust 中组织数据和行为的核心机制：</p>
+<ul>
+<li>定义 <code>struct</code></li>
+<li>创建结构体实例</li>
+<li>字段访问与字段修改</li>
+<li><code>#[derive(Debug)]</code></li>
+<li><code>impl</code> 定义方法</li>
+<li><code>&amp;self</code> / <code>&amp;mut self</code> / <code>self</code></li>
+<li>关联函数与 <code>Self</code></li>
+<li>构造函数模式 <code>Type::new(...)</code></li>
+<li>struct update syntax：<code>..old_value</code></li>
+<li>结构体与所有权</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day06_structs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day06_structs
+cargo run
+</code></pre>
+<h2 id="1-定义-struct"><a class="header" href="#1-定义-struct">1. 定义 struct</a></h2>
+<p>Rust 用 <code>struct</code> 定义自定义数据类型。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+<span class="boring">}</span></code></pre>
+<p>这表示定义了一个 <code>User</code> 类型，它有三个字段：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>字段</th><th>类型</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>name</code></td><td><code>String</code></td><td>用户名，拥有字符串数据</td></tr>
+<tr><td><code>age</code></td><td><code>u32</code></td><td>年龄</td></tr>
+<tr><td><code>active</code></td><td><code>bool</code></td><td>是否活跃</td></tr>
+</tbody>
+</table>
+</div>
+<p>创建实例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let user1 = User {
+        name: String::from("Alice"),
+        age: 20,
+        active: true,
+    };
+
+    println!("name = {}", user1.name);
+    println!("age = {}", user1.age);
+    println!("active = {}", user1.active);
+}
+
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}</code></pre>
+<p>字段访问使用点号：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>user1.name
+user1.age
+user1.active
+<span class="boring">}</span></code></pre>
+<h2 id="2-修改字段需要-mut"><a class="header" href="#2-修改字段需要-mut">2. 修改字段需要 <code>mut</code></a></h2>
+<p>如果要修改字段，变量绑定本身必须是 <code>mut</code>：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 20,
+        active: true,
+    };
+
+    user1.age += 1;
+    user1.active = false;
+
+    println!("name = {}", user1.name);
+    println!("age = {}", user1.age);
+    println!("active = {}", user1.active);
+}
+
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}</code></pre>
+<p>注意 Rust 不是给单个字段加 <code>mut</code>，而是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut user1 = ...;
+<span class="boring">}</span></code></pre>
+<p>表示 <code>user1</code> 这个绑定可变，于是可以修改它的字段。</p>
+<h2 id="3-debug-与-derivedebug"><a class="header" href="#3-debug-与-derivedebug">3. <code>Debug</code> 与 <code>#[derive(Debug)]</code></a></h2>
+<p>单独打印字段可以用 <code>{}</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("name = {}", user1.name);
+<span class="boring">}</span></code></pre>
+<p>但如果想直接打印整个结构体：</p>
+<pre><code class="language-rust ignore">println!("user1 = {:?}", user1);</code></pre>
+<p>如果没有实现 <code>Debug</code>，编译器会报错：</p>
+<pre><code class="language-text">`User` cannot be formatted using `{:?}` because it doesn't implement `Debug`
+help: consider annotating `User` with `#[derive(Debug)]`
+</code></pre>
+<p>修复方式是在 <code>struct</code> 上方添加：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug)]
+<span class="boring">}</span></code></pre>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 20,
+        active: true,
+    };
+
+    user1.age += 1;
+    user1.active = false;
+
+    println!("user1 = {:?}", user1);
+}</code></pre>
+<p>输出类似：</p>
+<pre><code class="language-text">user1 = User { name: "Alice", age: 21, active: false }
+</code></pre>
+<p>更漂亮的多行调试输出使用 <code>{:#?}</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("user1 = {:#?}", user1);
+<span class="boring">}</span></code></pre>
+<p>输出类似：</p>
+<pre><code class="language-text">user1 = User {
+    name: "Alice",
+    age: 21,
+    active: false,
+}
+</code></pre>
+<p>格式化规则：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>写法</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>{}</code></td><td><code>Display</code>，面向用户的普通显示</td></tr>
+<tr><td><code>{:?}</code></td><td><code>Debug</code>，面向开发者的调试显示</td></tr>
+<tr><td><code>{:#?}</code></td><td>pretty <code>Debug</code>，多行调试显示</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="4-impl给类型定义方法"><a class="header" href="#4-impl给类型定义方法">4. <code>impl</code>：给类型定义方法</a></h2>
+<p><code>impl User</code> 表示给 <code>User</code> 类型实现函数或方法。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn greet(&amp;self) {
+        println!("Hello, my name is {}.", self.name);
+    }
+
+    fn is_adult(&amp;self) -&gt; bool {
+        self.age &gt;= 18
+    }
+}
+
+fn main() {
+    let user1 = User {
+        name: String::from("Alice"),
+        age: 21,
+        active: true,
+    };
+
+    user1.greet();
+    println!("is adult? {}", user1.is_adult());
+    println!("user1 = {:#?}", user1);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn greet(&amp;self)
+<span class="boring">}</span></code></pre>
+<p>表示只读借用当前对象。</p>
+<p>可以把：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>user1.greet();
+<span class="boring">}</span></code></pre>
+<p>大致理解成：</p>
+<pre><code class="language-rust ignore">User::greet(&amp;user1);</code></pre>
+<p><code>is_adult</code> 返回 <code>bool</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn is_adult(&amp;self) -&gt; bool {
+    self.age &gt;= 18
+}
+<span class="boring">}</span></code></pre>
+<p>最后一行没有分号，因此是表达式，作为返回值。</p>
+<p>如果写成：</p>
+<pre><code class="language-rust ignore">fn is_adult(&amp;self) -&gt; bool {
+    self.age &gt;= 18;
+}</code></pre>
+<p>会得到类似错误：</p>
+<pre><code class="language-text">expected `bool`, found `()`
+</code></pre>
+<p>这复习了 Day 4 的规则：</p>
+<pre><code class="language-text">没有分号的表达式产生值；
+带分号的语句通常产生 ()。
+</code></pre>
+<h2 id="5-mut-self方法修改结构体"><a class="header" href="#5-mut-self方法修改结构体">5. <code>&amp;mut self</code>：方法修改结构体</a></h2>
+<p>如果方法要修改结构体字段，就使用 <code>&amp;mut self</code>：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn greet(&amp;self) {
+        println!("Hello, my name is {}.", self.name);
+    }
+
+    fn is_adult(&amp;self) -&gt; bool {
+        self.age &gt;= 18
+    }
+
+    fn birthday(&amp;mut self) {
+        self.age += 1;
+        println!("Happy birthday, {}!", self.name);
+    }
+
+    fn deactivate(&amp;mut self) {
+        self.active = false;
+    }
+}
+
+fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 17,
+        active: true,
+    };
+
+    println!("before = {:#?}", user1);
+
+    user1.greet();
+    println!("is adult? {}", user1.is_adult());
+
+    user1.birthday();
+    println!("after birthday = {:#?}", user1);
+    println!("is adult now? {}", user1.is_adult());
+
+    user1.deactivate();
+    println!("after deactivate = {:#?}", user1);
+}</code></pre>
+<p>因为 <code>birthday</code> 和 <code>deactivate</code> 需要可变借用，变量必须声明为：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut user1 = ...;
+<span class="boring">}</span></code></pre>
+<p>如果写成：</p>
+<pre><code class="language-rust ignore">let user1 = User { ... };
+user1.birthday();</code></pre>
+<p>编译器会提示类似：</p>
+<pre><code class="language-text">cannot borrow `user1` as mutable, as it is not declared as mutable
+help: consider changing this to be mutable
+</code></pre>
+<h2 id="6-self消耗结构体"><a class="header" href="#6-self消耗结构体">6. <code>self</code>：消耗结构体</a></h2>
+<p>第三种方法接收者是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>self
+<span class="boring">}</span></code></pre>
+<p>它表示直接拿走整个对象的所有权。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn greet(&amp;self) {
+        println!("Hello, my name is {}.", self.name);
+    }
+
+    fn birthday(&amp;mut self) {
+        self.age += 1;
+    }
+
+    fn into_name(self) -&gt; String {
+        self.name
+    }
+}
+
+fn main() {
+    let mut user1 = User {
+        name: String::from("Alice"),
+        age: 17,
+        active: true,
+    };
+
+    user1.greet();
+
+    user1.birthday();
+    println!("after birthday = {:#?}", user1);
+
+    let name = user1.into_name();
+    println!("name = {}", name);
+
+    // user1 已经被 into_name() 消耗，不能再使用
+    // println!("user1 = {:#?}", user1);
+}</code></pre>
+<p><code>into_name</code> 的签名是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn into_name(self) -&gt; String
+<span class="boring">}</span></code></pre>
+<p>调用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let name = user1.into_name();
+<span class="boring">}</span></code></pre>
+<p>大致等价于：</p>
+<pre><code class="language-rust ignore">let name = User::into_name(user1);</code></pre>
+<p>也就是 <code>user1</code> 被 move 进方法。方法内部把 <code>self.name</code> 移出并返回。</p>
+<p>常见命名习惯：</p>
+<pre><code class="language-text">into_xxx
+</code></pre>
+<p>通常表示：</p>
+<pre><code class="language-text">消耗旧值，把它转换成新值。
+</code></pre>
+<p>例如标准库中的：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("abc");
+let bytes = s.into_bytes();
+
+// s 之后不能再用
+<span class="boring">}</span></code></pre>
+<h2 id="7-selfmut-selfself-对比"><a class="header" href="#7-selfmut-selfself-对比">7. <code>&amp;self</code>、<code>&amp;mut self</code>、<code>self</code> 对比</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>写法</th><th>等价理解</th><th>含义</th><th>调用后原对象还能用吗</th></tr>
+</thead>
+<tbody>
+<tr><td><code>&amp;self</code></td><td><code>self: &amp;User</code></td><td>只读借用</td><td>能</td></tr>
+<tr><td><code>&amp;mut self</code></td><td><code>self: &amp;mut User</code></td><td>可变借用</td><td>能</td></tr>
+<tr><td><code>self</code></td><td><code>self: User</code></td><td>拿走所有权</td><td>通常不能</td></tr>
+</tbody>
+</table>
+</div>
+<p>判断方法：</p>
+<pre><code class="language-text">这个方法调用后，原对象还应该继续使用吗？
+</code></pre>
+<p>如果只是读取：用 <code>&amp;self</code>。</p>
+<p>如果要原地修改：用 <code>&amp;mut self</code>。</p>
+<p>如果要转换、拆包、终结对象生命周期：用 <code>self</code>。</p>
+<h2 id="8-借用名字克隆名字消耗名字"><a class="header" href="#8-借用名字克隆名字消耗名字">8. 借用名字、克隆名字、消耗名字</a></h2>
+<p>同样是“得到名字”，可以有三种不同设计：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn name(&amp;self) -&gt; &amp;str {
+        &amp;self.name
+    }
+
+    fn cloned_name(&amp;self) -&gt; String {
+        self.name.clone()
+    }
+
+    fn into_name(self) -&gt; String {
+        self.name
+    }
+}
+
+fn main() {
+    let user1 = User {
+        name: String::from("Alice"),
+        age: 21,
+        active: true,
+    };
+
+    let borrowed_name = user1.name();
+    println!("borrowed_name = {}", borrowed_name);
+    println!("user1 after name() = {:#?}", user1);
+
+    let copied_name = user1.cloned_name();
+    println!("copied_name = {}", copied_name);
+    println!("user1 after cloned_name() = {:#?}", user1);
+
+    let owned_name = user1.into_name();
+    println!("owned_name = {}", owned_name);
+
+    // user1 已经被消耗
+    // println!("user1 after into_name() = {:#?}", user1);
+}</code></pre>
+<p>对比：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>方法</th><th>返回</th><th>是否复制</th><th>是否消耗 <code>user1</code></th></tr>
+</thead>
+<tbody>
+<tr><td><code>name(&amp;self)</code></td><td><code>&amp;str</code></td><td>不复制</td><td>不消耗</td></tr>
+<tr><td><code>cloned_name(&amp;self)</code></td><td><code>String</code></td><td>复制</td><td>不消耗</td></tr>
+<tr><td><code>into_name(self)</code></td><td><code>String</code></td><td>不额外复制</td><td>消耗</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="9-关联函数与构造函数模式"><a class="header" href="#9-关联函数与构造函数模式">9. 关联函数与构造函数模式</a></h2>
+<p>在 <code>impl</code> 中，如果函数没有 <code>self</code> 参数，它就是关联函数。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, age: u32) -&gt; User {
+        User {
+            name: name.to_string(),
+            age,
+            active: true,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", 21);
+    println!("user1 = {:#?}", user1);
+}</code></pre>
+<p>调用方式是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>User::new("Alice", 21)
+<span class="boring">}</span></code></pre>
+<p>不是：</p>
+<pre><code class="language-rust ignore">user1.new(...)</code></pre>
+<p>Rust 没有固定的构造函数语法，但社区常用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TypeName::new(...)
+<span class="boring">}</span></code></pre>
+<p>作为构造函数模式。</p>
+<h2 id="10-self当前类型"><a class="header" href="#10-self当前类型">10. <code>Self</code>：当前类型</a></h2>
+<p>在：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl User {
+    ...
+}
+<span class="boring">}</span></code></pre>
+<p>内部，<code>Self</code> 表示当前类型，也就是 <code>User</code>。</p>
+<p>因此常见写法是：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, age: u32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            age,
+            active: true,
+        }
+    }
+
+    fn guest() -&gt; Self {
+        Self {
+            name: String::from("guest"),
+            age: 0,
+            active: false,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", 21);
+    let guest = User::guest();
+
+    println!("user1 = {:#?}", user1);
+    println!("guest = {:#?}", guest);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn new(...) -&gt; Self
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn new(...) -&gt; User
+<span class="boring">}</span></code></pre>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Self { ... }
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>User { ... }
+<span class="boring">}</span></code></pre>
+<h2 id="11-字段初始化简写"><a class="header" href="#11-字段初始化简写">11. 字段初始化简写</a></h2>
+<p>如果字段名和变量名相同，可以简写。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn new(name: &amp;str, age: u32) -&gt; Self {
+    Self {
+        name: name.to_string(),
+        age,
+        active: true,
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>其中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>age,
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>age: age,
+<span class="boring">}</span></code></pre>
+<h2 id="12-struct-update-syntaxuser1"><a class="header" href="#12-struct-update-syntaxuser1">12. struct update syntax：<code>..user1</code></a></h2>
+<p>Rust 可以基于旧结构体创建新结构体：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, age: u32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            age,
+            active: true,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", 21);
+
+    let user2 = User {
+        name: String::from("Bob"),
+        ..user1
+    };
+
+    println!("user2 = {:#?}", user2);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>..user1
+<span class="boring">}</span></code></pre>
+<p>表示剩余字段从 <code>user1</code> 补齐。</p>
+<p>在上面的例子中，<code>age: u32</code> 和 <code>active: bool</code> 都是 <code>Copy</code> 类型，因此复制即可。</p>
+<p>如果没有被覆盖的字段里包含 <code>String</code>，就会发生 move：</p>
+<pre><code class="language-rust ignore">#[derive(Debug)]
+struct User {
+    name: String,
+    email: String,
+    age: u32,
+    active: bool,
+}
+
+impl User {
+    fn new(name: &amp;str, email: &amp;str, age: u32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            email: email.to_string(),
+            age,
+            active: true,
+        }
+    }
+}
+
+fn main() {
+    let user1 = User::new("Alice", "alice@example.com", 21);
+
+    let user2 = User {
+        name: String::from("Bob"),
+        ..user1
+    };
+
+    println!("user2 = {:#?}", user2);
+
+    // user1.email 已经被 move 到 user2，user1 不能再整体使用
+    println!("user1 = {:#?}", user1);
+}</code></pre>
+<p>核心规则：</p>
+<pre><code class="language-text">struct update syntax 会从旧对象补齐字段；
+Copy 字段会复制；
+非 Copy 字段会 move。
+</code></pre>
+<h2 id="13-builder-风格消耗并返回-self"><a class="header" href="#13-builder-风格消耗并返回-self">13. Builder 风格：消耗并返回 <code>Self</code></a></h2>
+<p><code>self</code> 的一个常见用途是 builder 模式。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Config {
+    batch_size: usize,
+    learning_rate: f64,
+    device: String,
+}
+
+impl Config {
+    fn new() -&gt; Self {
+        Self {
+            batch_size: 1,
+            learning_rate: 0.01,
+            device: String::from("cpu"),
+        }
+    }
+
+    fn with_batch_size(mut self, batch_size: usize) -&gt; Self {
+        self.batch_size = batch_size;
+        self
+    }
+
+    fn with_learning_rate(mut self, learning_rate: f64) -&gt; Self {
+        self.learning_rate = learning_rate;
+        self
+    }
+
+    fn with_device(mut self, device: &amp;str) -&gt; Self {
+        self.device = device.to_string();
+        self
+    }
+}
+
+fn main() {
+    let config = Config::new()
+        .with_batch_size(32)
+        .with_learning_rate(0.001)
+        .with_device("cuda");
+
+    println!("config = {:#?}", config);
+}</code></pre>
+<p>每个 <code>with_xxx</code> 都消耗旧的 <code>Config</code>，修改后返回新的 <code>Config</code>，因此可以链式调用。</p>
+<h2 id="14-科学计算风格示例particle"><a class="header" href="#14-科学计算风格示例particle">14. 科学计算风格示例：<code>Particle</code></a></h2>
+<p>下面的例子把今天的内容组合起来：</p>
+<pre><code class="language-text">struct 表示状态
+impl 表示状态上的操作
+&amp;self 读取状态
+&amp;mut self 更新状态
+self 消耗并转换状态
+</code></pre>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+struct Particle {
+    position: f64,
+    velocity: f64,
+    mass: f64,
+}
+
+impl Particle {
+    fn new(position: f64, velocity: f64, mass: f64) -&gt; Self {
+        Self {
+            position,
+            velocity,
+            mass,
+        }
+    }
+
+    fn kinetic_energy(&amp;self) -&gt; f64 {
+        0.5 * self.mass * self.velocity * self.velocity
+    }
+
+    fn momentum(&amp;self) -&gt; f64 {
+        self.mass * self.velocity
+    }
+
+    fn is_moving(&amp;self) -&gt; bool {
+        self.velocity != 0.0
+    }
+
+    fn apply_force(&amp;mut self, force: f64, dt: f64) {
+        let acceleration = force / self.mass;
+        self.velocity += acceleration * dt;
+    }
+
+    fn step(&amp;mut self, dt: f64) {
+        self.position += self.velocity * dt;
+    }
+
+    fn stop(&amp;mut self) {
+        self.velocity = 0.0;
+    }
+
+    fn into_tuple(self) -&gt; (f64, f64, f64) {
+        (self.position, self.velocity, self.mass)
+    }
+}
+
+fn main() {
+    let mut p = Particle::new(0.0, 2.0, 1.5);
+
+    println!("initial particle = {:#?}", p);
+    println!("kinetic energy = {}", p.kinetic_energy());
+    println!("momentum = {}", p.momentum());
+    println!("is moving? {}", p.is_moving());
+
+    p.apply_force(3.0, 0.1);
+    p.step(0.1);
+
+    println!("after update = {:#?}", p);
+    println!("kinetic energy = {}", p.kinetic_energy());
+    println!("momentum = {}", p.momentum());
+
+    p.stop();
+    println!("after stop = {:#?}", p);
+    println!("is moving? {}", p.is_moving());
+
+    let raw = p.into_tuple();
+    println!("raw tuple = {:?}", raw);
+
+    // p 已经被 into_tuple() 消耗，不能再使用
+    // println!("p after into_tuple = {:#?}", p);
+}</code></pre>
+<p>这个例子和科学计算、模拟代码的思路相似：</p>
+<pre><code class="language-text">状态数据：position, velocity, mass
+只读计算：kinetic_energy, momentum, is_moving
+原地更新：apply_force, step, stop
+转换输出：into_tuple
+</code></pre>
+<h2 id="今日总结-4"><a class="header" href="#今日总结-4">今日总结</a></h2>
+<p>Day 6 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>struct</code></td><td>定义自己的数据类型</td></tr>
+<tr><td>字段访问</td><td><code>value.field</code></td></tr>
+<tr><td>字段修改</td><td>变量绑定需要 <code>mut</code></td></tr>
+<tr><td><code>#[derive(Debug)]</code></td><td>自动生成调试打印能力</td></tr>
+<tr><td><code>impl Type</code></td><td>给类型定义方法和关联函数</td></tr>
+<tr><td><code>&amp;self</code></td><td>只读借用当前对象</td></tr>
+<tr><td><code>&amp;mut self</code></td><td>可变借用当前对象</td></tr>
+<tr><td><code>self</code></td><td>消耗当前对象</td></tr>
+<tr><td>关联函数</td><td>没有 <code>self</code> 参数，使用 <code>Type::function()</code> 调用</td></tr>
+<tr><td><code>Self</code></td><td>当前类型的别名</td></tr>
+<tr><td><code>new</code></td><td>常见构造函数模式，不是语言关键字</td></tr>
+<tr><td><code>..old_value</code></td><td>struct update syntax，可能复制或 move 字段</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">Rust 用 struct 组织数据，用 impl 组织行为，并通过 &amp;self / &amp;mut self / self 明确表达方法如何使用所有权。
+</code></pre>
+<h2 id="下次继续-5"><a class="header" href="#下次继续-5">下次继续</a></h2>
+<p>Day 7 建议主题：<code>enum</code> / <code>match</code> / <code>Option</code> 深入。</p>
+<p>建议内容：</p>
+<ul>
+<li>定义 <code>enum</code></li>
+<li>带数据的 enum variant</li>
+<li><code>match</code> 穷尽匹配</li>
+<li><code>Option&lt;T&gt;</code> 的结构本质</li>
+<li><code>if let</code></li>
+<li>用 enum 表达状态</li>
+</ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="阶段复盘-01---rust-最小写作与运行流程"><a class="header" href="#阶段复盘-01---rust-最小写作与运行流程">阶段复盘 01 - Rust 最小写作与运行流程</a></h1>
+<p>日期：2026-05-14</p>
+<h2 id="目标"><a class="header" href="#目标">目标</a></h2>
+<p>学完 Day 1 到 Day 5 后，已经接触了不少 Rust 语言概念：</p>
+<ul>
+<li>变量、类型、<code>String</code>、<code>Vec</code></li>
+<li>所有权、借用、slice</li>
+<li>函数、控制流、<code>match</code>、<code>Option</code></li>
+<li>iterator、<code>map</code>、<code>filter</code>、<code>collect</code></li>
+</ul>
+<p>但“看懂代码”和“自己写并运行代码”是两种能力。</p>
+<p>本阶段笔记专门解决一个问题：</p>
+<pre><code class="language-text">如何写一个最小 Rust 程序，并在终端里正确运行它。
+</code></pre>
+<p>重点包括：</p>
+<ul>
+<li><code>fn main()</code> 是什么</li>
+<li>Cargo 默认运行哪个文件</li>
+<li>多个 <code>.rs</code> 文件怎么组织</li>
+<li><code>cargo run</code>、<code>cargo check</code>、<code>cargo run --bin xxx</code>、<code>rustc</code> 怎么用</li>
+<li>初学阶段推荐的练习目录结构</li>
+</ul>
+<h2 id="1-rust-程序的最小单位"><a class="header" href="#1-rust-程序的最小单位">1. Rust 程序的最小单位</a></h2>
+<p>最小 Rust 程序：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("hello rust");
+}</code></pre>
+<p><code>main</code> 是程序入口。</p>
+<p>当运行一个二进制 Rust 程序时，Rust 会从：</p>
+<pre class="playground"><code class="language-rust">fn main()</code></pre>
+<p>开始执行。</p>
+<p><code>main</code> 默认返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>()
+<span class="boring">}</span></code></pre>
+<p>也就是 unit，可以理解成“没有有意义的返回值”。</p>
+<p>所以这个写法是正常的：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("hello rust");
+}</code></pre>
+<p>也可以显式写成：</p>
+<pre class="playground"><code class="language-rust">fn main() -&gt; () {
+    println!("hello rust");
+}</code></pre>
+<p>但通常不写 <code>-&gt; ()</code>。</p>
+<h2 id="2-cargo-默认运行-srcmainrs"><a class="header" href="#2-cargo-默认运行-srcmainrs">2. Cargo 默认运行 <code>src/main.rs</code></a></h2>
+<p>一个最小 Cargo 项目通常长这样：</p>
+<pre><code class="language-text">my_project/
+  Cargo.toml
+  src/
+    main.rs
+</code></pre>
+<p>进入项目目录：</p>
+<pre><code class="language-bash">cd my_project
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>Cargo 默认会运行：</p>
+<pre><code class="language-text">src/main.rs
+</code></pre>
+<p>所以如果你写的是：</p>
+<pre><code class="language-text">src/main.rs
+</code></pre>
+<p>那么命令就是：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>检查是否能编译但不真正运行：</p>
+<pre><code class="language-bash">cargo check
+</code></pre>
+<p>常用习惯：</p>
+<pre><code class="language-text">cargo check  用来快速看有没有编译错误
+cargo run    用来编译并运行程序
+</code></pre>
+<h2 id="3-为什么-srccase1rs-不会被-cargo-run-运行"><a class="header" href="#3-为什么-srccase1rs-不会被-cargo-run-运行">3. 为什么 <code>src/case1.rs</code> 不会被 <code>cargo run</code> 运行？</a></h2>
+<p>假设目录是：</p>
+<pre><code class="language-text">my_project/
+  Cargo.toml
+  src/
+    main.rs
+    case1.rs
+</code></pre>
+<p>你运行：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>Cargo 只会运行：</p>
+<pre><code class="language-text">src/main.rs
+</code></pre>
+<p>不会自动运行：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>因为 <code>src/case1.rs</code> 在 Cargo 看来只是一个普通源码文件。</p>
+<p>如果你想让它成为模块，需要在 <code>main.rs</code> 里写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod case1;
+<span class="boring">}</span></code></pre>
+<p>但模块文件通常不写自己的 <code>fn main()</code>。</p>
+<p>所以初学阶段不推荐这样放可运行小程序：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>更推荐使用：</p>
+<pre><code class="language-text">src/bin/case1.rs
+</code></pre>
+<h2 id="4-多个可运行-rs-文件推荐用-srcbin"><a class="header" href="#4-多个可运行-rs-文件推荐用-srcbin">4. 多个可运行 <code>.rs</code> 文件：推荐用 <code>src/bin/</code></a></h2>
+<p>如果你想在一个项目里写多个可运行练习，推荐目录结构：</p>
+<pre><code class="language-text">my_project/
+  Cargo.toml
+  src/
+    main.rs
+    bin/
+      case1.rs
+      case2.rs
+      parse_words.rs
+</code></pre>
+<p>每个 <code>src/bin/*.rs</code> 都可以有自己的：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    ...
+}</code></pre>
+<p>运行方式：</p>
+<pre><code class="language-bash">cargo run --bin case1
+cargo run --bin case2
+cargo run --bin parse_words
+</code></pre>
+<p>注意：命令里不写 <code>.rs</code> 后缀。</p>
+<p>例如文件是：</p>
+<pre><code class="language-text">src/bin/parse_words.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run --bin parse_words
+</code></pre>
+<p>检查：</p>
+<pre><code class="language-bash">cargo check --bin parse_words
+</code></pre>
+<h2 id="5-examples-目录"><a class="header" href="#5-examples-目录">5. <code>examples/</code> 目录</a></h2>
+<p>另一种组织方式是：</p>
+<pre><code class="language-text">my_project/
+  examples/
+    demo.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run --example demo
+</code></pre>
+<p><code>examples/</code> 常用于库项目的 API 示例。</p>
+<p>当前学习阶段，更推荐：</p>
+<pre><code class="language-text">src/bin/
+</code></pre>
+<p>因为它更适合放多个独立小练习。</p>
+<h2 id="6-rustc-单文件运行"><a class="header" href="#6-rustc-单文件运行">6. <code>rustc</code> 单文件运行</a></h2>
+<p>如果只是一个非常小的单文件实验，也可以不用 Cargo，直接用 <code>rustc</code>。</p>
+<p>例如文件：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">rustc src/case1.rs -o case1
+./case1
+</code></pre>
+<p>含义：</p>
+<pre><code class="language-text">rustc src/case1.rs -o case1   编译成可执行文件 case1
+./case1                       运行这个可执行文件
+</code></pre>
+<p>缺点：</p>
+<pre><code class="language-text">会生成一个二进制文件 case1，需要自己清理。
+</code></pre>
+<p>清理：</p>
+<pre><code class="language-bash">rm case1
+</code></pre>
+<p>如果你输出到了 <code>src/case1</code>，就清理：</p>
+<pre><code class="language-bash">rm src/case1
+</code></pre>
+<p>初学时，如果已经在 Cargo 项目里，通常更推荐用 <code>src/bin/</code>。</p>
+<h2 id="7-常用运行命令速查表"><a class="header" href="#7-常用运行命令速查表">7. 常用运行命令速查表</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>目标</th><th>文件位置</th><th>命令</th></tr>
+</thead>
+<tbody>
+<tr><td>运行默认程序</td><td><code>src/main.rs</code></td><td><code>cargo run</code></td></tr>
+<tr><td>检查默认程序</td><td><code>src/main.rs</code></td><td><code>cargo check</code></td></tr>
+<tr><td>运行额外小程序</td><td><code>src/bin/case1.rs</code></td><td><code>cargo run --bin case1</code></td></tr>
+<tr><td>检查额外小程序</td><td><code>src/bin/case1.rs</code></td><td><code>cargo check --bin case1</code></td></tr>
+<tr><td>运行 example</td><td><code>examples/demo.rs</code></td><td><code>cargo run --example demo</code></td></tr>
+<tr><td>单文件临时运行</td><td>任意 <code>.rs</code></td><td><code>rustc file.rs -o demo &amp;&amp; ./demo</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="8-推荐的每日练习结构"><a class="header" href="#8-推荐的每日练习结构">8. 推荐的每日练习结构</a></h2>
+<p>从后续 Day 开始，建议每一天的项目使用这种结构：</p>
+<pre><code class="language-text">dayXX_topic/
+  Cargo.toml
+  src/
+    main.rs
+    bin/
+      case1_basic.rs
+      case2_error.rs
+      case3_practice.rs
+</code></pre>
+<p>其中：</p>
+<pre><code class="language-text">src/main.rs        当天主实验
+src/bin/*.rs       当天手写练习、小作业、错误实验
+</code></pre>
+<p>运行主实验：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>运行小练习：</p>
+<pre><code class="language-bash">cargo run --bin case1_basic
+cargo run --bin case2_error
+cargo run --bin case3_practice
+</code></pre>
+<h2 id="9-从零手写一个-rust-小程序的流程"><a class="header" href="#9-从零手写一个-rust-小程序的流程">9. 从零手写一个 Rust 小程序的流程</a></h2>
+<p>不要一开始就写复杂链式调用。推荐流程：</p>
+<pre><code class="language-text">1. 写 fn main()
+2. 定义一个输入
+3. println! 打印输入
+4. 用 for 循环拆开
+5. 逐步加 parse / match / push
+6. 最后再改写成 iterator 链
+</code></pre>
+<p>例如目标：</p>
+<pre><code class="language-text">给定字符串 "10 20 bad -5"，逐个尝试解析成 i32。
+</code></pre>
+<p>第一步：只打印输入。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+    println!("text = {}", text);
+}</code></pre>
+<p>第二步：拆分单词。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+
+    for word in text.split_whitespace() {
+        println!("word = {:?}", word);
+    }
+}</code></pre>
+<p>第三步：尝试解析。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+
+    for word in text.split_whitespace() {
+        let parsed = word.parse::&lt;i32&gt;();
+        println!("word = {:?}, parsed = {:?}", word, parsed);
+    }
+}</code></pre>
+<p>第四步：只收集成功结果。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+    let mut numbers = Vec::new();
+
+    for word in text.split_whitespace() {
+        match word.parse::&lt;i32&gt;() {
+            Ok(value) =&gt; numbers.push(value),
+            Err(_) =&gt; println!("skip invalid word = {:?}", word),
+        }
+    }
+
+    println!("numbers = {:?}", numbers);
+}</code></pre>
+<p>第五步：再改写成 iterator 链。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+
+    let numbers: Vec&lt;i32&gt; = text
+        .split_whitespace()
+        .filter_map(|word| word.parse::&lt;i32&gt;().ok())
+        .collect();
+
+    println!("numbers = {:?}", numbers);
+}</code></pre>
+<h2 id="10-函数可以写在-main-前也可以写在-main-后"><a class="header" href="#10-函数可以写在-main-前也可以写在-main-后">10. 函数可以写在 <code>main</code> 前，也可以写在 <code>main</code> 后</a></h2>
+<p>Rust 不要求函数必须先定义再使用。</p>
+<p>这个可以：</p>
+<pre class="playground"><code class="language-rust">fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+
+fn main() {
+    println!("{}", add(2, 3));
+}</code></pre>
+<p>这个也可以：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("{}", add(2, 3));
+}
+
+fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}</code></pre>
+<p>初学阶段推荐：</p>
+<pre><code class="language-text">辅助函数写在前面，main 写在最后。
+</code></pre>
+<p>这样读起来比较顺。</p>
+<h2 id="11-多个文件时先区分模块和可运行程序"><a class="header" href="#11-多个文件时先区分模块和可运行程序">11. 多个文件时，先区分“模块”和“可运行程序”</a></h2>
+<p>这是初学者最容易混的地方。</p>
+<h3 id="可运行程序"><a class="header" href="#可运行程序">可运行程序</a></h3>
+<p>文件：</p>
+<pre><code class="language-text">src/bin/case1.rs
+</code></pre>
+<p>里面可以有：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("case1");
+}</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run --bin case1
+</code></pre>
+<h3 id="模块"><a class="header" href="#模块">模块</a></h3>
+<p>文件：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>通常写函数，不写 <code>main</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn hello() {
+    println!("hello from case1 module");
+}
+<span class="boring">}</span></code></pre>
+<p>在 <code>main.rs</code> 中引用：</p>
+<pre class="playground"><code class="language-rust">mod case1;
+
+fn main() {
+    case1::hello();
+}</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>当前阶段如果你只是想做多个独立练习，优先用：</p>
+<pre><code class="language-text">src/bin/*.rs
+</code></pre>
+<p>不要先引入模块系统。</p>
+<h2 id="12-建议后续学习节奏"><a class="header" href="#12-建议后续学习节奏">12. 建议后续学习节奏</a></h2>
+<p>后续 Day 正常学习新内容，但每隔几天补一次“写代码训练”：</p>
+<pre><code class="language-text">概念学习：Day 6、Day 7、Day 8 ...
+阶段训练：如何写小程序、如何读报错、如何拆任务、如何组织文件
+</code></pre>
+<p>每个阶段训练都遵循：</p>
+<pre><code class="language-text">小目标 -&gt; 你手写 -&gt; 你运行 -&gt; 贴报错 -&gt; 修正 -&gt; 总结命令和模式
+</code></pre>
+<h2 id="阶段总结"><a class="header" href="#阶段总结">阶段总结</a></h2>
+<p>当前最重要的运行规则：</p>
+<pre><code class="language-text">cargo run                     运行 src/main.rs
+cargo run --bin case1          运行 src/bin/case1.rs
+cargo run --example demo       运行 examples/demo.rs
+rustc file.rs -o demo &amp;&amp; ./demo 单文件临时运行
+</code></pre>
+<p>当前最推荐的练习结构：</p>
+<pre><code class="language-text">src/main.rs          当天主实验
+src/bin/case1.rs     第一个手写练习
+src/bin/case2.rs     第二个手写练习
+</code></pre>
+<p>一句话总结：</p>
+<pre><code class="language-text">先学会写一个最小 fn main()，再学会把多个 main 放进 src/bin/，最后再学模块系统。
+</code></pre>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+        <script>
+        window.addEventListener('load', function() {
+            window.setTimeout(window.print, 100);
+        });
+        </script>
+
+
+    </div>
+    </body>
+</html>

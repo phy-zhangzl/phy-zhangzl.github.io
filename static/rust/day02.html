@@ -1,0 +1,621 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 02 - 所有权 Ownership 入门 - Rust Tutor</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-78628fb8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-9a2da176.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Tutor</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="day-02---所有权-ownership-入门"><a class="header" href="#day-02---所有权-ownership-入门">Day 02 - 所有权 Ownership 入门</a></h1>
+<p>日期：2026-05-10</p>
+<h2 id="今日目标"><a class="header" href="#今日目标">今日目标</a></h2>
+<p>理解 Rust 最核心的所有权模型入门：</p>
+<ul>
+<li><code>i32</code> 这类简单类型为什么赋值后还能继续使用</li>
+<li><code>String</code> 为什么赋值后原变量会失效</li>
+<li><code>clone()</code> 什么时候需要</li>
+<li>函数传参时什么时候会 move</li>
+<li>只读借用 <code>&amp;str</code></li>
+<li>可变借用 <code>&amp;mut String</code></li>
+<li>可变借用的独占性</li>
+</ul>
+<p>Day 2 在 Rust 全貌中的位置：</p>
+<pre><code class="language-text">所有权 ownership 是 Rust 内存安全模型的地基。
+后面的 String、Vec、struct、enum、Result、iterator、文件读取、并发，都会反复遇到所有权和借用。
+</code></pre>
+<p>今天不追求掌握所有细节，但要建立一张地图：</p>
+<pre><code class="language-text">值怎么传递？
+谁拥有数据？
+谁只是借用？
+谁可以修改？
+什么时候需要 clone？
+</code></pre>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day02_ownership
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day02_ownership
+cargo run
+</code></pre>
+<h2 id="1-i32赋值时-copy"><a class="header" href="#1-i32赋值时-copy">1. <code>i32</code>：赋值时 Copy</a></h2>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let x = 10;
+    let y = x;
+
+    println!("x = {}", x);
+    println!("y = {}", y);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">x = 10
+y = 10
+</code></pre>
+<p>这里 <code>let y = x;</code> 会把 <code>x</code> 的值复制一份给 <code>y</code>。</p>
+<p>原因是 <code>i32</code> 实现了 <code>Copy</code>。对于 <code>i32</code>、<code>bool</code>、<code>char</code>、浮点数等简单类型，复制成本低，Rust 允许自动复制。</p>
+<p>关键点：</p>
+<pre><code class="language-text">let y = x;
+</code></pre>
+<p>不是修改 <code>x</code>，而是用 <code>x</code> 初始化一个新变量 <code>y</code>。</p>
+<h2 id="2-string赋值时-move"><a class="header" href="#2-string赋值时-move">2. <code>String</code>：赋值时 Move</a></h2>
+<p>错误实验：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");
+    let t = s;
+
+    println!("s = {}", s);
+    println!("t = {}", t);
+}</code></pre>
+<p>编译错误核心：</p>
+<pre><code class="language-text">error[E0382]: borrow of moved value: `s`
+
+move occurs because `s` has type `String`, which does not implement the `Copy` trait
+value moved here
+value borrowed here after move
+</code></pre>
+<p>解释：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let t = s;
+<span class="boring">}</span></code></pre>
+<p>这句会把 <code>s</code> 的所有权移动给 <code>t</code>。之后：</p>
+<pre><code class="language-text">t 有效
+s 失效
+</code></pre>
+<p>所以后面再打印 <code>s</code> 会报错。</p>
+<p>可以运行的 move 版本：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");
+    let t = s;
+
+    println!("t = {}", t);
+}</code></pre>
+<p>这里没有再使用 <code>s</code>，所以没有问题。</p>
+<h2 id="3-为什么-string-不默认-copy"><a class="header" href="#3-为什么-string-不默认-copy">3. 为什么 <code>String</code> 不默认 Copy？</a></h2>
+<p><code>String</code> 管理堆内存。可以粗略理解成：</p>
+<pre><code class="language-text">String {
+    ptr,
+    len,
+    capacity,
+}
+</code></pre>
+<p>如果 Rust 默认复制这三个字段，就可能出现两个 <code>String</code> 指向同一块堆内存。离开作用域时，两者都想释放同一块内存，可能造成 double free。</p>
+<p>Rust 的选择是：</p>
+<pre><code class="language-text">默认 move 所有权，不默认深拷贝堆数据。
+</code></pre>
+<p>这也是 Rust 的性能哲学：</p>
+<pre><code class="language-text">便宜的复制可以自动发生。
+昂贵的复制必须显式写出来。
+</code></pre>
+<h2 id="4-clone显式深拷贝"><a class="header" href="#4-clone显式深拷贝">4. <code>clone()</code>：显式深拷贝</a></h2>
+<p>如果确实希望 <code>s</code> 和 <code>t</code> 都拥有一份字符串内容，可以使用 <code>clone()</code>。</p>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let s = String::from("hello");
+    let t = s.clone();
+
+    println!("s = {}", s);
+    println!("t = {}", t);
+}</code></pre>
+<p>含义：</p>
+<pre><code class="language-text">s 保留原字符串
+t 得到一份新的字符串拷贝
+</code></pre>
+<p>代价：</p>
+<pre><code class="language-text">额外分配内存
+复制字符串内容
+</code></pre>
+<p>看到 <code>.clone()</code> 时，要逐渐养成一个习惯：</p>
+<pre><code class="language-text">这里真的需要复制吗？能不能改成借用？
+</code></pre>
+<p>初学阶段不必害怕 <code>clone()</code>，但要知道它不是免费的。</p>
+<h2 id="5-函数传参也可能-move"><a class="header" href="#5-函数传参也可能-move">5. 函数传参也可能 Move</a></h2>
+<p>错误实验：</p>
+<pre class="playground"><code class="language-rust">fn take_ownership(s: String) {
+    println!("inside function: {}", s);
+}
+
+fn main() {
+    let s = String::from("hello");
+
+    take_ownership(s);
+
+    println!("after function: {}", s);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>take_ownership(s);
+<span class="boring">}</span></code></pre>
+<p>会把 <code>main</code> 里的 <code>s</code> 移动到函数参数 <code>s</code>。</p>
+<p>可以理解成：</p>
+<pre><code class="language-text">main::s -&gt; take_ownership::s
+</code></pre>
+<p>函数结束时，函数参数 <code>s</code> 离开作用域，字符串被释放。回到 <code>main</code> 后，原来的 <code>s</code> 已经失效。</p>
+<h2 id="6-只读借用str"><a class="header" href="#6-只读借用str">6. 只读借用：<code>&amp;str</code></a></h2>
+<p>如果函数只是读字符串，不需要拿走所有权，应该使用借用。</p>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn read_string(s: &amp;str) {
+    println!("inside function: {}", s);
+}
+
+fn main() {
+    let s = String::from("hello");
+
+    read_string(&amp;s);
+
+    println!("after function: {}", s);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">inside function: hello
+after function: hello
+</code></pre>
+<p>这里 <code>read_string(&amp;s)</code> 只是借用 <code>s</code>，不拿走所有权，所以函数调用后 <code>s</code> 仍然可用。</p>
+<h3 id="为什么用-str-而不是-string"><a class="header" href="#为什么用-str-而不是-string">为什么用 <code>&amp;str</code> 而不是 <code>&amp;String</code>？</a></h3>
+<p><code>&amp;String</code> 可以用，但 <code>&amp;str</code> 更通用。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn read_string(s: &amp;str)
+<span class="boring">}</span></code></pre>
+<p>既可以接收：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+read_string(&amp;s);
+<span class="boring">}</span></code></pre>
+<p>也可以接收：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>read_string("hello");
+<span class="boring">}</span></code></pre>
+<p>所以只读字符串时，优先考虑 <code>&amp;str</code>。</p>
+<h2 id="7-可变借用mut-string"><a class="header" href="#7-可变借用mut-string">7. 可变借用：<code>&amp;mut String</code></a></h2>
+<p>如果函数要修改原字符串，需要可变借用。</p>
+<p>可运行示例：</p>
+<pre class="playground"><code class="language-rust">fn add_suffix(s: &amp;mut String) {
+    s.push_str(" world");
+}
+
+fn main() {
+    let mut s = String::from("hello");
+
+    add_suffix(&amp;mut s);
+
+    println!("s = {}", s);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">s = hello world
+</code></pre>
+<p>这里有三处要对应：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut s = String::from("hello"); // 变量本身允许被修改
+fn add_suffix(s: &amp;mut String)       // 函数接收可变引用
+add_suffix(&amp;mut s);                 // 调用时传可变借用
+<span class="boring">}</span></code></pre>
+<p>如果变量没有声明为 <code>mut</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+add_suffix(&amp;mut s);
+<span class="boring">}</span></code></pre>
+<p>会报错，核心意思是：</p>
+<pre><code class="language-text">cannot borrow `s` as mutable, as it is not declared as mutable
+</code></pre>
+<h2 id="8-可变借用是独占的"><a class="header" href="#8-可变借用是独占的">8. 可变借用是独占的</a></h2>
+<p>错误实验：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    let r = &amp;mut s;
+
+    println!("s = {}", s);
+    println!("r = {}", r);
+}</code></pre>
+<p>这里不允许，因为 <code>r</code> 是对 <code>s</code> 的可变借用，而且后面还要继续使用 <code>r</code>。</p>
+<p>核心规则：</p>
+<pre><code class="language-text">可变借用存在期间，不能同时通过原变量或其他引用访问同一份数据。
+</code></pre>
+<p>更口语化：</p>
+<pre><code class="language-text">借给 r 改的时候，就别同时从 s 这边插手。
+等 r 用完了，再回到 s。
+</code></pre>
+<p>可运行修复版本：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    let r = &amp;mut s;
+    r.push_str(" world");
+    println!("r = {}", r);
+
+    println!("s = {}", s);
+}</code></pre>
+<p>这里 <code>r</code> 最后一次使用在：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>println!("r = {}", r);
+<span class="boring">}</span></code></pre>
+<p>之后借用结束，所以可以继续使用 <code>s</code>。</p>
+<p>也可以用作用域明确结束借用：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut s = String::from("hello");
+
+    {
+        let r = &amp;mut s;
+        r.push_str(" world");
+        println!("r = {}", r);
+    }
+
+    println!("s = {}", s);
+}</code></pre>
+<h2 id="9-所有权地图传值借用可变借用"><a class="header" href="#9-所有权地图传值借用可变借用">9. 所有权地图：传值、借用、可变借用</a></h2>
+<p>Rust 里函数参数设计可以先用这张地图理解：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>函数想做什么</th><th>参数类型</th><th>调用方式</th><th>数据归属</th></tr>
+</thead>
+<tbody>
+<tr><td>拿走整数等 Copy 值</td><td><code>i32</code></td><td><code>f(x)</code></td><td>复制一份，原值还可用</td></tr>
+<tr><td>拿走堆数据</td><td><code>String</code></td><td><code>f(s)</code></td><td>move 所有权，原变量失效</td></tr>
+<tr><td>只读字符串</td><td><code>&amp;str</code></td><td><code>f(&amp;s)</code> 或 <code>f("hi")</code></td><td>借用，不拿走</td></tr>
+<tr><td>修改原字符串</td><td><code>&amp;mut String</code></td><td><code>f(&amp;mut s)</code></td><td>可变借用，独占修改</td></tr>
+<tr><td>只读数组/Vec 内容</td><td><code>&amp;[T]</code></td><td><code>f(&amp;nums)</code></td><td>借用一段连续数据</td></tr>
+</tbody>
+</table>
+</div>
+<p>今天先记住三个最核心的：</p>
+<pre><code class="language-text">传 String：把所有权交出去。
+传 &amp;str：借给函数看一下。
+传 &amp;mut String：借给函数改一下。
+</code></pre>
+<h3 id="参数选择的初步原则"><a class="header" href="#参数选择的初步原则">参数选择的初步原则</a></h3>
+<p>如果你在写一个函数，可以先问：</p>
+<pre><code class="language-text">1. 函数是否需要拥有这个值？
+   - 需要：传 `T`，例如 `String`。
+   - 不需要：传引用。
+
+2. 函数是否需要修改调用者的数据？
+   - 需要：传 `&amp;mut T`。
+   - 不需要：传 `&amp;T`、`&amp;str` 或 `&amp;[T]`。
+
+3. 这个参数是不是字符串？
+   - 只读字符串优先用 `&amp;str`。
+
+4. 这个参数是不是数组/Vec？
+   - 只读一段连续数据优先用 `&amp;[T]`。
+</code></pre>
+<p>这不是最终完整规则，但足够支撑第一轮 Rust 学习。</p>
+<h2 id="10-copymovecloneborrow-的关系"><a class="header" href="#10-copymovecloneborrow-的关系">10. Copy、Move、Clone、Borrow 的关系</a></h2>
+<p>可以把今天学的四个词放在一起：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>词</th><th>含义</th><th>典型例子</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Copy</code></td><td>便宜复制，赋值后原变量还能用</td><td><code>i32</code>, <code>bool</code>, <code>char</code>, <code>f64</code></td></tr>
+<tr><td><code>Move</code></td><td>所有权转移，原变量失效</td><td><code>String</code>, <code>Vec&lt;T&gt;</code></td></tr>
+<tr><td><code>Clone</code></td><td>显式深拷贝或自定义复制</td><td><code>s.clone()</code></td></tr>
+<tr><td><code>Borrow</code></td><td>借用，不拿走所有权</td><td><code>&amp;s</code>, <code>&amp;mut s</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>它们解决的是同一个问题：</p>
+<pre><code class="language-text">数据到底怎么在程序中流动？
+</code></pre>
+<p>Rust 不希望昂贵复制偷偷发生，所以：</p>
+<pre><code class="language-text">小值可以 Copy。
+堆数据默认 Move。
+真的要复制就 Clone。
+只是用一下就 Borrow。
+</code></pre>
+<h2 id="11-和-c-的关键区别"><a class="header" href="#11-和-c-的关键区别">11. 和 C++ 的关键区别</a></h2>
+<p>C++ 中：</p>
+<pre><code class="language-cpp">void f(std::string s);
+</code></pre>
+<p>调用：</p>
+<pre><code class="language-cpp">std::string name = "hello";
+f(name);
+</code></pre>
+<p>通常是拷贝一份，<code>name</code> 还能用。</p>
+<p>Rust 中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f(s: String) {}
+
+let name = String::from("hello");
+f(name);
+<span class="boring">}</span></code></pre>
+<p>默认是 move，<code>name</code> 之后不能再用。</p>
+<p>如果 Rust 想复制，要显式写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>f(name.clone());
+<span class="boring">}</span></code></pre>
+<p>如果只是读，要写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>f(&amp;name);
+<span class="boring">}</span></code></pre>
+<h2 id="今日总结"><a class="header" href="#今日总结">今日总结</a></h2>
+<p>Day 2 的核心模型：</p>
+<ol>
+<li><code>i32</code> 等简单类型赋值时 Copy。</li>
+<li><code>String</code> 赋值或传参时默认 Move。</li>
+<li><code>clone()</code> 表示显式深拷贝，可能有性能成本。</li>
+<li>函数只读字符串时，优先用 <code>&amp;str</code>。</li>
+<li>函数要修改字符串时，用 <code>&amp;mut String</code>。</li>
+<li>可变借用是独占的，不能和原变量访问穿插使用。</li>
+</ol>
+<p>更高层的理解：</p>
+<pre><code class="language-text">Rust 学习的主线之一，就是不断训练函数签名设计：
+T、&amp;T、&amp;mut T、&amp;str、&amp;[T] 到底该选哪个？
+</code></pre>
+<p>这条主线会贯穿后续：</p>
+<pre><code class="language-text">String / Vec / struct / enum / Result / iterator / 文件读取 / 并发
+</code></pre>
+<h2 id="下次继续"><a class="header" href="#下次继续">下次继续</a></h2>
+<p>Day 3 建议主题：借用规则继续深入。</p>
+<p>建议实验：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s = String::from("hello");
+let r1 = &amp;s;
+let r2 = &amp;s;
+println!("{} {}", r1, r2);
+<span class="boring">}</span></code></pre>
+<p>对比：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut s = String::from("hello");
+let r1 = &amp;s;
+let r2 = &amp;mut s;
+println!("{} {}", r1, r2);
+<span class="boring">}</span></code></pre>
+<p>目标：理解“多个只读引用可以共存，但只读引用和可变引用不能随意混用”。</p>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day01.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="day03.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day01.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="day03.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

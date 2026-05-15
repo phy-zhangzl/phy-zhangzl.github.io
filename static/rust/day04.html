@@ -1,0 +1,616 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 04 - 函数、表达式、控制流与模式基础 - Rust Tutor</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-78628fb8.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-9a2da176.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Tutor</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="day-04---函数表达式控制流与模式基础"><a class="header" href="#day-04---函数表达式控制流与模式基础">Day 04 - 函数、表达式、控制流与模式基础</a></h1>
+<p>日期：2026-05-13</p>
+<h2 id="今日目标"><a class="header" href="#今日目标">今日目标</a></h2>
+<p>Day 4 在完成所有权和借用的基础之后，进入 Rust 的程序逻辑组织：</p>
+<ul>
+<li>函数返回值与最后一个表达式</li>
+<li>语句 statement vs 表达式 expression</li>
+<li><code>if</code> 作为表达式</li>
+<li><code>match</code> 分支与模式匹配</li>
+<li><code>for</code> / <code>while</code> / <code>loop</code> 三种循环</li>
+<li><code>Option&lt;T&gt;</code> 处理“可能有值，也可能没有值“</li>
+<li><code>if let</code> / <code>while let</code> / <code>let else</code></li>
+<li>循环标签 <code>'label</code></li>
+<li><code>panic!</code> 与常见 panic 场景</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day04_control_flow
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day04_control_flow
+cargo run
+</code></pre>
+<h2 id="1-函数返回值最后一个表达式"><a class="header" href="#1-函数返回值最后一个表达式">1. 函数返回值：最后一个表达式</a></h2>
+<p>在 Rust 里，函数体最后一个没有分号的表达式就是返回值。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn add(a: i32, b: i32) -&gt; i32 {
+    return a + b;
+}
+<span class="boring">}</span></code></pre>
+<p>但 Rust 更常写前一种风格。</p>
+<p>如果加了分号：</p>
+<pre><code class="language-rust ignore">fn add(a: i32, b: i32) -&gt; i32 {
+    a + b;
+}</code></pre>
+<p>编译器会报错：</p>
+<pre><code class="language-text">expected `i32`, found `()`
+help: remove this semicolon
+</code></pre>
+<h2 id="2-语句-vs-表达式"><a class="header" href="#2-语句-vs-表达式">2. 语句 vs 表达式</a></h2>
+<p>这个区别在 Rust 中非常重要：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th></th><th>语句 statement</th><th>表达式 expression</th></tr>
+</thead>
+<tbody>
+<tr><td>做什么</td><td>执行动作</td><td>计算并产生值</td></tr>
+<tr><td>有没有值</td><td>没有可用的值（返回 <code>()</code>）</td><td>有值</td></tr>
+<tr><td>例子</td><td><code>let x = 3;</code></td><td><code>a + b</code>，<code>if ... else ...</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>函数体最后用表达式作为返回值，是 Rust 常见的风格。</p>
+<h2 id="3-if-也是表达式"><a class="header" href="#3-if-也是表达式">3. <code>if</code> 也是表达式</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn describe_number(x: i32) -&gt; &amp;'static str {
+    if x &lt; 0 {
+        "negative"
+    } else if x == 0 {
+        "zero"
+    } else if x % 2 == 0 {
+        "positive even"
+    } else {
+        "positive odd"
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>这里整个 <code>if ... else ...</code> 是函数最后一个表达式，它的结果就是函数返回值。</p>
+<p><code>if</code> 作为表达式时，所有分支必须返回同一种类型。比如这个不行：</p>
+<pre><code class="language-rust ignore">let value = if x &gt; 0 {
+    1
+} else {
+    "negative"
+};</code></pre>
+<p>因为 Rust 需要在编译时确定 <code>value</code> 的类型，但两个分支类型不一样。</p>
+<h2 id="4-match强大的分支表达式"><a class="header" href="#4-match强大的分支表达式">4. <code>match</code>：强大的分支表达式</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn grade(score: i32) -&gt; &amp;'static str {
+    match score {
+        90..=100 =&gt; "A",
+        80..=89 =&gt; "B",
+        70..=79 =&gt; "C",
+        60..=69 =&gt; "D",
+        0..=59 =&gt; "F",
+        _ =&gt; "invalid",
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>关键语法点：</p>
+<pre><code class="language-text">90..=100    包含两端的范围，等价于 [90, 100]
+_           兜底，匹配其他所有情况
+match 必须穷尽所有可能性，所以 _ 很常用
+</code></pre>
+<h3 id="用--匹配多个值"><a class="header" href="#用--匹配多个值">用 <code>|</code> 匹配多个值</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match x {
+    1 | 2 =&gt; println!("one or two"),
+    3 | 4 =&gt; println!("three or four"),
+    5..=10 =&gt; println!("five to ten"),
+    _ =&gt; println!("something else"),
+}
+<span class="boring">}</span></code></pre>
+<p><code>|</code> 表示“或“，<code>..=</code> 表示包含两端的范围。</p>
+<h2 id="5-三种循环"><a class="header" href="#5-三种循环">5. 三种循环</a></h2>
+<h3 id="for"><a class="header" href="#for"><code>for</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for score in [95, 82, 61, 40, 120] {
+    println!("score {} -&gt; grade {}", score, grade(score));
+}
+<span class="boring">}</span></code></pre>
+<p><code>for</code> 也支持 range 语法：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for i in 0..5 { ... }    // 0, 1, 2, 3, 4
+for i in 0..=5 { ... }   // 0, 1, 2, 3, 4, 5
+<span class="boring">}</span></code></pre>
+<h3 id="while"><a class="header" href="#while"><code>while</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut count = 3;
+while count &gt; 0 {
+    println!("count = {}", count);
+    count -= 1;
+}
+<span class="boring">}</span></code></pre>
+<h3 id="loop"><a class="header" href="#loop"><code>loop</code></a></h3>
+<p>无限循环，但可以用 <code>break</code> 返回值：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut n = 0;
+let result = loop {
+    n += 1;
+    if n == 5 {
+        break n * 10;
+    }
+};
+// result = 50
+<span class="boring">}</span></code></pre>
+<p>这里 <code>loop</code> 作为表达式产生值 <code>50</code>。</p>
+<h2 id="6-optiont"><a class="header" href="#6-optiont">6. <code>Option&lt;T&gt;</code></a></h2>
+<p><code>Option&lt;T&gt;</code> 是 Rust 标准库里非常常用的枚举，表示“可能有值，也可能没有值“：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn find_first_even(nums: &amp;[i32]) -&gt; Option&lt;i32&gt; {
+    for &amp;x in nums {
+        if x % 2 == 0 {
+            return Some(x);
+        }
+    }
+
+    None
+}
+<span class="boring">}</span></code></pre>
+<p>两种可能：</p>
+<pre><code class="language-text">Some(value)   -&gt; 有值，value 是具体内容
+None          -&gt; 没有值
+</code></pre>
+<p>用 <code>match</code> 处理：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match first_even {
+    Some(value) =&gt; println!("first even = {}", value),
+    None =&gt; println!("no even number"),
+}
+<span class="boring">}</span></code></pre>
+<h2 id="7-if-let简化单模式匹配"><a class="header" href="#7-if-let简化单模式匹配">7. <code>if let</code>：简化单模式匹配</a></h2>
+<p>如果只关心其中一种模式：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(value) = find_first_even(&amp;[1, 3, 8, 9]) {
+    println!("found even = {}", value);
+}
+<span class="boring">}</span></code></pre>
+<p>等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match find_first_even(&amp;[1, 3, 8, 9]) {
+    Some(value) =&gt; println!("found even = {}", value),
+    _ =&gt; {}
+}
+<span class="boring">}</span></code></pre>
+<p>带 <code>else</code> 的版本：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(value) = find_first_even(&amp;[1, 3, 7]) {
+    println!("found even = {}", value);
+} else {
+    println!("no even number");
+}
+<span class="boring">}</span></code></pre>
+<h3 id="为什么必须写-let"><a class="header" href="#为什么必须写-let">为什么必须写 <code>let</code>？</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(value) = expr { ... }
+<span class="boring">}</span></code></pre>
+<p>不能省略 <code>let</code>，写成：</p>
+<pre><code class="language-rust ignore">if Some(value) = expr { ... }</code></pre>
+<p>因为普通 <code>if</code> 期望条件是 <code>bool</code>，而 <code>Some(value) = expr</code> 是模式匹配赋值，不是 <code>bool</code>。<code>let</code> 关键字告诉编译器“这一行是模式匹配，不是 bool 判断“。</p>
+<h2 id="8-while-let持续匹配直到失败"><a class="header" href="#8-while-let持续匹配直到失败">8. <code>while let</code>：持续匹配直到失败</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut nums = vec![1, 2, 3, 4, 5];
+
+while let Some(top) = nums.pop() {
+    println!("popped = {}", top);
+}
+<span class="boring">}</span></code></pre>
+<p>逻辑：</p>
+<pre><code class="language-text">nums.pop() 返回 Some(5)，匹配成功，执行循环体
+nums.pop() 返回 Some(4)，匹配成功
+...
+nums.pop() 返回 None，匹配失败，退出循环
+</code></pre>
+<h2 id="9-let-else简化-option-的提前返回"><a class="header" href="#9-let-else简化-option-的提前返回">9. <code>let else</code>：简化 Option 的提前返回</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn try_parse(s: &amp;str) -&gt; Option&lt;i32&gt; {
+    let result: i32 = s.parse().ok()?;
+    Some(result)
+}
+
+fn process(s: &amp;str) {
+    let Some(value) = try_parse(s) else {
+        println!("parse failed: {}", s);
+        return;
+    };
+
+    println!("parsed value = {}", value);
+    println!("value + 10 = {}", value + 10);
+}
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">如果 try_parse(s) 返回 Some(value)，取出 value。
+否则执行 else 块，然后 return。
+</code></pre>
+<p><code>let else</code> 的 <code>else</code> 块必须以 <code>return</code>、<code>break</code>、<code>continue</code> 或 <code>panic!</code> 结尾。</p>
+<h2 id="10-元组解构"><a class="header" href="#10-元组解构">10. 元组解构</a></h2>
+<p><code>let</code> 可以直接解构元组：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let pair = (100, 200);
+let (a, b) = pair;
+// a = 100, b = 200
+
+let (first, _, third) = (1, 2, 3);
+// _ 表示忽略这个位置的值
+<span class="boring">}</span></code></pre>
+<p><code>match</code> 也可以解构元组，并根据内容做不同分支：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let point = (3, 0);
+
+match point {
+    (0, 0) =&gt; println!("origin"),
+    (0, y) =&gt; println!("on y-axis, y = {}", y),
+    (x, 0) =&gt; println!("on x-axis, x = {}", x),
+    (x, y) =&gt; println!("x = {}, y = {}", x, y),
+}
+<span class="boring">}</span></code></pre>
+<p>Rust 从上往下匹配，第一个匹配到的分支会被执行。</p>
+<h2 id="11-match-guard"><a class="header" href="#11-match-guard">11. match guard</a></h2>
+<p>match 分支可以附加条件：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let pair = (10, 20);
+
+match pair {
+    (x, y) if x &gt; y =&gt; println!("(larger, smaller)"),
+    (x, y) if x &lt; y =&gt; println!("(smaller, larger)"),
+    (x, _) =&gt; println!("(equal, value = {})", x),
+}
+<span class="boring">}</span></code></pre>
+<p><code>if x &gt; y</code> 就是 match guard：模式匹配成功后再额外检查条件。</p>
+<h2 id="12-enumerate"><a class="header" href="#12-enumerate">12. <code>enumerate()</code></a></h2>
+<p>遍历集合时同时获取索引：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let colors = vec!["red", "green", "blue"];
+
+for (index, color) in colors.iter().enumerate() {
+    println!("color[{}] = {}", index, color);
+}
+<span class="boring">}</span></code></pre>
+<p>输出：</p>
+<pre><code class="language-text">color[0] = red
+color[1] = green
+color[2] = blue
+</code></pre>
+<h2 id="13-循环标签-label"><a class="header" href="#13-循环标签-label">13. 循环标签 <code>'label</code></a></h2>
+<p>嵌套循环时，可以用标签指定 <code>break</code> 和 <code>continue</code> 的作用范围。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>'outer: for i in 0..3 {
+    for j in 0..3 {
+        if i == 1 &amp;&amp; j == 1 {
+            break 'outer;           // 跳出两层循环
+        }
+        if j == 1 {
+            continue 'outer;        // 跳到外层下一次迭代
+        }
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>语法：标签以单引号 <code>'</code> 开头，放在循环关键字之前。</p>
+<p>没有标签时，<code>break</code> 和 <code>continue</code> 只影响最内层循环。</p>
+<h2 id="14-panic程序紧急停止"><a class="header" href="#14-panic程序紧急停止">14. <code>panic!</code>：程序紧急停止</a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>panic!("something went wrong");
+<span class="boring">}</span></code></pre>
+<p>效果：</p>
+<pre><code class="language-text">1. 打印 panic 信息（文件名、行号、自定义消息）
+2. 程序立即停止
+3. 后面的代码不会执行
+4. 退出码 101
+</code></pre>
+<h3 id="运行-stack-backtrace"><a class="header" href="#运行-stack-backtrace">运行 stack backtrace</a></h3>
+<pre><code class="language-bash">RUST_BACKTRACE=1 cargo run
+</code></pre>
+<p>会打印调用栈，帮助定位问题来源。</p>
+<h3 id="常见的自动-panic-场景"><a class="header" href="#常见的自动-panic-场景">常见的自动 panic 场景</a></h3>
+<pre><code class="language-rust ignore">let arr = [1, 2, 3];
+arr[10];           // index out of bounds
+
+let x: Option&lt;i32&gt; = None;
+x.unwrap();        // called `Option::unwrap()` on a `None` value</code></pre>
+<h3 id="rust-对-panic-的哲学"><a class="header" href="#rust-对-panic-的哲学">Rust 对 <code>panic!</code> 的哲学</a></h3>
+<pre><code class="language-text">panic! 用于"程序无法继续运行"的情况。
+不用于"预期可能出错"的情况。
+</code></pre>
+<p>常见用法：</p>
+<pre><code class="language-text">数组越界 -&gt; panic
+assert 检查失败 -&gt; panic
+程序配置不合法，无法启动 -&gt; panic
+用户输入非法 -&gt; 不用 panic，用 Result
+文件不存在 -&gt; 不用 panic，用 Result
+</code></pre>
+<p>初学阶段有时为了方便会调用 <code>unwrap()</code>，潜台词是“这里应该不会出问题，如果出问题就 panic 给我看“。</p>
+<h2 id="今日总结"><a class="header" href="#今日总结">今日总结</a></h2>
+<p>Day 4 覆盖了 Rust 程序逻辑组织的基本工具：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td>函数返回值</td><td>最后一个没有分号的表达式</td></tr>
+<tr><td>表达式 vs 语句</td><td>表达式产生值，语句不产生值</td></tr>
+<tr><td><code>if</code></td><td>可以作为表达式产生值</td></tr>
+<tr><td><code>match</code></td><td>穷尽匹配，支持 <code>..=</code>、`</td></tr>
+<tr><td><code>for</code> / <code>while</code> / <code>loop</code></td><td>三种循环，<code>loop</code> 可以用 <code>break</code> 返回值</td></tr>
+<tr><td><code>Option&lt;T&gt;</code></td><td><code>Some(value)</code> 或 <code>None</code></td></tr>
+<tr><td><code>if let</code> / <code>while let</code></td><td>简化单模式匹配</td></tr>
+<tr><td><code>let else</code></td><td>模式不匹配时提前返回</td></tr>
+<tr><td><code>enumerate()</code></td><td>遍历时获取索引</td></tr>
+<tr><td>循环标签 <code>'label</code></td><td>控制嵌套循环的 <code>break</code> / <code>continue</code></td></tr>
+<tr><td><code>panic!</code></td><td>严重错误时立即停止程序</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="下次继续"><a class="header" href="#下次继续">下次继续</a></h2>
+<p>Day 5 建议主题：<code>String</code> / <code>Vec</code> / Iterator 初步。</p>
+<p>建议内容：</p>
+<ul>
+<li><code>String</code> 常用方法：<code>push_str()</code>、<code>replace()</code>、<code>contains()</code>、<code>split()</code></li>
+<li><code>Vec</code> 常用方法：<code>push()</code>、<code>pop()</code>、<code>insert()</code>、<code>remove()</code>、<code>contains()</code></li>
+<li>Iterator 基础：<code>.iter()</code>、<code>.map()</code>、<code>.filter()</code>、<code>.collect()</code></li>
+<li>链式调用风格</li>
+<li><code>for</code> 循环与迭代器的关系</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day03.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+                            <a rel="next prefetch" href="day05.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day03.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+                    <a rel="next prefetch" href="day05.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

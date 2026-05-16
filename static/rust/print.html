@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "rust";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-78628fb8.js";
+            window.path_to_searchindex_js = "searchindex-23533959.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-9a2da176.js"></script>
+        <script src="toc-6f894e03.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -2479,6 +2479,359 @@ fn main() {
 <li>结构体和所有权</li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
+<h1 id="阶段复盘-01---rust-最小写作与运行流程"><a class="header" href="#阶段复盘-01---rust-最小写作与运行流程">阶段复盘 01 - Rust 最小写作与运行流程</a></h1>
+<p>日期：2026-05-14</p>
+<h2 id="目标"><a class="header" href="#目标">目标</a></h2>
+<p>学完 Day 1 到 Day 5 后，已经接触了不少 Rust 语言概念：</p>
+<ul>
+<li>变量、类型、<code>String</code>、<code>Vec</code></li>
+<li>所有权、借用、slice</li>
+<li>函数、控制流、<code>match</code>、<code>Option</code></li>
+<li>iterator、<code>map</code>、<code>filter</code>、<code>collect</code></li>
+</ul>
+<p>但“看懂代码”和“自己写并运行代码”是两种能力。</p>
+<p>本阶段笔记专门解决一个问题：</p>
+<pre><code class="language-text">如何写一个最小 Rust 程序，并在终端里正确运行它。
+</code></pre>
+<p>重点包括：</p>
+<ul>
+<li><code>fn main()</code> 是什么</li>
+<li>Cargo 默认运行哪个文件</li>
+<li>多个 <code>.rs</code> 文件怎么组织</li>
+<li><code>cargo run</code>、<code>cargo check</code>、<code>cargo run --bin xxx</code>、<code>rustc</code> 怎么用</li>
+<li>初学阶段推荐的练习目录结构</li>
+</ul>
+<h2 id="1-rust-程序的最小单位"><a class="header" href="#1-rust-程序的最小单位">1. Rust 程序的最小单位</a></h2>
+<p>最小 Rust 程序：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("hello rust");
+}</code></pre>
+<p><code>main</code> 是程序入口。</p>
+<p>当运行一个二进制 Rust 程序时，Rust 会从：</p>
+<pre class="playground"><code class="language-rust">fn main()</code></pre>
+<p>开始执行。</p>
+<p><code>main</code> 默认返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>()
+<span class="boring">}</span></code></pre>
+<p>也就是 unit，可以理解成“没有有意义的返回值”。</p>
+<p>所以这个写法是正常的：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("hello rust");
+}</code></pre>
+<p>也可以显式写成：</p>
+<pre class="playground"><code class="language-rust">fn main() -&gt; () {
+    println!("hello rust");
+}</code></pre>
+<p>但通常不写 <code>-&gt; ()</code>。</p>
+<h2 id="2-cargo-默认运行-srcmainrs"><a class="header" href="#2-cargo-默认运行-srcmainrs">2. Cargo 默认运行 <code>src/main.rs</code></a></h2>
+<p>一个最小 Cargo 项目通常长这样：</p>
+<pre><code class="language-text">my_project/
+  Cargo.toml
+  src/
+    main.rs
+</code></pre>
+<p>进入项目目录：</p>
+<pre><code class="language-bash">cd my_project
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>Cargo 默认会运行：</p>
+<pre><code class="language-text">src/main.rs
+</code></pre>
+<p>所以如果你写的是：</p>
+<pre><code class="language-text">src/main.rs
+</code></pre>
+<p>那么命令就是：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>检查是否能编译但不真正运行：</p>
+<pre><code class="language-bash">cargo check
+</code></pre>
+<p>常用习惯：</p>
+<pre><code class="language-text">cargo check  用来快速看有没有编译错误
+cargo run    用来编译并运行程序
+</code></pre>
+<h2 id="3-为什么-srccase1rs-不会被-cargo-run-运行"><a class="header" href="#3-为什么-srccase1rs-不会被-cargo-run-运行">3. 为什么 <code>src/case1.rs</code> 不会被 <code>cargo run</code> 运行？</a></h2>
+<p>假设目录是：</p>
+<pre><code class="language-text">my_project/
+  Cargo.toml
+  src/
+    main.rs
+    case1.rs
+</code></pre>
+<p>你运行：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>Cargo 只会运行：</p>
+<pre><code class="language-text">src/main.rs
+</code></pre>
+<p>不会自动运行：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>因为 <code>src/case1.rs</code> 在 Cargo 看来只是一个普通源码文件。</p>
+<p>如果你想让它成为模块，需要在 <code>main.rs</code> 里写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod case1;
+<span class="boring">}</span></code></pre>
+<p>但模块文件通常不写自己的 <code>fn main()</code>。</p>
+<p>所以初学阶段不推荐这样放可运行小程序：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>更推荐使用：</p>
+<pre><code class="language-text">src/bin/case1.rs
+</code></pre>
+<h2 id="4-多个可运行-rs-文件推荐用-srcbin"><a class="header" href="#4-多个可运行-rs-文件推荐用-srcbin">4. 多个可运行 <code>.rs</code> 文件：推荐用 <code>src/bin/</code></a></h2>
+<p>如果你想在一个项目里写多个可运行练习，推荐目录结构：</p>
+<pre><code class="language-text">my_project/
+  Cargo.toml
+  src/
+    main.rs
+    bin/
+      case1.rs
+      case2.rs
+      parse_words.rs
+</code></pre>
+<p>每个 <code>src/bin/*.rs</code> 都可以有自己的：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    ...
+}</code></pre>
+<p>运行方式：</p>
+<pre><code class="language-bash">cargo run --bin case1
+cargo run --bin case2
+cargo run --bin parse_words
+</code></pre>
+<p>注意：命令里不写 <code>.rs</code> 后缀。</p>
+<p>例如文件是：</p>
+<pre><code class="language-text">src/bin/parse_words.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run --bin parse_words
+</code></pre>
+<p>检查：</p>
+<pre><code class="language-bash">cargo check --bin parse_words
+</code></pre>
+<h2 id="5-examples-目录"><a class="header" href="#5-examples-目录">5. <code>examples/</code> 目录</a></h2>
+<p>另一种组织方式是：</p>
+<pre><code class="language-text">my_project/
+  examples/
+    demo.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run --example demo
+</code></pre>
+<p><code>examples/</code> 常用于库项目的 API 示例。</p>
+<p>当前学习阶段，更推荐：</p>
+<pre><code class="language-text">src/bin/
+</code></pre>
+<p>因为它更适合放多个独立小练习。</p>
+<h2 id="6-rustc-单文件运行"><a class="header" href="#6-rustc-单文件运行">6. <code>rustc</code> 单文件运行</a></h2>
+<p>如果只是一个非常小的单文件实验，也可以不用 Cargo，直接用 <code>rustc</code>。</p>
+<p>例如文件：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">rustc src/case1.rs -o case1
+./case1
+</code></pre>
+<p>含义：</p>
+<pre><code class="language-text">rustc src/case1.rs -o case1   编译成可执行文件 case1
+./case1                       运行这个可执行文件
+</code></pre>
+<p>缺点：</p>
+<pre><code class="language-text">会生成一个二进制文件 case1，需要自己清理。
+</code></pre>
+<p>清理：</p>
+<pre><code class="language-bash">rm case1
+</code></pre>
+<p>如果你输出到了 <code>src/case1</code>，就清理：</p>
+<pre><code class="language-bash">rm src/case1
+</code></pre>
+<p>初学时，如果已经在 Cargo 项目里，通常更推荐用 <code>src/bin/</code>。</p>
+<h2 id="7-常用运行命令速查表"><a class="header" href="#7-常用运行命令速查表">7. 常用运行命令速查表</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>目标</th><th>文件位置</th><th>命令</th></tr>
+</thead>
+<tbody>
+<tr><td>运行默认程序</td><td><code>src/main.rs</code></td><td><code>cargo run</code></td></tr>
+<tr><td>检查默认程序</td><td><code>src/main.rs</code></td><td><code>cargo check</code></td></tr>
+<tr><td>运行额外小程序</td><td><code>src/bin/case1.rs</code></td><td><code>cargo run --bin case1</code></td></tr>
+<tr><td>检查额外小程序</td><td><code>src/bin/case1.rs</code></td><td><code>cargo check --bin case1</code></td></tr>
+<tr><td>运行 example</td><td><code>examples/demo.rs</code></td><td><code>cargo run --example demo</code></td></tr>
+<tr><td>单文件临时运行</td><td>任意 <code>.rs</code></td><td><code>rustc file.rs -o demo &amp;&amp; ./demo</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="8-推荐的每日练习结构"><a class="header" href="#8-推荐的每日练习结构">8. 推荐的每日练习结构</a></h2>
+<p>从后续 Day 开始，建议每一天的项目使用这种结构：</p>
+<pre><code class="language-text">dayXX_topic/
+  Cargo.toml
+  src/
+    main.rs
+    bin/
+      case1_basic.rs
+      case2_error.rs
+      case3_practice.rs
+</code></pre>
+<p>其中：</p>
+<pre><code class="language-text">src/main.rs        当天主实验
+src/bin/*.rs       当天手写练习、小作业、错误实验
+</code></pre>
+<p>运行主实验：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>运行小练习：</p>
+<pre><code class="language-bash">cargo run --bin case1_basic
+cargo run --bin case2_error
+cargo run --bin case3_practice
+</code></pre>
+<h2 id="9-从零手写一个-rust-小程序的流程"><a class="header" href="#9-从零手写一个-rust-小程序的流程">9. 从零手写一个 Rust 小程序的流程</a></h2>
+<p>不要一开始就写复杂链式调用。推荐流程：</p>
+<pre><code class="language-text">1. 写 fn main()
+2. 定义一个输入
+3. println! 打印输入
+4. 用 for 循环拆开
+5. 逐步加 parse / match / push
+6. 最后再改写成 iterator 链
+</code></pre>
+<p>例如目标：</p>
+<pre><code class="language-text">给定字符串 "10 20 bad -5"，逐个尝试解析成 i32。
+</code></pre>
+<p>第一步：只打印输入。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+    println!("text = {}", text);
+}</code></pre>
+<p>第二步：拆分单词。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+
+    for word in text.split_whitespace() {
+        println!("word = {:?}", word);
+    }
+}</code></pre>
+<p>第三步：尝试解析。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+
+    for word in text.split_whitespace() {
+        let parsed = word.parse::&lt;i32&gt;();
+        println!("word = {:?}, parsed = {:?}", word, parsed);
+    }
+}</code></pre>
+<p>第四步：只收集成功结果。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+    let mut numbers = Vec::new();
+
+    for word in text.split_whitespace() {
+        match word.parse::&lt;i32&gt;() {
+            Ok(value) =&gt; numbers.push(value),
+            Err(_) =&gt; println!("skip invalid word = {:?}", word),
+        }
+    }
+
+    println!("numbers = {:?}", numbers);
+}</code></pre>
+<p>第五步：再改写成 iterator 链。</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10 20 bad -5";
+
+    let numbers: Vec&lt;i32&gt; = text
+        .split_whitespace()
+        .filter_map(|word| word.parse::&lt;i32&gt;().ok())
+        .collect();
+
+    println!("numbers = {:?}", numbers);
+}</code></pre>
+<h2 id="10-函数可以写在-main-前也可以写在-main-后"><a class="header" href="#10-函数可以写在-main-前也可以写在-main-后">10. 函数可以写在 <code>main</code> 前，也可以写在 <code>main</code> 后</a></h2>
+<p>Rust 不要求函数必须先定义再使用。</p>
+<p>这个可以：</p>
+<pre class="playground"><code class="language-rust">fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}
+
+fn main() {
+    println!("{}", add(2, 3));
+}</code></pre>
+<p>这个也可以：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("{}", add(2, 3));
+}
+
+fn add(a: i32, b: i32) -&gt; i32 {
+    a + b
+}</code></pre>
+<p>初学阶段推荐：</p>
+<pre><code class="language-text">辅助函数写在前面，main 写在最后。
+</code></pre>
+<p>这样读起来比较顺。</p>
+<h2 id="11-多个文件时先区分模块和可运行程序"><a class="header" href="#11-多个文件时先区分模块和可运行程序">11. 多个文件时，先区分“模块”和“可运行程序”</a></h2>
+<p>这是初学者最容易混的地方。</p>
+<h3 id="可运行程序"><a class="header" href="#可运行程序">可运行程序</a></h3>
+<p>文件：</p>
+<pre><code class="language-text">src/bin/case1.rs
+</code></pre>
+<p>里面可以有：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("case1");
+}</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run --bin case1
+</code></pre>
+<h3 id="模块"><a class="header" href="#模块">模块</a></h3>
+<p>文件：</p>
+<pre><code class="language-text">src/case1.rs
+</code></pre>
+<p>通常写函数，不写 <code>main</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn hello() {
+    println!("hello from case1 module");
+}
+<span class="boring">}</span></code></pre>
+<p>在 <code>main.rs</code> 中引用：</p>
+<pre class="playground"><code class="language-rust">mod case1;
+
+fn main() {
+    case1::hello();
+}</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<p>当前阶段如果你只是想做多个独立练习，优先用：</p>
+<pre><code class="language-text">src/bin/*.rs
+</code></pre>
+<p>不要先引入模块系统。</p>
+<h2 id="12-建议后续学习节奏"><a class="header" href="#12-建议后续学习节奏">12. 建议后续学习节奏</a></h2>
+<p>后续 Day 正常学习新内容，但每隔几天补一次“写代码训练”：</p>
+<pre><code class="language-text">概念学习：Day 6、Day 7、Day 8 ...
+阶段训练：如何写小程序、如何读报错、如何拆任务、如何组织文件
+</code></pre>
+<p>每个阶段训练都遵循：</p>
+<pre><code class="language-text">小目标 -&gt; 你手写 -&gt; 你运行 -&gt; 贴报错 -&gt; 修正 -&gt; 总结命令和模式
+</code></pre>
+<h2 id="阶段总结"><a class="header" href="#阶段总结">阶段总结</a></h2>
+<p>当前最重要的运行规则：</p>
+<pre><code class="language-text">cargo run                     运行 src/main.rs
+cargo run --bin case1          运行 src/bin/case1.rs
+cargo run --example demo       运行 examples/demo.rs
+rustc file.rs -o demo &amp;&amp; ./demo 单文件临时运行
+</code></pre>
+<p>当前最推荐的练习结构：</p>
+<pre><code class="language-text">src/main.rs          当天主实验
+src/bin/case1.rs     第一个手写练习
+src/bin/case2.rs     第二个手写练习
+</code></pre>
+<p>一句话总结：</p>
+<pre><code class="language-text">先学会写一个最小 fn main()，再学会把多个 main 放进 src/bin/，最后再学模块系统。
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
 <h1 id="day-06---structimpl方法与-debug"><a class="header" href="#day-06---structimpl方法与-debug">Day 06 - <code>struct</code>、<code>impl</code>、方法与 <code>Debug</code></a></h1>
 <p>日期：2026-05-15</p>
 <h2 id="今日目标-5"><a class="header" href="#今日目标-5">今日目标</a></h2>
@@ -3271,359 +3624,6 @@ fn main() {
 <li><code>if let</code></li>
 <li>用 enum 表达状态</li>
 </ul>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="阶段复盘-01---rust-最小写作与运行流程"><a class="header" href="#阶段复盘-01---rust-最小写作与运行流程">阶段复盘 01 - Rust 最小写作与运行流程</a></h1>
-<p>日期：2026-05-14</p>
-<h2 id="目标"><a class="header" href="#目标">目标</a></h2>
-<p>学完 Day 1 到 Day 5 后，已经接触了不少 Rust 语言概念：</p>
-<ul>
-<li>变量、类型、<code>String</code>、<code>Vec</code></li>
-<li>所有权、借用、slice</li>
-<li>函数、控制流、<code>match</code>、<code>Option</code></li>
-<li>iterator、<code>map</code>、<code>filter</code>、<code>collect</code></li>
-</ul>
-<p>但“看懂代码”和“自己写并运行代码”是两种能力。</p>
-<p>本阶段笔记专门解决一个问题：</p>
-<pre><code class="language-text">如何写一个最小 Rust 程序，并在终端里正确运行它。
-</code></pre>
-<p>重点包括：</p>
-<ul>
-<li><code>fn main()</code> 是什么</li>
-<li>Cargo 默认运行哪个文件</li>
-<li>多个 <code>.rs</code> 文件怎么组织</li>
-<li><code>cargo run</code>、<code>cargo check</code>、<code>cargo run --bin xxx</code>、<code>rustc</code> 怎么用</li>
-<li>初学阶段推荐的练习目录结构</li>
-</ul>
-<h2 id="1-rust-程序的最小单位"><a class="header" href="#1-rust-程序的最小单位">1. Rust 程序的最小单位</a></h2>
-<p>最小 Rust 程序：</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    println!("hello rust");
-}</code></pre>
-<p><code>main</code> 是程序入口。</p>
-<p>当运行一个二进制 Rust 程序时，Rust 会从：</p>
-<pre class="playground"><code class="language-rust">fn main()</code></pre>
-<p>开始执行。</p>
-<p><code>main</code> 默认返回：</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>()
-<span class="boring">}</span></code></pre>
-<p>也就是 unit，可以理解成“没有有意义的返回值”。</p>
-<p>所以这个写法是正常的：</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    println!("hello rust");
-}</code></pre>
-<p>也可以显式写成：</p>
-<pre class="playground"><code class="language-rust">fn main() -&gt; () {
-    println!("hello rust");
-}</code></pre>
-<p>但通常不写 <code>-&gt; ()</code>。</p>
-<h2 id="2-cargo-默认运行-srcmainrs"><a class="header" href="#2-cargo-默认运行-srcmainrs">2. Cargo 默认运行 <code>src/main.rs</code></a></h2>
-<p>一个最小 Cargo 项目通常长这样：</p>
-<pre><code class="language-text">my_project/
-  Cargo.toml
-  src/
-    main.rs
-</code></pre>
-<p>进入项目目录：</p>
-<pre><code class="language-bash">cd my_project
-</code></pre>
-<p>运行：</p>
-<pre><code class="language-bash">cargo run
-</code></pre>
-<p>Cargo 默认会运行：</p>
-<pre><code class="language-text">src/main.rs
-</code></pre>
-<p>所以如果你写的是：</p>
-<pre><code class="language-text">src/main.rs
-</code></pre>
-<p>那么命令就是：</p>
-<pre><code class="language-bash">cargo run
-</code></pre>
-<p>检查是否能编译但不真正运行：</p>
-<pre><code class="language-bash">cargo check
-</code></pre>
-<p>常用习惯：</p>
-<pre><code class="language-text">cargo check  用来快速看有没有编译错误
-cargo run    用来编译并运行程序
-</code></pre>
-<h2 id="3-为什么-srccase1rs-不会被-cargo-run-运行"><a class="header" href="#3-为什么-srccase1rs-不会被-cargo-run-运行">3. 为什么 <code>src/case1.rs</code> 不会被 <code>cargo run</code> 运行？</a></h2>
-<p>假设目录是：</p>
-<pre><code class="language-text">my_project/
-  Cargo.toml
-  src/
-    main.rs
-    case1.rs
-</code></pre>
-<p>你运行：</p>
-<pre><code class="language-bash">cargo run
-</code></pre>
-<p>Cargo 只会运行：</p>
-<pre><code class="language-text">src/main.rs
-</code></pre>
-<p>不会自动运行：</p>
-<pre><code class="language-text">src/case1.rs
-</code></pre>
-<p>因为 <code>src/case1.rs</code> 在 Cargo 看来只是一个普通源码文件。</p>
-<p>如果你想让它成为模块，需要在 <code>main.rs</code> 里写：</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>mod case1;
-<span class="boring">}</span></code></pre>
-<p>但模块文件通常不写自己的 <code>fn main()</code>。</p>
-<p>所以初学阶段不推荐这样放可运行小程序：</p>
-<pre><code class="language-text">src/case1.rs
-</code></pre>
-<p>更推荐使用：</p>
-<pre><code class="language-text">src/bin/case1.rs
-</code></pre>
-<h2 id="4-多个可运行-rs-文件推荐用-srcbin"><a class="header" href="#4-多个可运行-rs-文件推荐用-srcbin">4. 多个可运行 <code>.rs</code> 文件：推荐用 <code>src/bin/</code></a></h2>
-<p>如果你想在一个项目里写多个可运行练习，推荐目录结构：</p>
-<pre><code class="language-text">my_project/
-  Cargo.toml
-  src/
-    main.rs
-    bin/
-      case1.rs
-      case2.rs
-      parse_words.rs
-</code></pre>
-<p>每个 <code>src/bin/*.rs</code> 都可以有自己的：</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    ...
-}</code></pre>
-<p>运行方式：</p>
-<pre><code class="language-bash">cargo run --bin case1
-cargo run --bin case2
-cargo run --bin parse_words
-</code></pre>
-<p>注意：命令里不写 <code>.rs</code> 后缀。</p>
-<p>例如文件是：</p>
-<pre><code class="language-text">src/bin/parse_words.rs
-</code></pre>
-<p>运行：</p>
-<pre><code class="language-bash">cargo run --bin parse_words
-</code></pre>
-<p>检查：</p>
-<pre><code class="language-bash">cargo check --bin parse_words
-</code></pre>
-<h2 id="5-examples-目录"><a class="header" href="#5-examples-目录">5. <code>examples/</code> 目录</a></h2>
-<p>另一种组织方式是：</p>
-<pre><code class="language-text">my_project/
-  examples/
-    demo.rs
-</code></pre>
-<p>运行：</p>
-<pre><code class="language-bash">cargo run --example demo
-</code></pre>
-<p><code>examples/</code> 常用于库项目的 API 示例。</p>
-<p>当前学习阶段，更推荐：</p>
-<pre><code class="language-text">src/bin/
-</code></pre>
-<p>因为它更适合放多个独立小练习。</p>
-<h2 id="6-rustc-单文件运行"><a class="header" href="#6-rustc-单文件运行">6. <code>rustc</code> 单文件运行</a></h2>
-<p>如果只是一个非常小的单文件实验，也可以不用 Cargo，直接用 <code>rustc</code>。</p>
-<p>例如文件：</p>
-<pre><code class="language-text">src/case1.rs
-</code></pre>
-<p>运行：</p>
-<pre><code class="language-bash">rustc src/case1.rs -o case1
-./case1
-</code></pre>
-<p>含义：</p>
-<pre><code class="language-text">rustc src/case1.rs -o case1   编译成可执行文件 case1
-./case1                       运行这个可执行文件
-</code></pre>
-<p>缺点：</p>
-<pre><code class="language-text">会生成一个二进制文件 case1，需要自己清理。
-</code></pre>
-<p>清理：</p>
-<pre><code class="language-bash">rm case1
-</code></pre>
-<p>如果你输出到了 <code>src/case1</code>，就清理：</p>
-<pre><code class="language-bash">rm src/case1
-</code></pre>
-<p>初学时，如果已经在 Cargo 项目里，通常更推荐用 <code>src/bin/</code>。</p>
-<h2 id="7-常用运行命令速查表"><a class="header" href="#7-常用运行命令速查表">7. 常用运行命令速查表</a></h2>
-<div class="table-wrapper">
-<table>
-<thead>
-<tr><th>目标</th><th>文件位置</th><th>命令</th></tr>
-</thead>
-<tbody>
-<tr><td>运行默认程序</td><td><code>src/main.rs</code></td><td><code>cargo run</code></td></tr>
-<tr><td>检查默认程序</td><td><code>src/main.rs</code></td><td><code>cargo check</code></td></tr>
-<tr><td>运行额外小程序</td><td><code>src/bin/case1.rs</code></td><td><code>cargo run --bin case1</code></td></tr>
-<tr><td>检查额外小程序</td><td><code>src/bin/case1.rs</code></td><td><code>cargo check --bin case1</code></td></tr>
-<tr><td>运行 example</td><td><code>examples/demo.rs</code></td><td><code>cargo run --example demo</code></td></tr>
-<tr><td>单文件临时运行</td><td>任意 <code>.rs</code></td><td><code>rustc file.rs -o demo &amp;&amp; ./demo</code></td></tr>
-</tbody>
-</table>
-</div>
-<h2 id="8-推荐的每日练习结构"><a class="header" href="#8-推荐的每日练习结构">8. 推荐的每日练习结构</a></h2>
-<p>从后续 Day 开始，建议每一天的项目使用这种结构：</p>
-<pre><code class="language-text">dayXX_topic/
-  Cargo.toml
-  src/
-    main.rs
-    bin/
-      case1_basic.rs
-      case2_error.rs
-      case3_practice.rs
-</code></pre>
-<p>其中：</p>
-<pre><code class="language-text">src/main.rs        当天主实验
-src/bin/*.rs       当天手写练习、小作业、错误实验
-</code></pre>
-<p>运行主实验：</p>
-<pre><code class="language-bash">cargo run
-</code></pre>
-<p>运行小练习：</p>
-<pre><code class="language-bash">cargo run --bin case1_basic
-cargo run --bin case2_error
-cargo run --bin case3_practice
-</code></pre>
-<h2 id="9-从零手写一个-rust-小程序的流程"><a class="header" href="#9-从零手写一个-rust-小程序的流程">9. 从零手写一个 Rust 小程序的流程</a></h2>
-<p>不要一开始就写复杂链式调用。推荐流程：</p>
-<pre><code class="language-text">1. 写 fn main()
-2. 定义一个输入
-3. println! 打印输入
-4. 用 for 循环拆开
-5. 逐步加 parse / match / push
-6. 最后再改写成 iterator 链
-</code></pre>
-<p>例如目标：</p>
-<pre><code class="language-text">给定字符串 "10 20 bad -5"，逐个尝试解析成 i32。
-</code></pre>
-<p>第一步：只打印输入。</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    let text = "10 20 bad -5";
-    println!("text = {}", text);
-}</code></pre>
-<p>第二步：拆分单词。</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    let text = "10 20 bad -5";
-
-    for word in text.split_whitespace() {
-        println!("word = {:?}", word);
-    }
-}</code></pre>
-<p>第三步：尝试解析。</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    let text = "10 20 bad -5";
-
-    for word in text.split_whitespace() {
-        let parsed = word.parse::&lt;i32&gt;();
-        println!("word = {:?}, parsed = {:?}", word, parsed);
-    }
-}</code></pre>
-<p>第四步：只收集成功结果。</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    let text = "10 20 bad -5";
-    let mut numbers = Vec::new();
-
-    for word in text.split_whitespace() {
-        match word.parse::&lt;i32&gt;() {
-            Ok(value) =&gt; numbers.push(value),
-            Err(_) =&gt; println!("skip invalid word = {:?}", word),
-        }
-    }
-
-    println!("numbers = {:?}", numbers);
-}</code></pre>
-<p>第五步：再改写成 iterator 链。</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    let text = "10 20 bad -5";
-
-    let numbers: Vec&lt;i32&gt; = text
-        .split_whitespace()
-        .filter_map(|word| word.parse::&lt;i32&gt;().ok())
-        .collect();
-
-    println!("numbers = {:?}", numbers);
-}</code></pre>
-<h2 id="10-函数可以写在-main-前也可以写在-main-后"><a class="header" href="#10-函数可以写在-main-前也可以写在-main-后">10. 函数可以写在 <code>main</code> 前，也可以写在 <code>main</code> 后</a></h2>
-<p>Rust 不要求函数必须先定义再使用。</p>
-<p>这个可以：</p>
-<pre class="playground"><code class="language-rust">fn add(a: i32, b: i32) -&gt; i32 {
-    a + b
-}
-
-fn main() {
-    println!("{}", add(2, 3));
-}</code></pre>
-<p>这个也可以：</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    println!("{}", add(2, 3));
-}
-
-fn add(a: i32, b: i32) -&gt; i32 {
-    a + b
-}</code></pre>
-<p>初学阶段推荐：</p>
-<pre><code class="language-text">辅助函数写在前面，main 写在最后。
-</code></pre>
-<p>这样读起来比较顺。</p>
-<h2 id="11-多个文件时先区分模块和可运行程序"><a class="header" href="#11-多个文件时先区分模块和可运行程序">11. 多个文件时，先区分“模块”和“可运行程序”</a></h2>
-<p>这是初学者最容易混的地方。</p>
-<h3 id="可运行程序"><a class="header" href="#可运行程序">可运行程序</a></h3>
-<p>文件：</p>
-<pre><code class="language-text">src/bin/case1.rs
-</code></pre>
-<p>里面可以有：</p>
-<pre class="playground"><code class="language-rust">fn main() {
-    println!("case1");
-}</code></pre>
-<p>运行：</p>
-<pre><code class="language-bash">cargo run --bin case1
-</code></pre>
-<h3 id="模块"><a class="header" href="#模块">模块</a></h3>
-<p>文件：</p>
-<pre><code class="language-text">src/case1.rs
-</code></pre>
-<p>通常写函数，不写 <code>main</code>：</p>
-<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
-</span><span class="boring">fn main() {
-</span>pub fn hello() {
-    println!("hello from case1 module");
-}
-<span class="boring">}</span></code></pre>
-<p>在 <code>main.rs</code> 中引用：</p>
-<pre class="playground"><code class="language-rust">mod case1;
-
-fn main() {
-    case1::hello();
-}</code></pre>
-<p>运行：</p>
-<pre><code class="language-bash">cargo run
-</code></pre>
-<p>当前阶段如果你只是想做多个独立练习，优先用：</p>
-<pre><code class="language-text">src/bin/*.rs
-</code></pre>
-<p>不要先引入模块系统。</p>
-<h2 id="12-建议后续学习节奏"><a class="header" href="#12-建议后续学习节奏">12. 建议后续学习节奏</a></h2>
-<p>后续 Day 正常学习新内容，但每隔几天补一次“写代码训练”：</p>
-<pre><code class="language-text">概念学习：Day 6、Day 7、Day 8 ...
-阶段训练：如何写小程序、如何读报错、如何拆任务、如何组织文件
-</code></pre>
-<p>每个阶段训练都遵循：</p>
-<pre><code class="language-text">小目标 -&gt; 你手写 -&gt; 你运行 -&gt; 贴报错 -&gt; 修正 -&gt; 总结命令和模式
-</code></pre>
-<h2 id="阶段总结"><a class="header" href="#阶段总结">阶段总结</a></h2>
-<p>当前最重要的运行规则：</p>
-<pre><code class="language-text">cargo run                     运行 src/main.rs
-cargo run --bin case1          运行 src/bin/case1.rs
-cargo run --example demo       运行 examples/demo.rs
-rustc file.rs -o demo &amp;&amp; ./demo 单文件临时运行
-</code></pre>
-<p>当前最推荐的练习结构：</p>
-<pre><code class="language-text">src/main.rs          当天主实验
-src/bin/case1.rs     第一个手写练习
-src/bin/case2.rs     第二个手写练习
-</code></pre>
-<p>一句话总结：</p>
-<pre><code class="language-text">先学会写一个最小 fn main()，再学会把多个 main 放进 src/bin/，最后再学模块系统。
-</code></pre>
 
                     </main>
 

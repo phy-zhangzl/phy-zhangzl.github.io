@@ -1,0 +1,1198 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 07 - enum、match 与 Option - Rust Tutor</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-12d86637.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-8f6c3afc.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Tutor</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="day-07---enummatch-与-option"><a class="header" href="#day-07---enummatch-与-option">Day 07 - <code>enum</code>、<code>match</code> 与 <code>Option</code></a></h1>
+<p>日期：2026-05-16</p>
+<h2 id="今日目标"><a class="header" href="#今日目标">今日目标</a></h2>
+<p>Day 7 学习 Rust 中表达“多种可能形态”的核心机制：</p>
+<ul>
+<li>定义 <code>enum</code></li>
+<li>理解 enum variant</li>
+<li>使用 <code>match</code> 穷尽匹配</li>
+<li>理解带数据的 enum variant</li>
+<li>理解 <code>Option&lt;T&gt;</code> 的本质</li>
+<li>使用 <code>if let</code> 简化单分支匹配</li>
+<li>用 <code>enum + struct + impl</code> 表达任务状态机</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day07_enums
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day07_enums
+cargo run
+</code></pre>
+<h2 id="1-为什么需要-enum"><a class="header" href="#1-为什么需要-enum">1. 为什么需要 enum</a></h2>
+<p>Day 6 的 <code>struct</code> 适合表达：</p>
+<pre><code class="language-text">一个东西同时拥有多个字段。
+</code></pre>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct User {
+    name: String,
+    age: u32,
+    active: bool,
+}
+<span class="boring">}</span></code></pre>
+<p>这表示一个 <code>User</code> 同时拥有 <code>name</code>、<code>age</code>、<code>active</code>。</p>
+<p>而 <code>enum</code> 适合表达：</p>
+<pre><code class="language-text">一个值只能是多种可能形态之一。
+</code></pre>
+<p>例如任务状态：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone, Copy)]
+enum TaskStatus {
+    Todo,
+    InProgress,
+    Done,
+}
+<span class="boring">}</span></code></pre>
+<p>这表示一个 <code>TaskStatus</code> 只能是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TaskStatus::Todo
+TaskStatus::InProgress
+TaskStatus::Done
+<span class="boring">}</span></code></pre>
+<p>三者之一。</p>
+<p>如果用字符串表示状态：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let status = String::from("todo");
+<span class="boring">}</span></code></pre>
+<p>容易出现拼写问题：</p>
+<pre><code class="language-text">"todo"
+"Todo"
+"TODO"
+"tood"
+</code></pre>
+<p>编译器无法帮你检查。</p>
+<p>用 enum：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let status = TaskStatus::Todo;
+<span class="boring">}</span></code></pre>
+<p>如果写错：</p>
+<pre><code class="language-rust ignore">let status = TaskStatus::Tood;</code></pre>
+<p>编译器会直接报错。</p>
+<p>这就是 enum 的价值：</p>
+<pre><code class="language-text">把非法状态挡在编译期。
+</code></pre>
+<h2 id="2-最简单的-enum"><a class="header" href="#2-最简单的-enum">2. 最简单的 enum</a></h2>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum TaskStatus {
+    Todo,
+    InProgress,
+    Done,
+}
+
+fn describe_status(status: TaskStatus) {
+    match status {
+        TaskStatus::Todo =&gt; println!("task is not started"),
+        TaskStatus::InProgress =&gt; println!("task is in progress"),
+        TaskStatus::Done =&gt; println!("task is done"),
+    }
+}
+
+fn main() {
+    let s1 = TaskStatus::Todo;
+    let s2 = TaskStatus::InProgress;
+    let s3 = TaskStatus::Done;
+
+    println!("s1 = {:?}", s1);
+    println!("s2 = {:?}", s2);
+    println!("s3 = {:?}", s3);
+
+    describe_status(s1);
+    describe_status(s2);
+    describe_status(s3);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">s1 = Todo
+s2 = InProgress
+s3 = Done
+task is not started
+task is in progress
+task is done
+</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TaskStatus
+<span class="boring">}</span></code></pre>
+<p>是类型。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Todo
+InProgress
+Done
+<span class="boring">}</span></code></pre>
+<p>不是独立类型，而是 <code>TaskStatus</code> 的 variant。</p>
+<p>也就是说：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s: TaskStatus = TaskStatus::Todo;
+<span class="boring">}</span></code></pre>
+<p><code>TaskStatus::Todo</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TaskStatus
+<span class="boring">}</span></code></pre>
+<p>可以类比：</p>
+<pre><code class="language-text">bool = true | false
+TaskStatus = Todo | InProgress | Done
+</code></pre>
+<p><code>true</code> 和 <code>false</code> 不是两个类型，它们都是 <code>bool</code> 的值。同理，<code>Todo</code>、<code>InProgress</code>、<code>Done</code> 都是 <code>TaskStatus</code> 的不同值。</p>
+<h2 id="3-match-与穷尽匹配"><a class="header" href="#3-match-与穷尽匹配">3. <code>match</code> 与穷尽匹配</a></h2>
+<p><code>match</code> 用来根据 enum 的不同 variant 执行不同逻辑：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match status {
+    TaskStatus::Todo =&gt; println!("task is not started"),
+    TaskStatus::InProgress =&gt; println!("task is in progress"),
+    TaskStatus::Done =&gt; println!("task is done"),
+}
+<span class="boring">}</span></code></pre>
+<p>每一行叫一个 match arm：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pattern =&gt; expression,
+<span class="boring">}</span></code></pre>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TaskStatus::Todo =&gt; println!("task is not started"),
+<span class="boring">}</span></code></pre>
+<p>其中：</p>
+<pre><code class="language-text">TaskStatus::Todo                  pattern
+=&gt;                                匹配后执行右边
+println!("task is not started")   expression
+,                                 结束这个 match arm
+</code></pre>
+<p><code>match</code> 的分支之间用逗号分隔。类似数组或 <code>vec!</code> 中的元素用逗号分隔：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let nums = vec![
+    1,
+    2,
+    3,
+];
+<span class="boring">}</span></code></pre>
+<p>如果 arm 右边是代码块，初学阶段也建议保留逗号：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match status {
+    TaskStatus::Todo =&gt; {
+        println!("task is not started");
+    },
+    TaskStatus::InProgress =&gt; {
+        println!("task is in progress");
+    },
+    TaskStatus::Done =&gt; {
+        println!("task is done");
+    },
+}
+<span class="boring">}</span></code></pre>
+<p>Rust 的 <code>match</code> 要求穷尽匹配。也就是说，必须处理所有可能情况。</p>
+<p>如果少写一个分支，例如漏掉：</p>
+<pre><code class="language-rust ignore">TaskStatus::Done =&gt; println!("task is done"),</code></pre>
+<p>编译器会报类似错误：</p>
+<pre><code class="language-text">non-exhaustive patterns: `TaskStatus::Done` not covered
+</code></pre>
+<p>这意味着：</p>
+<pre><code class="language-text">你没有处理 Done 这种情况。
+</code></pre>
+<p>这是 Rust 帮你防止逻辑遗漏的重要机制。</p>
+<h2 id="4-derivedebug-clone-copy"><a class="header" href="#4-derivedebug-clone-copy">4. <code>derive(Debug, Clone, Copy)</code></a></h2>
+<p>对于简单 enum，可以写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone, Copy)]
+enum TaskStatus {
+    Todo,
+    InProgress,
+    Done,
+}
+<span class="boring">}</span></code></pre>
+<p><code>derive</code> 的意思是：</p>
+<pre><code class="language-text">请编译器自动帮这个类型实现某些 trait。
+</code></pre>
+<p>当前阶段可以把 trait 理解成“某种能力”。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>trait</th><th>能力</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Debug</code></td><td>可以用 <code>{:?}</code> 打印</td></tr>
+<tr><td><code>Clone</code></td><td>可以显式 <code>.clone()</code></td></tr>
+<tr><td><code>Copy</code></td><td>赋值、传参时可以隐式复制，不 move</td></tr>
+</tbody>
+</table>
+</div>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug, Clone, Copy)]
+enum TaskStatus {
+    Todo,
+    InProgress,
+    Done,
+}
+
+fn describe_status(status: TaskStatus) {
+    println!("status = {:?}", status);
+}
+
+fn main() {
+    let s1 = TaskStatus::Todo;
+
+    describe_status(s1);
+    println!("s1 after describe = {:?}", s1);
+}</code></pre>
+<p>因为 <code>TaskStatus</code> 实现了 <code>Copy</code>，所以传入函数时复制一份，原来的 <code>s1</code> 还能继续使用。</p>
+<p>一个 enum 能不能 <code>Copy</code>，取决于它所有 variant 携带的数据是否都能 <code>Copy</code>。</p>
+<p>下面这个可以 <code>Copy</code>，因为没有携带任何数据：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone, Copy)]
+enum Direction {
+    Up,
+    Down,
+    Left,
+    Right,
+}
+<span class="boring">}</span></code></pre>
+<p>下面这个不能 <code>Copy</code>，因为 <code>String</code> 不是 <code>Copy</code>：</p>
+<pre><code class="language-rust ignore">#[derive(Debug, Clone, Copy)]
+enum Message {
+    Text(String),
+    Quit,
+}</code></pre>
+<p>编译器会报类似错误：</p>
+<pre><code class="language-text">the trait `Copy` cannot be implemented for this type
+this field does not implement `Copy`
+</code></pre>
+<p>原因是 <code>String</code> 拥有堆内存，不能隐式复制；但它可以显式 <code>.clone()</code>。</p>
+<p>因此可以写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone)]
+enum Message {
+    Text(String),
+    Quit,
+}
+<span class="boring">}</span></code></pre>
+<h2 id="5-带数据的-enum-variant"><a class="header" href="#5-带数据的-enum-variant">5. 带数据的 enum variant</a></h2>
+<p>Rust 的 enum 不只是标签。每个 variant 可以携带不同形状的数据。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug)]
+enum Message {
+    Text(String),
+    Move { x: i32, y: i32 },
+    Resize(u32, u32),
+    Quit,
+}
+<span class="boring">}</span></code></pre>
+<p>四种 variant：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>variant</th><th>形状</th><th>例子</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Text(String)</code></td><td>tuple-like，携带一个 <code>String</code></td><td><code>Message::Text(String::from("hello"))</code></td></tr>
+<tr><td><code>Move { x, y }</code></td><td>struct-like，命名字段</td><td><code>Message::Move { x: 10, y: 20 }</code></td></tr>
+<tr><td><code>Resize(u32, u32)</code></td><td>tuple-like，携带两个值</td><td><code>Message::Resize(800, 600)</code></td></tr>
+<tr><td><code>Quit</code></td><td>unit-like，不携带数据</td><td><code>Message::Quit</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum Message {
+    Text(String),
+    Move { x: i32, y: i32 },
+    Resize(u32, u32),
+    Quit,
+}
+
+fn handle_message(message: Message) {
+    match message {
+        Message::Text(content) =&gt; {
+            println!("text message: {}", content);
+        }
+        Message::Move { x, y } =&gt; {
+            println!("move to x = {}, y = {}", x, y);
+        }
+        Message::Resize(width, height) =&gt; {
+            println!("resize to {} x {}", width, height);
+        }
+        Message::Quit =&gt; {
+            println!("quit");
+        }
+    }
+}
+
+fn main() {
+    let m1 = Message::Text(String::from("hello rust"));
+    let m2 = Message::Move { x: 10, y: 20 };
+    let m3 = Message::Resize(800, 600);
+    let m4 = Message::Quit;
+
+    println!("m1 = {:?}", m1);
+    println!("m2 = {:?}", m2);
+    println!("m3 = {:?}", m3);
+    println!("m4 = {:?}", m4);
+
+    handle_message(m1);
+    handle_message(m2);
+    handle_message(m3);
+    handle_message(m4);
+}</code></pre>
+<p><code>match</code> 不只是判断 variant，还可以解构其中的数据：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Message::Text(content) =&gt; {
+    println!("text message: {}", content);
+}
+<span class="boring">}</span></code></pre>
+<p>如果 <code>message</code> 是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Message::Text(String::from("hello"))
+<span class="boring">}</span></code></pre>
+<p>那么 <code>content</code> 就绑定到内部的 <code>String</code>。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Message::Move { x, y } =&gt; {
+    println!("x = {}, y = {}", x, y);
+}
+<span class="boring">}</span></code></pre>
+<p>会把内部字段解构到 <code>x</code> 和 <code>y</code>。</p>
+<h2 id="6-enum-比kind--很多-option-字段更安全"><a class="header" href="#6-enum-比kind--很多-option-字段更安全">6. enum 比“kind + 很多 Option 字段”更安全</a></h2>
+<p>如果不用 enum 表达消息，可能会写成：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>struct Message {
+    kind: String,
+    text: Option&lt;String&gt;,
+    x: Option&lt;i32&gt;,
+    y: Option&lt;i32&gt;,
+    width: Option&lt;u32&gt;,
+    height: Option&lt;u32&gt;,
+}
+<span class="boring">}</span></code></pre>
+<p>这会产生很多非法状态：</p>
+<pre><code class="language-text">kind = "Text" 但 text = None
+kind = "Move" 但 x/y 缺一个
+kind = "Quit" 但 width/height 有值
+kind 拼写错误
+</code></pre>
+<p>用 enum：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Message::Text(String)
+Message::Move { x, y }
+Message::Resize(width, height)
+Message::Quit
+<span class="boring">}</span></code></pre>
+<p>就更准确：</p>
+<pre><code class="language-text">Text 必须带 String
+Move 必须带 x 和 y
+Resize 必须带两个 u32
+Quit 不带任何数据
+</code></pre>
+<p>非法状态在类型层面被排除了。</p>
+<h2 id="7-optiont-的本质"><a class="header" href="#7-optiont-的本质">7. <code>Option&lt;T&gt;</code> 的本质</a></h2>
+<p><code>Option&lt;T&gt;</code> 是 Rust 标准库里最常用的 enum 之一。</p>
+<p>它大概定义为：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">enum Option&lt;T&gt; {
+</span><span class="boring">    Some(T),
+</span><span class="boring">    None,
+</span><span class="boring">}
+</span><span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">Some(value)  有值
+None         没有值
+</code></pre>
+<p>Rust 没有普通意义上的 <code>null</code>。如果一个值可能不存在，类型通常写成：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Option&lt;T&gt;
+<span class="boring">}</span></code></pre>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">fn describe_number(value: Option&lt;i32&gt;) {
+    match value {
+        Some(n) =&gt; println!("number = {}", n),
+        None =&gt; println!("no number"),
+    }
+}
+
+fn main() {
+    let a = Some(10);
+    let b: Option&lt;i32&gt; = None;
+
+    describe_number(a);
+    describe_number(b);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">number = 10
+no number
+</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let b: Option&lt;i32&gt; = None;
+<span class="boring">}</span></code></pre>
+<p>需要标注类型，因为 <code>None</code> 本身没有携带值。编译器不知道你想表达的是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Option&lt;i32&gt;
+Option&lt;String&gt;
+Option&lt;Vec&lt;i32&gt;&gt;
+<span class="boring">}</span></code></pre>
+<p>所以需要告诉它。</p>
+<p>而：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let a = Some(10);
+<span class="boring">}</span></code></pre>
+<p>不需要标注，因为 <code>10</code> 默认可推断为 <code>i32</code>，所以 <code>a</code> 是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Option&lt;i32&gt;
+<span class="boring">}</span></code></pre>
+<h2 id="8-返回-optiont查找偶数"><a class="header" href="#8-返回-optiont查找偶数">8. 返回 <code>Option&lt;T&gt;</code>：查找偶数</a></h2>
+<p>如果一个函数“可能找得到，也可能找不到”，就适合返回 <code>Option&lt;T&gt;</code>。</p>
+<pre class="playground"><code class="language-rust">fn describe_number(value: Option&lt;i32&gt;) {
+    match value {
+        Some(n) =&gt; println!("number = {}", n),
+        None =&gt; println!("no number"),
+    }
+}
+
+fn find_even(nums: &amp;[i32]) -&gt; Option&lt;i32&gt; {
+    for n in nums {
+        if *n % 2 == 0 {
+            return Some(*n);
+        }
+    }
+
+    None
+}
+
+fn main() {
+    let nums1 = vec![1, 3, 5, 8, 9];
+    let nums2 = vec![1, 3, 5];
+
+    let result1 = find_even(&amp;nums1);
+    let result2 = find_even(&amp;nums2);
+
+    describe_number(result1);
+    describe_number(result2);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">number = 8
+no number
+</code></pre>
+<p><code>find_even</code> 的签名：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn find_even(nums: &amp;[i32]) -&gt; Option&lt;i32&gt;
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">尝试找一个偶数。
+找到了：Some(value)
+没找到：None
+</code></pre>
+<p>这比用特殊值更安全。</p>
+<p>例如有些语言可能返回：</p>
+<pre><code class="language-text">-1
+</code></pre>
+<p>表示没找到。但如果 <code>-1</code> 本身也是合法值呢？</p>
+<p><code>Option&lt;i32&gt;</code> 更明确：</p>
+<pre><code class="language-text">Some(-1)  真的找到了 -1
+None      没找到
+</code></pre>
+<h2 id="9-if-let只关心一种情况的-match-简写"><a class="header" href="#9-if-let只关心一种情况的-match-简写">9. <code>if let</code>：只关心一种情况的 <code>match</code> 简写</a></h2>
+<p>普通 <code>if</code> 的条件必须是 <code>bool</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let x = 10;
+
+if x &gt; 5 {
+    println!("large");
+}
+<span class="boring">}</span></code></pre>
+<p><code>if let</code> 不是普通赋值，而是：</p>
+<pre><code class="language-text">模式匹配 + 解构绑定
+</code></pre>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(n) = value {
+    println!("number = {}", n);
+}
+<span class="boring">}</span></code></pre>
+<p>意思是：</p>
+<pre><code class="language-text">如果 value 能匹配 Some(n)，就进入 if 块，并把 Some 内部的值绑定到 n。
+</code></pre>
+<p>它大致等价于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match value {
+    Some(n) =&gt; {
+        println!("number = {}", n);
+    }
+    None =&gt; {}
+}
+<span class="boring">}</span></code></pre>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn print_if_some(value: Option&lt;i32&gt;) {
+    if let Some(n) = value {
+        println!("got number = {}", n);
+    }
+}
+
+fn print_with_else(value: Option&lt;i32&gt;) {
+    if let Some(n) = value {
+        println!("got number = {}", n);
+    } else {
+        println!("got nothing");
+    }
+}
+
+fn label(value: Option&lt;i32&gt;) -&gt; String {
+    if let Some(n) = value {
+        format!("number: {}", n)
+    } else {
+        String::from("none")
+    }
+}
+
+fn main() {
+    let a = Some(42);
+    let b: Option&lt;i32&gt; = None;
+
+    print_if_some(a);
+    print_if_some(b);
+
+    print_with_else(a);
+    print_with_else(b);
+
+    println!("label a = {}", label(a));
+    println!("label b = {}", label(b));
+}</code></pre>
+<p>这里能多次使用 <code>a</code> 和 <code>b</code>，因为 <code>Option&lt;i32&gt;</code> 是 <code>Copy</code>。</p>
+<p>如果是 <code>Option&lt;String&gt;</code>，就不是 <code>Copy</code>，传参可能 move。</p>
+<p>如果不想消耗原值，可以借用：</p>
+<pre class="playground"><code class="language-rust">fn print_if_some_string(value: &amp;Option&lt;String&gt;) {
+    if let Some(name) = value {
+        println!("name = {}", name);
+    }
+}
+
+fn main() {
+    let name = Some(String::from("Alice"));
+
+    print_if_some_string(&amp;name);
+    println!("name after call = {:?}", name);
+}</code></pre>
+<h2 id="10-真实一点的案例下载任务状态"><a class="header" href="#10-真实一点的案例下载任务状态">10. 真实一点的案例：下载任务状态</a></h2>
+<p>为了避免过于抽象，可以看一个“下载任务”的例子。</p>
+<p>一个下载任务可能处于这些状态：</p>
+<pre><code class="language-text">等待中
+下载中，已经下载多少字节
+下载完成，保存路径是什么
+下载失败，原因是什么
+已取消
+</code></pre>
+<p>如果用多个 bool 和 Option 字段表示，可能会很乱：</p>
+<pre><code class="language-rust ignore">struct DownloadJob {
+    url: String,
+    is_started: bool,
+    is_done: bool,
+    is_failed: bool,
+    is_cancelled: bool,
+    downloaded_bytes: Option&lt;u64&gt;,
+    output_path: Option&lt;String&gt;,
+    error_message: Option&lt;String&gt;,
+}</code></pre>
+<p>这个设计会产生很多非法组合：</p>
+<pre><code class="language-text">is_done = true 但 output_path = None
+is_done = true 且 is_failed = true
+is_cancelled = true 但还在 downloaded_bytes 增长
+is_started = false 但 downloaded_bytes = Some(100)
+</code></pre>
+<p>用 enum 会更自然：</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum DownloadState {
+    Pending,
+    Downloading { downloaded_bytes: u64 },
+    Finished { output_path: String },
+    Failed { reason: String },
+    Cancelled,
+}
+
+#[derive(Debug)]
+struct DownloadJob {
+    url: String,
+    state: DownloadState,
+}
+
+impl DownloadJob {
+    fn new(url: &amp;str) -&gt; Self {
+        Self {
+            url: url.to_string(),
+            state: DownloadState::Pending,
+        }
+    }
+
+    fn start(&amp;mut self) {
+        match &amp;self.state {
+            DownloadState::Pending =&gt; {
+                self.state = DownloadState::Downloading {
+                    downloaded_bytes: 0,
+                };
+            }
+            DownloadState::Downloading { .. } =&gt; {
+                println!("download already started");
+            }
+            DownloadState::Finished { .. } =&gt; {
+                println!("download already finished");
+            }
+            DownloadState::Failed { reason } =&gt; {
+                println!("cannot start failed download: {}", reason);
+            }
+            DownloadState::Cancelled =&gt; {
+                println!("cannot start cancelled download");
+            }
+        }
+    }
+
+    fn progress(&amp;mut self, bytes: u64) {
+        match &amp;mut self.state {
+            DownloadState::Downloading { downloaded_bytes } =&gt; {
+                *downloaded_bytes += bytes;
+            }
+            _ =&gt; {
+                println!("cannot update progress unless downloading");
+            }
+        }
+    }
+
+    fn finish(&amp;mut self, output_path: &amp;str) {
+        match &amp;self.state {
+            DownloadState::Downloading { .. } =&gt; {
+                self.state = DownloadState::Finished {
+                    output_path: output_path.to_string(),
+                };
+            }
+            _ =&gt; {
+                println!("only downloading job can finish");
+            }
+        }
+    }
+
+    fn fail(&amp;mut self, reason: &amp;str) {
+        match &amp;self.state {
+            DownloadState::Finished { .. } =&gt; {
+                println!("cannot fail a finished download");
+            }
+            DownloadState::Cancelled =&gt; {
+                println!("cannot fail a cancelled download");
+            }
+            _ =&gt; {
+                self.state = DownloadState::Failed {
+                    reason: reason.to_string(),
+                };
+            }
+        }
+    }
+
+    fn describe(&amp;self) {
+        match &amp;self.state {
+            DownloadState::Pending =&gt; {
+                println!("{}: pending", self.url);
+            }
+            DownloadState::Downloading { downloaded_bytes } =&gt; {
+                println!("{}: downloading {} bytes", self.url, downloaded_bytes);
+            }
+            DownloadState::Finished { output_path } =&gt; {
+                println!("{}: finished -&gt; {}", self.url, output_path);
+            }
+            DownloadState::Failed { reason } =&gt; {
+                println!("{}: failed ({})", self.url, reason);
+            }
+            DownloadState::Cancelled =&gt; {
+                println!("{}: cancelled", self.url);
+            }
+        }
+    }
+}
+
+fn main() {
+    let mut job = DownloadJob::new("https://example.com/model.bin");
+
+    job.describe();
+
+    job.start();
+    job.progress(1024);
+    job.progress(2048);
+    job.describe();
+
+    job.finish("/tmp/model.bin");
+    job.describe();
+
+    job.fail("network disconnected");
+    job.describe();
+}</code></pre>
+<p>这个例子中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Downloading { downloaded_bytes: u64 }
+Finished { output_path: String }
+Failed { reason: String }
+<span class="boring">}</span></code></pre>
+<p>不同状态携带不同数据。</p>
+<p>这比一堆 bool 更准确，因为类型系统表达了：</p>
+<pre><code class="language-text">只有 Finished 状态才有 output_path。
+只有 Failed 状态才有 reason。
+只有 Downloading 状态才有 downloaded_bytes。
+</code></pre>
+<h2 id="11-今日主实验任务状态机"><a class="header" href="#11-今日主实验任务状态机">11. 今日主实验：任务状态机</a></h2>
+<p>今天最后的代码把 <code>enum + struct + impl</code> 组合起来。</p>
+<pre class="playground"><code class="language-rust">#[derive(Debug)]
+enum TaskState {
+    Todo,
+    InProgress,
+    Done,
+    Failed(String),
+    Cancelled,
+}
+
+#[derive(Debug)]
+struct Task {
+    title: String,
+    state: TaskState,
+}
+
+impl Task {
+    fn new(title: &amp;str) -&gt; Self {
+        Self {
+            title: title.to_string(),
+            state: TaskState::Todo,
+        }
+    }
+
+    fn start(&amp;mut self) {
+        match &amp;self.state {
+            TaskState::Todo =&gt; {
+                self.state = TaskState::InProgress;
+            }
+            TaskState::InProgress =&gt; {
+                println!("task is already in progress");
+            }
+            TaskState::Done =&gt; {
+                println!("cannot start a done task");
+            }
+            TaskState::Failed(_) =&gt; {
+                println!("cannot start a failed task");
+            }
+            TaskState::Cancelled =&gt; {
+                println!("cannot start a cancelled task");
+            }
+        }
+    }
+
+    fn complete(&amp;mut self) {
+        match &amp;self.state {
+            TaskState::InProgress =&gt; {
+                self.state = TaskState::Done;
+            }
+            TaskState::Todo =&gt; {
+                println!("cannot complete a todo task");
+            }
+            TaskState::Done =&gt; {
+                println!("task is already done");
+            }
+            TaskState::Failed(_) =&gt; {
+                println!("cannot complete a failed task");
+            }
+            TaskState::Cancelled =&gt; {
+                println!("cannot complete a cancelled task");
+            }
+        }
+    }
+
+    fn fail(&amp;mut self, reason: &amp;str) {
+        self.state = TaskState::Failed(reason.to_string());
+    }
+
+    fn cancel(&amp;mut self) {
+        match &amp;self.state {
+            TaskState::Done =&gt; {
+                println!("cannot cancel a done task");
+            }
+            TaskState::Failed(_) =&gt; {
+                println!("cannot cancel a failed task");
+            }
+            TaskState::Cancelled =&gt; {
+                println!("task is already cancelled");
+            }
+            TaskState::Todo | TaskState::InProgress =&gt; {
+                self.state = TaskState::Cancelled;
+            }
+        }
+    }
+
+    fn describe(&amp;self) {
+        match &amp;self.state {
+            TaskState::Todo =&gt; {
+                println!("{}: todo", self.title);
+            }
+            TaskState::InProgress =&gt; {
+                println!("{}: in progress", self.title);
+            }
+            TaskState::Done =&gt; {
+                println!("{}: done", self.title);
+            }
+            TaskState::Failed(reason) =&gt; {
+                println!("{}: failed ({})", self.title, reason);
+            }
+            TaskState::Cancelled =&gt; {
+                println!("{}: cancelled", self.title);
+            }
+        }
+    }
+}
+
+fn main() {
+    let mut task = Task::new("learn Rust enum");
+
+    println!("initial = {:#?}", task);
+    task.describe();
+
+    task.complete();
+
+    task.start();
+    task.describe();
+
+    task.cancel();
+    task.describe();
+
+    task.complete();
+    task.fail("network error");
+    task.describe();
+
+    println!("final = {:#?}", task);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TaskState::Todo | TaskState::InProgress =&gt; {
+    self.state = TaskState::Cancelled;
+}
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">Todo 或 InProgress 两种情况共用同一段逻辑。
+</code></pre>
+<p><code>describe</code> 中使用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match &amp;self.state
+<span class="boring">}</span></code></pre>
+<p>是因为 <code>describe(&amp;self)</code> 只读借用任务，不应该把 <code>state</code> 从任务中 move 出来。</p>
+<p>对于：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>TaskState::Failed(reason)
+<span class="boring">}</span></code></pre>
+<p>由于匹配的是引用，<code>reason</code> 大致是 <code>&amp;String</code>，可以直接打印。</p>
+<h2 id="12-_-通配符"><a class="header" href="#12-_-通配符">12. <code>_</code> 通配符</a></h2>
+<p>有时只想处理少数情况，其他都归为一类，可以用 <code>_</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match &amp;self.state {
+    TaskState::Done =&gt; {
+        println!("cannot cancel a done task");
+    }
+    _ =&gt; {
+        self.state = TaskState::Cancelled;
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><code>_</code> 表示：</p>
+<pre><code class="language-text">其他所有情况。
+</code></pre>
+<p>不过初学阶段要谨慎使用 <code>_</code>。</p>
+<p>如果未来新增 enum variant，<code>_</code> 会把它也吃掉，编译器就不会提醒你有新状态没认真处理。</p>
+<p>因此学习阶段更推荐把每个 variant 明确写出来。</p>
+<h2 id="今日总结"><a class="header" href="#今日总结">今日总结</a></h2>
+<p>Day 7 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>enum</code></td><td>表达一个值的多种可能形态</td></tr>
+<tr><td>variant</td><td>enum 的不同形态，不是独立类型</td></tr>
+<tr><td><code>TaskStatus::Todo</code></td><td>类型是 <code>TaskStatus</code> 的值</td></tr>
+<tr><td><code>match</code></td><td>根据 pattern 分支处理</td></tr>
+<tr><td>穷尽匹配</td><td><code>match</code> 必须覆盖所有可能情况</td></tr>
+<tr><td>带数据 variant</td><td>variant 可以携带不同类型和数量的数据</td></tr>
+<tr><td>解构</td><td><code>match</code> 中把 variant 内部数据绑定出来</td></tr>
+<tr><td><code>Option&lt;T&gt;</code></td><td>标准库 enum：<code>Some(T)</code> 或 <code>None</code></td></tr>
+<tr><td><code>if let</code></td><td>只关心一种 pattern 时的 <code>match</code> 简写</td></tr>
+<tr><td><code>Debug</code></td><td>支持 <code>{:?}</code> 打印</td></tr>
+<tr><td><code>Clone</code></td><td>支持显式 <code>.clone()</code></td></tr>
+<tr><td><code>Copy</code></td><td>赋值和传参时隐式复制，不 move</td></tr>
+<tr><td>`</td><td>` pattern</td></tr>
+<tr><td><code>_</code></td><td>匹配其他所有情况</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">enum 用来表达“一个值可能处于哪几种形态”，match 用来穷尽处理这些形态，Option&lt;T&gt; 是最常用的标准库 enum。
+</code></pre>
+<h2 id="下次继续"><a class="header" href="#下次继续">下次继续</a></h2>
+<p>Day 8 建议主题：<code>Result</code>、<code>?</code>、错误处理与文件读取。</p>
+<p>建议内容：</p>
+<ul>
+<li><code>Result&lt;T, E&gt;</code> 的结构本质</li>
+<li><code>Ok(value)</code> / <code>Err(error)</code></li>
+<li>用 <code>match</code> 处理错误</li>
+<li><code>?</code> 传播错误</li>
+<li><code>std::fs::read_to_string</code></li>
+<li>从文件读取文本并解析数字</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day06.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day06.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

@@ -35,7 +35,7 @@
             const path_to_root = "";
             const default_light_theme = "rust";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-e9cd3862.js";
+            window.path_to_searchindex_js = "searchindex-b0927231.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-e9f55b75.js"></script>
@@ -1138,6 +1138,367 @@ numbers = [10, 20, 30]
 total = 60
 failed to read numbers: line 2: cannot parse "abc": invalid digit found in string
 </code></pre>
+<h2 id="17-day-8-练习读取分数文件并计算平均值"><a class="header" href="#17-day-8-练习读取分数文件并计算平均值">17. Day 8 练习：读取分数文件并计算平均值</a></h2>
+<p>从 Day 8 开始，每天学习末尾都增加一个当前主题的小练习。目标不是做复杂算法，而是逐步习惯自己写 Rust 程序，尤其是习惯：</p>
+<pre><code class="language-text">先看函数签名 -&gt; 推导返回类型 -&gt; 写成功路径 -&gt; 写失败路径 -&gt; 用 cargo check 读错误。
+</code></pre>
+<p>本次练习文件：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day08_result_errors/src/bin/average_scores.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day08_result_errors
+cargo run --bin average_scores
+</code></pre>
+<p>练习目标：</p>
+<pre><code class="language-text">读取一个分数文件 -&gt; 解析多行浮点数 -&gt; 跳过空行 -&gt; 计算平均值。
+</code></pre>
+<p>程序会创建三个文件：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fs::write("scores.txt", "95\n88.5\n\n76\n100\n")?;
+fs::write("bad_scores.txt", "95\nabc\n76\n")?;
+fs::write("empty_scores.txt", "\n  \n")?;
+<span class="boring">}</span></code></pre>
+<p>分别对应：</p>
+<ul>
+<li>正常分数文件：可以解析并计算平均值</li>
+<li>错误分数文件：第二行 <code>abc</code> 不能解析成数字</li>
+<li>空分数文件：没有有效分数，因此没有平均值</li>
+</ul>
+<p>完整代码：</p>
+<pre class="playground"><code class="language-rust">use std::fs;
+
+fn parse_scores_from_text(text: &amp;str) -&gt; Result&lt;Vec&lt;f64&gt;, String&gt; {
+    let mut scores = Vec::new();
+
+    for (index, line) in text.lines().enumerate() {
+        let trimmed = line.trim();
+
+        if trimmed.is_empty() {
+            continue;
+        }
+
+        let score = trimmed.parse::&lt;f64&gt;().map_err(|error| {
+            format!(
+                "line {}: cannot parse {:?}: {}",
+                index + 1,
+                trimmed,
+                error
+            )
+        })?;
+
+        scores.push(score);
+    }
+
+    Ok(scores)
+}
+
+fn average(scores: &amp;[f64]) -&gt; Option&lt;f64&gt; {
+    if scores.is_empty() {
+        return None;
+    }
+
+    let total: f64 = scores.iter().sum();
+    Some(total / scores.len() as f64)
+}
+
+fn read_scores(path: &amp;str) -&gt; Result&lt;Vec&lt;f64&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = fs::read_to_string(path)?;
+    let scores = parse_scores_from_text(&amp;content)?;
+    Ok(scores)
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    fs::write("scores.txt", "95\n88.5\n\n76\n100\n")?;
+    fs::write("bad_scores.txt", "95\nabc\n76\n")?;
+    fs::write("empty_scores.txt", "\n  \n")?;
+
+    println!("== Good scores ==");
+    match read_scores("scores.txt") {
+        Ok(scores) =&gt; {
+            println!("scores = {:?}", scores);
+
+            match average(&amp;scores) {
+                Some(avg) =&gt; println!("average = {:.2}", avg),
+                None =&gt; println!("no scores"),
+            }
+        }
+        Err(error) =&gt; println!("failed to read scores: {error}"),
+    }
+
+    println!("\n== Bad scores ==");
+    match read_scores("bad_scores.txt") {
+        Ok(scores) =&gt; println!("scores = {:?}", scores),
+        Err(error) =&gt; println!("failed to read scores: {error}"),
+    }
+
+    println!("\n== Empty scores ==");
+    match read_scores("empty_scores.txt") {
+        Ok(scores) =&gt; match average(&amp;scores) {
+            Some(avg) =&gt; println!("average = {:.2}", avg),
+            None =&gt; println!("no scores"),
+        },
+        Err(error) =&gt; println!("failed to read scores: {error}"),
+    }
+
+    Ok(())
+}</code></pre>
+<p>运行输出：</p>
+<pre><code class="language-text">== Good scores ==
+scores = [95.0, 88.5, 76.0, 100.0]
+average = 89.88
+
+== Bad scores ==
+failed to read scores: line 2: cannot parse "abc": invalid float literal
+
+== Empty scores ==
+no scores
+</code></pre>
+<h3 id="171-okscores-的作用"><a class="header" href="#171-okscores-的作用">17.1 <code>Ok(scores)</code> 的作用</a></h3>
+<p>这个函数签名是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn parse_scores_from_text(text: &amp;str) -&gt; Result&lt;Vec&lt;f64&gt;, String&gt;
+<span class="boring">}</span></code></pre>
+<p>它不是返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Vec&lt;f64&gt;
+<span class="boring">}</span></code></pre>
+<p>而是返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;Vec&lt;f64&gt;, String&gt;
+<span class="boring">}</span></code></pre>
+<p>所以函数最后不能直接写：</p>
+<pre><code class="language-rust ignore">scores</code></pre>
+<p>因为 <code>scores</code> 的类型只是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Vec&lt;f64&gt;
+<span class="boring">}</span></code></pre>
+<p>必须写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Ok(scores)
+<span class="boring">}</span></code></pre>
+<p>这表示：</p>
+<pre><code class="language-text">成功解析出了 Vec&lt;f64&gt;，现在把它包装成 Result 的成功分支返回。
+</code></pre>
+<p>类型关系是：</p>
+<pre><code class="language-text">scores: Vec&lt;f64&gt;
+Ok(scores): Result&lt;Vec&lt;f64&gt;, String&gt;
+</code></pre>
+<p>同理，如果失败，则返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Err(message)
+<span class="boring">}</span></code></pre>
+<p>其中：</p>
+<pre><code class="language-text">message: String
+Err(message): Result&lt;Vec&lt;f64&gt;, String&gt;
+</code></pre>
+<h3 id="172-ok-的两个位置构造与匹配"><a class="header" href="#172-ok-的两个位置构造与匹配">17.2 <code>Ok</code> 的两个位置：构造与匹配</a></h3>
+<p>同样写作 <code>Ok(scores)</code>，在不同位置含义不同。</p>
+<p>在函数返回处：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Ok(scores)
+<span class="boring">}</span></code></pre>
+<p>表示“构造一个成功的 <code>Result</code> 值”。</p>
+<p>在 <code>match</code> 中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match read_scores("scores.txt") {
+    Ok(scores) =&gt; println!("{:?}", scores),
+    Err(error) =&gt; println!("{error}"),
+}
+<span class="boring">}</span></code></pre>
+<p>这里的 <code>Ok(scores)</code> 表示“匹配成功分支，并把里面的值取出来命名为 <code>scores</code>”。</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>位置</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td>函数最后 <code>Ok(scores)</code></td><td>构造成功结果</td></tr>
+<tr><td><code>match</code> 里的 <code>Ok(scores) =&gt; ...</code></td><td>匹配成功结果并拆包</td></tr>
+</tbody>
+</table>
+</div>
+<p><code>Some(value)</code> 也有同样的两种用法。</p>
+<h3 id="173-从-result-里取值或提前返回错误"><a class="header" href="#173-从-result-里取值或提前返回错误">17.3 <code>?</code>：从 <code>Result</code> 里取值，或提前返回错误</a></h3>
+<p>这一行：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let score = trimmed.parse::&lt;f64&gt;().map_err(|error| {
+    format!(
+        "line {}: cannot parse {:?}: {}",
+        index + 1,
+        trimmed,
+        error
+    )
+})?;
+<span class="boring">}</span></code></pre>
+<p>类型流动如下：</p>
+<pre><code class="language-text">trimmed: &amp;str
+trimmed.parse::&lt;f64&gt;(): Result&lt;f64, ParseFloatError&gt;
+map_err(...): Result&lt;f64, String&gt;
+?: 成功时取出 f64，失败时提前返回 Err(String)
+score: f64
+</code></pre>
+<p>也就是说，<code>?</code> 的作用是：</p>
+<pre><code class="language-text">如果是 Ok(value)，取出 value，赋给 score。
+如果是 Err(error)，立刻从 parse_scores_from_text 返回 Err(error)。
+</code></pre>
+<p>所以 <code>?</code> 不是忽略错误，而是把错误沿着函数返回类型传播出去。</p>
+<h3 id="174-写变量类型时的判断方法"><a class="header" href="#174-写变量类型时的判断方法">17.4 写变量类型时的判断方法</a></h3>
+<p>Rust 有类型推断，不是所有变量都需要手动标类型。但初学阶段可以主动标出关键类型，帮助自己建立类型感。</p>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let mut scores: Vec&lt;f64&gt; = Vec::new();
+<span class="boring">}</span></code></pre>
+<p>表示 <code>scores</code> 是一个装 <code>f64</code> 的动态数组。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let score: f64 = trimmed.parse::&lt;f64&gt;().map_err(|error| {
+    format!("line {}: cannot parse {:?}: {}", index + 1, trimmed, error)
+})?;
+<span class="boring">}</span></code></pre>
+<p>表示这一行最终成功时得到的是一个 <code>f64</code>。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let total: f64 = scores.iter().sum();
+<span class="boring">}</span></code></pre>
+<p>这里建议标注 <code>f64</code>，因为 <code>sum()</code> 是泛型方法，类型提示能让代码更清楚。</p>
+<p>一个实用原则：</p>
+<pre><code class="language-text">能从右边明显看出来的，可以省略类型。
+Vec::new()、parse、sum 这类容易让人迷糊的地方，初学时可以多写类型。
+</code></pre>
+<h3 id="175-常用小-api-小抄"><a class="header" href="#175-常用小-api-小抄">17.5 常用小 API 小抄</a></h3>
+<p>判断是否为空：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>trimmed.is_empty();
+scores.is_empty();
+<span class="boring">}</span></code></pre>
+<p>获取长度：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scores.len();
+<span class="boring">}</span></code></pre>
+<p>按行遍历字符串：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for line in text.lines() {
+    println!("{line}");
+}
+<span class="boring">}</span></code></pre>
+<p>带行号遍历：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>for (index, line) in text.lines().enumerate() {
+    println!("line {} = {}", index + 1, line);
+}
+<span class="boring">}</span></code></pre>
+<p>求和：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let total: f64 = scores.iter().sum();
+<span class="boring">}</span></code></pre>
+<p>整数转浮点数：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scores.len() as f64
+<span class="boring">}</span></code></pre>
+<p>字符串解析浮点数：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let score: f64 = trimmed.parse::&lt;f64&gt;()?;
+<span class="boring">}</span></code></pre>
+<p>如果要把解析错误改成自己的错误信息：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let score: f64 = trimmed.parse::&lt;f64&gt;().map_err(|error| {
+    format!("line {}: cannot parse {:?}: {}", index + 1, trimmed, error)
+})?;
+<span class="boring">}</span></code></pre>
+<h3 id="176-返回值小抄"><a class="header" href="#176-返回值小抄">17.6 返回值小抄</a></h3>
+<p>如果函数签名是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f() -&gt; Result&lt;T, E&gt;
+<span class="boring">}</span></code></pre>
+<p>成功返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Ok(value_of_type_T)
+<span class="boring">}</span></code></pre>
+<p>失败返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Err(error_of_type_E)
+<span class="boring">}</span></code></pre>
+<p>如果函数签名是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn f() -&gt; Option&lt;T&gt;
+<span class="boring">}</span></code></pre>
+<p>有值返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Some(value_of_type_T)
+<span class="boring">}</span></code></pre>
+<p>没值返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>None
+<span class="boring">}</span></code></pre>
+<p>所以：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn average(scores: &amp;[f64]) -&gt; Option&lt;f64&gt; {
+    if scores.is_empty() {
+        return None;
+    }
+
+    let total: f64 = scores.iter().sum();
+    Some(total / scores.len() as f64)
+}
+<span class="boring">}</span></code></pre>
+<p>这里：</p>
+<pre><code class="language-text">None: Option&lt;f64&gt;
+Some(...): Option&lt;f64&gt;
+</code></pre>
+<p>它们都和函数签名一致。</p>
+<h3 id="177-本次练习暴露出的核心问题"><a class="header" href="#177-本次练习暴露出的核心问题">17.7 本次练习暴露出的核心问题</a></h3>
+<p>这次练习中，最容易卡住的不是算法，而是 Rust 的“类型包装”意识：</p>
+<pre><code class="language-text">Vec&lt;f64&gt; 要用 Ok(...) 包成 Result&lt;Vec&lt;f64&gt;, String&gt;。
+f64 要从 Result&lt;f64, String&gt; 里用 ? 取出来。
+平均值 f64 要用 Some(...) 包成 Option&lt;f64&gt;。
+没有平均值时返回 None。
+</code></pre>
+<p>以后写 Rust 函数时，可以先问自己四个问题：</p>
+<pre><code class="language-text">1. 函数签名说最终返回什么类型？
+2. 成功值是什么类型？
+3. 失败值是什么类型？
+4. 当前这一步拿到的是普通值，还是 Result / Option 包装值？
+</code></pre>
+<p>这比一开始就直接敲代码更稳。</p>
+<h3 id="178-之后每天增加一个练习题"><a class="header" href="#178-之后每天增加一个练习题">17.8 之后每天增加一个练习题</a></h3>
+<p>从今天以后，每天学习流程调整为：</p>
+<pre><code class="language-text">概念框架 -&gt; 成组实验 -&gt; 当日练习题 -&gt; 读 cargo check / cargo run 输出 -&gt; 总结进 mdBook
+</code></pre>
+<p>练习题的目标：</p>
+<ul>
+<li>不追求复杂算法</li>
+<li>重点训练 Rust 基础写作能力</li>
+<li>每天围绕当天主题写一个小程序</li>
+<li>必须经历一次自己补全、运行、读报错、修正的过程</li>
+<li>笔记中保留最终代码、典型错误和思考方法</li>
+</ul>
+<p>这样可以逐步从“看懂 Rust”过渡到“能写 Rust”。</p>
 <h2 id="今日总结"><a class="header" href="#今日总结">今日总结</a></h2>
 <p>Day 8 的核心地图：</p>
 <div class="table-wrapper">

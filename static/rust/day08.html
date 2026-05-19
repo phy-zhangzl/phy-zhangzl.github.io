@@ -1,0 +1,1229 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN" class="rust sidebar-visible" dir="ltr">
+    <head>
+        <!-- Book generated using mdBook -->
+        <meta charset="UTF-8">
+        <title>Day 08 - Result、? 与错误处理 - Rust Tutor</title>
+
+
+        <!-- Custom HTML head -->
+
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#ffffff">
+
+        <link rel="icon" href="favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="favicon-8114d1fc.png">
+        <link rel="stylesheet" href="css/variables-8adf115d.css">
+        <link rel="stylesheet" href="css/general-2459343d.css">
+        <link rel="stylesheet" href="css/chrome-ae938929.css">
+        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+
+        <!-- Fonts -->
+        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+
+        <!-- Highlight.js Stylesheets -->
+        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+
+        <!-- Custom theme stylesheets -->
+
+
+        <!-- Provide site root and default themes to javascript -->
+        <script>
+            const path_to_root = "";
+            const default_light_theme = "rust";
+            const default_dark_theme = "navy";
+            window.path_to_searchindex_js = "searchindex-e9cd3862.js";
+        </script>
+        <!-- Start loading toc.js asap -->
+        <script src="toc-e9f55b75.js"></script>
+    </head>
+    <body>
+    <div id="mdbook-help-container">
+        <div id="mdbook-help-popup">
+            <h2 class="mdbook-help-title">Keyboard shortcuts</h2>
+            <div>
+                <p>Press <kbd>←</kbd> or <kbd>→</kbd> to navigate between chapters</p>
+                <p>Press <kbd>S</kbd> or <kbd>/</kbd> to search in the book</p>
+                <p>Press <kbd>?</kbd> to show this help</p>
+                <p>Press <kbd>Esc</kbd> to hide this help</p>
+            </div>
+        </div>
+    </div>
+    <div id="mdbook-body-container">
+        <!-- Work around some values being stored in localStorage wrapped in quotes -->
+        <script>
+            try {
+                let theme = localStorage.getItem('mdbook-theme');
+                let sidebar = localStorage.getItem('mdbook-sidebar');
+
+                if (theme.startsWith('"') && theme.endsWith('"')) {
+                    localStorage.setItem('mdbook-theme', theme.slice(1, theme.length - 1));
+                }
+
+                if (sidebar.startsWith('"') && sidebar.endsWith('"')) {
+                    localStorage.setItem('mdbook-sidebar', sidebar.slice(1, sidebar.length - 1));
+                }
+            } catch (e) { }
+        </script>
+
+        <!-- Set the theme before any content is loaded, prevents flash -->
+        <script>
+            const default_theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? default_dark_theme : default_light_theme;
+            let theme;
+            try { theme = localStorage.getItem('mdbook-theme'); } catch(e) { }
+            if (theme === null || theme === undefined) { theme = default_theme; }
+            const html = document.documentElement;
+            html.classList.remove('rust')
+            html.classList.add(theme);
+            html.classList.add("js");
+        </script>
+
+        <input type="checkbox" id="mdbook-sidebar-toggle-anchor" class="hidden">
+
+        <!-- Hide / unhide sidebar before it is displayed -->
+        <script>
+            let sidebar = null;
+            const sidebar_toggle = document.getElementById("mdbook-sidebar-toggle-anchor");
+            if (document.body.clientWidth >= 1080) {
+                try { sidebar = localStorage.getItem('mdbook-sidebar'); } catch(e) { }
+                sidebar = sidebar || 'visible';
+            } else {
+                sidebar = 'hidden';
+                sidebar_toggle.checked = false;
+            }
+            if (sidebar === 'visible') {
+                sidebar_toggle.checked = true;
+            } else {
+                html.classList.remove('sidebar-visible');
+            }
+        </script>
+
+        <nav id="mdbook-sidebar" class="sidebar" aria-label="Table of contents">
+            <!-- populated by js -->
+            <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
+            <noscript>
+                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+            </noscript>
+            <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
+                <div class="sidebar-resize-indicator"></div>
+            </div>
+        </nav>
+
+        <div id="mdbook-page-wrapper" class="page-wrapper">
+
+            <div class="page">
+                <div id="mdbook-menu-bar-hover-placeholder"></div>
+                <div id="mdbook-menu-bar" class="menu-bar sticky">
+                    <div class="left-buttons">
+                        <label id="mdbook-sidebar-toggle" class="icon-button" for="mdbook-sidebar-toggle-anchor" title="Toggle Table of Contents" aria-label="Toggle Table of Contents" aria-controls="mdbook-sidebar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg></span>
+                        </label>
+                        <button id="mdbook-theme-toggle" class="icon-button" type="button" title="Change theme" aria-label="Change theme" aria-haspopup="true" aria-expanded="false" aria-controls="mdbook-theme-list">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M371.3 367.1c27.3-3.9 51.9-19.4 67.2-42.9L600.2 74.1c12.6-19.5 9.4-45.3-7.6-61.2S549.7-4.4 531.1 9.6L294.4 187.2c-24 18-38.2 46.1-38.4 76.1L371.3 367.1zm-19.6 25.4l-116-104.4C175.9 290.3 128 339.6 128 400c0 3.9 .2 7.8 .6 11.6c1.8 17.5-10.2 36.4-27.8 36.4H96c-17.7 0-32 14.3-32 32s14.3 32 32 32H240c61.9 0 112-50.1 112-112c0-2.5-.1-5-.2-7.5z"/></svg></span>
+                        </button>
+                        <ul id="mdbook-theme-list" class="theme-popup" aria-label="Themes" role="menu">
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-default_theme">Auto</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-light">Light</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-rust">Rust</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-coal">Coal</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-navy">Navy</button></li>
+                            <li role="none"><button role="menuitem" class="theme" id="mdbook-theme-ayu">Ayu</button></li>
+                        </ul>
+                        <button id="mdbook-search-toggle" class="icon-button" type="button" title="Search (`/`)" aria-label="Toggle Searchbar" aria-expanded="false" aria-keyshortcuts="/ s" aria-controls="mdbook-searchbar">
+                            <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z"/></svg></span>
+                        </button>
+                    </div>
+
+                    <h1 class="menu-title">Rust Tutor</h1>
+
+                    <div class="right-buttons">
+                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                            <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
+                        </a>
+
+                    </div>
+                </div>
+
+                <div id="mdbook-search-wrapper" class="hidden">
+                    <form id="mdbook-searchbar-outer" class="searchbar-outer">
+                        <div class="search-wrapper">
+                            <input type="search" id="mdbook-searchbar" name="searchbar" placeholder="Search this book ..." aria-controls="mdbook-searchresults-outer" aria-describedby="searchresults-header">
+                            <div class="spinner-wrapper">
+                                <span class=fa-svg id="fa-spin"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M304 48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zm0 416c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM48 304c26.5 0 48-21.5 48-48s-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48zm464-48c0-26.5-21.5-48-48-48s-48 21.5-48 48s21.5 48 48 48s48-21.5 48-48zM142.9 437c18.7-18.7 18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zm0-294.2c18.7-18.7 18.7-49.1 0-67.9S93.7 56.2 75 75s-18.7 49.1 0 67.9s49.1 18.7 67.9 0zM369.1 437c18.7 18.7 49.1 18.7 67.9 0s18.7-49.1 0-67.9s-49.1-18.7-67.9 0s-18.7 49.1 0 67.9z"/></svg></span>
+                            </div>
+                        </div>
+                    </form>
+                    <div id="mdbook-searchresults-outer" class="searchresults-outer hidden">
+                        <div id="mdbook-searchresults-header" class="searchresults-header"></div>
+                        <ul id="mdbook-searchresults">
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Apply ARIA attributes after the sidebar and the sidebar toggle button are added to the DOM -->
+                <script>
+                    document.getElementById('mdbook-sidebar-toggle').setAttribute('aria-expanded', sidebar === 'visible');
+                    document.getElementById('mdbook-sidebar').setAttribute('aria-hidden', sidebar !== 'visible');
+                    Array.from(document.querySelectorAll('#mdbook-sidebar a')).forEach(function(link) {
+                        link.setAttribute('tabIndex', sidebar === 'visible' ? 0 : -1);
+                    });
+                </script>
+
+                <div id="mdbook-content" class="content">
+                    <main>
+                        <h1 id="day-08---result-与错误处理"><a class="header" href="#day-08---result-与错误处理">Day 08 - <code>Result</code>、<code>?</code> 与错误处理</a></h1>
+<p>日期：2026-05-19</p>
+<h2 id="今日目标"><a class="header" href="#今日目标">今日目标</a></h2>
+<p>Day 8 学习 Rust 中处理“可能失败”的核心机制：</p>
+<ul>
+<li>理解 <code>Result&lt;T, E&gt;</code> 的结构和语义</li>
+<li>使用 <code>match</code> 显式处理 <code>Ok</code> / <code>Err</code></li>
+<li>使用 <code>?</code> 传播错误</li>
+<li>使用 <code>std::fs::read_to_string</code> 读取文件</li>
+<li>解析字符串为数字并处理解析错误</li>
+<li>理解 <code>unwrap()</code>、<code>expect()</code>、<code>match</code>、<code>?</code> 的区别</li>
+<li>使用 <code>map_err</code> 给错误增加上下文</li>
+<li>判断什么时候用 <code>Result</code>，什么时候用 <code>panic</code></li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day08_result_errors
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day08_result_errors
+cargo run
+</code></pre>
+<h2 id="1-从-optiont-到-resultt-e"><a class="header" href="#1-从-optiont-到-resultt-e">1. 从 <code>Option&lt;T&gt;</code> 到 <code>Result&lt;T, E&gt;</code></a></h2>
+<p>Day 7 学过：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">enum Option&lt;T&gt; {
+</span><span class="boring">    Some(T),
+</span><span class="boring">    None,
+</span><span class="boring">}
+</span><span class="boring">}</span></code></pre>
+<p><code>Option&lt;T&gt;</code> 表达：</p>
+<pre><code class="language-text">有值 / 没有值
+</code></pre>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn find_even(nums: &amp;[i32]) -&gt; Option&lt;i32&gt; {
+    for n in nums {
+        if *n % 2 == 0 {
+            return Some(*n);
+        }
+    }
+
+    None
+}
+<span class="boring">}</span></code></pre>
+<p>但是 <code>Option&lt;T&gt;</code> 只能表达“没有”，不能表达“为什么没有”。</p>
+<p><code>Result&lt;T, E&gt;</code> 用来表达：</p>
+<pre><code class="language-text">成功 / 失败，并且失败时带有原因
+</code></pre>
+<p>它大致可以理解为：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span><span class="boring">enum Result&lt;T, E&gt; {
+</span><span class="boring">    Ok(T),
+</span><span class="boring">    Err(E),
+</span><span class="boring">}
+</span><span class="boring">}</span></code></pre>
+<p>含义：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>形式</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Ok(T)</code></td><td>成功，并携带成功结果</td></tr>
+<tr><td><code>Err(E)</code></td><td>失败，并携带错误原因</td></tr>
+</tbody>
+</table>
+</div>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;i32, String&gt;
+<span class="boring">}</span></code></pre>
+<p>可以读作：</p>
+<pre><code class="language-text">要么成功得到 i32，要么失败得到 String 错误信息。
+</code></pre>
+<h2 id="2-最简单的-result安全除法"><a class="header" href="#2-最简单的-result安全除法">2. 最简单的 <code>Result</code>：安全除法</a></h2>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">fn divide(a: i32, b: i32) -&gt; Result&lt;i32, String&gt; {
+    if b == 0 {
+        Err(String::from("cannot divide by zero"))
+    } else {
+        Ok(a / b)
+    }
+}
+
+fn main() {
+    for (a, b) in [(10, 2), (10, 0)] {
+        match divide(a, b) {
+            Ok(value) =&gt; println!("{a} / {b} = {value}"),
+            Err(message) =&gt; println!("failed to divide {a} by {b}: {message}"),
+        }
+    }
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">10 / 2 = 5
+failed to divide 10 by 0: cannot divide by zero
+</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn divide(a: i32, b: i32) -&gt; Result&lt;i32, String&gt;
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">如果除法合法，返回 Ok(i32)。
+如果 b == 0，返回 Err(String)。
+</code></pre>
+<p>调用处用 <code>match</code> 分别处理成功和失败：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match divide(a, b) {
+    Ok(value) =&gt; println!("{a} / {b} = {value}"),
+    Err(message) =&gt; println!("failed to divide {a} by {b}: {message}"),
+}
+<span class="boring">}</span></code></pre>
+<p>这和 <code>Option&lt;T&gt;</code> 的模式很像：</p>
+<pre><code class="language-rust ignore">match value {
+    Some(x) =&gt; ...,
+    None =&gt; ...,
+}</code></pre>
+<p>只不过 <code>Result&lt;T, E&gt;</code> 的失败分支会携带错误信息。</p>
+<h2 id="3-文件读取天然返回-result"><a class="header" href="#3-文件读取天然返回-result">3. 文件读取天然返回 <code>Result</code></a></h2>
+<p>Rust 标准库中的文件读取函数：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>std::fs::read_to_string(path)
+<span class="boring">}</span></code></pre>
+<p>返回类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;String, std::io::Error&gt;
+<span class="boring">}</span></code></pre>
+<p>因为文件读取可能失败，例如：</p>
+<ul>
+<li>文件不存在</li>
+<li>路径是目录</li>
+<li>没有读取权限</li>
+<li>文件系统出错</li>
+</ul>
+<p>所以 Rust 不会让你假装文件读取一定成功，而是把“可能失败”写进类型。</p>
+<p>手动处理文件读取错误：</p>
+<pre class="playground"><code class="language-rust">use std::fs;
+use std::io;
+
+fn read_username_manual(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let content_result = fs::read_to_string(path);
+
+    match content_result {
+        Ok(content) =&gt; Ok(content.trim().to_string()),
+        Err(error) =&gt; Err(error),
+    }
+}
+
+fn main() {
+    match read_username_manual("username.txt") {
+        Ok(name) =&gt; println!("username = {name}"),
+        Err(error) =&gt; println!("failed to read username: {error}"),
+    }
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fs::read_to_string(path)
+<span class="boring">}</span></code></pre>
+<p>得到的是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;String, io::Error&gt;
+<span class="boring">}</span></code></pre>
+<p>如果成功，<code>content</code> 是文件内容；如果失败，<code>error</code> 是具体的 I/O 错误。</p>
+<h2 id="4--运算符传播错误"><a class="header" href="#4--运算符传播错误">4. <code>?</code> 运算符：传播错误</a></h2>
+<p>手动 <code>match</code> 很常见，所以 Rust 提供了 <code>?</code> 简化错误传播。</p>
+<p>下面两个函数语义相同。</p>
+<p>手动版本：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs;
+use std::io;
+
+fn read_username_manual(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let content_result = fs::read_to_string(path);
+
+    match content_result {
+        Ok(content) =&gt; Ok(content.trim().to_string()),
+        Err(error) =&gt; Err(error),
+    }
+}
+<span class="boring">}</span></code></pre>
+<p><code>?</code> 版本：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs;
+use std::io;
+
+fn read_username_question_mark(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let content = fs::read_to_string(path)?;
+    Ok(content.trim().to_string())
+}
+<span class="boring">}</span></code></pre>
+<p>这一行：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let content = fs::read_to_string(path)?;
+<span class="boring">}</span></code></pre>
+<p>可以理解为：</p>
+<pre><code class="language-rust ignore">let content = match fs::read_to_string(path) {
+    Ok(value) =&gt; value,
+    Err(error) =&gt; return Err(error),
+};</code></pre>
+<p>也就是说：</p>
+<pre><code class="language-text">如果是 Ok(value)，? 取出 value，程序继续执行。
+如果是 Err(error)，? 立刻从当前函数返回 Err(error)。
+</code></pre>
+<p><code>?</code> 不是忽略错误，而是把错误向上传播。</p>
+<h2 id="5--对函数签名的要求"><a class="header" href="#5--对函数签名的要求">5. <code>?</code> 对函数签名的要求</a></h2>
+<p>如果在函数内部写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fs::read_to_string(path)?
+<span class="boring">}</span></code></pre>
+<p>那么当前函数也必须能返回相应的错误。</p>
+<p>例如下面是合法的：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs;
+use std::io;
+
+fn read_username(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let content = fs::read_to_string(path)?;
+    Ok(content.trim().to_string())
+}
+<span class="boring">}</span></code></pre>
+<p>因为当前函数返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;String, io::Error&gt;
+<span class="boring">}</span></code></pre>
+<p>如果文件读取失败，<code>?</code> 可以直接返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Err(io::Error)
+<span class="boring">}</span></code></pre>
+<p>但如果函数写成：</p>
+<pre><code class="language-rust ignore">fn read_username(path: &amp;str) -&gt; String {
+    let content = fs::read_to_string(path)?;
+    content.trim().to_string()
+}</code></pre>
+<p>就不合理，因为失败时不知道应该返回什么 <code>String</code>。</p>
+<p>当前阶段可以先记住：</p>
+<pre><code class="language-text">想用 ? 传播 Result 错误，函数自己通常也要返回 Result。
+</code></pre>
+<h2 id="6-trim清理字符串两端空白"><a class="header" href="#6-trim清理字符串两端空白">6. <code>.trim()</code>：清理字符串两端空白</a></h2>
+<p>读取文本文件时经常会看到：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>content.trim()
+<span class="boring">}</span></code></pre>
+<p><code>.trim()</code> 会去掉字符串开头和结尾的空白字符，包括：</p>
+<ul>
+<li>空格</li>
+<li>换行 <code>\n</code></li>
+<li>制表符 <code>\t</code></li>
+<li>Windows 换行里的 <code>\r\n</code></li>
+</ul>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "  42\n";
+    let cleaned = text.trim();
+
+    println!("before = {:?}", text);
+    println!("after  = {:?}", cleaned);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">before = "  42\n"
+after  = "42"
+</code></pre>
+<p>它不会删除字符串中间的空格：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "  hello rust  ";
+    println!("{:?}", text.trim());
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">"hello rust"
+</code></pre>
+<p>中间的空格仍然存在。</p>
+<p><code>.trim()</code> 不会原地修改原字符串，而是返回一个 <code>&amp;str</code> 视图：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = String::from("  hello  ");
+    let cleaned = text.trim();
+
+    println!("text = {:?}", text);
+    println!("cleaned = {:?}", cleaned);
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">text = "  hello  "
+cleaned = "hello"
+</code></pre>
+<p>所以在下面这个函数里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::fs;
+use std::io;
+
+fn read_username(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let content = fs::read_to_string(path)?;
+    Ok(content.trim().to_string())
+}
+<span class="boring">}</span></code></pre>
+<p>流程是：</p>
+<pre><code class="language-text">String -&gt; trim 得到 &amp;str -&gt; to_string 得到新的 String
+</code></pre>
+<p>因为函数返回类型要求是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;String, io::Error&gt;
+<span class="boring">}</span></code></pre>
+<p>所以最后需要 <code>.to_string()</code>。</p>
+<h2 id="7-解析数字parsei32"><a class="header" href="#7-解析数字parsei32">7. 解析数字：<code>parse::&lt;i32&gt;()</code></a></h2>
+<p>字符串解析为数字也可能失败。</p>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">use std::num::ParseIntError;
+
+fn parse_number(text: &amp;str) -&gt; Result&lt;i32, ParseIntError&gt; {
+    let number = text.trim().parse::&lt;i32&gt;()?;
+    Ok(number)
+}
+
+fn main() {
+    match parse_number("123") {
+        Ok(n) =&gt; println!("parsed number = {n}"),
+        Err(error) =&gt; println!("parse error: {error}"),
+    }
+
+    match parse_number("abc") {
+        Ok(n) =&gt; println!("parsed number = {n}"),
+        Err(error) =&gt; println!("parse error: {error}"),
+    }
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">parsed number = 123
+parse error: invalid digit found in string
+</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text.trim().parse::&lt;i32&gt;()
+<span class="boring">}</span></code></pre>
+<p>返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;i32, ParseIntError&gt;
+<span class="boring">}</span></code></pre>
+<p>因为：</p>
+<pre><code class="language-text">"123" 可以解析成 i32
+"abc" 不能解析成 i32
+</code></pre>
+<h2 id="8-一个函数里有多种错误boxdyn-error"><a class="header" href="#8-一个函数里有多种错误boxdyn-error">8. 一个函数里有多种错误：<code>Box&lt;dyn Error&gt;</code></a></h2>
+<p>有些函数可能在多个步骤失败。</p>
+<p>例如：</p>
+<ol>
+<li>读取文件，可能产生 <code>io::Error</code></li>
+<li>解析数字，可能产生 <code>ParseIntError</code></li>
+</ol>
+<p>可以先使用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Box&lt;dyn std::error::Error&gt;
+<span class="boring">}</span></code></pre>
+<p>作为通用错误类型。</p>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">use std::fs;
+
+fn read_number(path: &amp;str) -&gt; Result&lt;i32, Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = fs::read_to_string(path)?;
+    let number = content.trim().parse::&lt;i32&gt;()?;
+    Ok(number)
+}
+
+fn main() {
+    match read_number("number.txt") {
+        Ok(n) =&gt; println!("number from file = {n}"),
+        Err(error) =&gt; println!("failed to read number: {error}"),
+    }
+}</code></pre>
+<p>当前阶段可以把：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Box&lt;dyn std::error::Error&gt;
+<span class="boring">}</span></code></pre>
+<p>理解成：</p>
+<pre><code class="language-text">能装下多种错误类型的通用错误盒子。
+</code></pre>
+<p>以后学习 trait、动态分发、错误类型设计时，会再深入理解它。</p>
+<h2 id="9-main-也可以返回-result"><a class="header" href="#9-main-也可以返回-result">9. <code>main</code> 也可以返回 <code>Result</code></a></h2>
+<p>普通写法：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    println!("hello");
+}</code></pre>
+<p>如果想在 <code>main</code> 中使用 <code>?</code>，可以让 <code>main</code> 返回 <code>Result</code>：</p>
+<pre class="playground"><code class="language-rust">use std::fs;
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    fs::write("number.txt", "42\n")?;
+    let content = fs::read_to_string("number.txt")?;
+
+    println!("content = {}", content.trim());
+
+    Ok(())
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt;
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">成功时没有有意义的返回值：()
+失败时返回某种错误。
+</code></pre>
+<p>最后的：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Ok(())
+<span class="boring">}</span></code></pre>
+<p>表示程序正常结束。</p>
+<h2 id="10-matchunwrapexpect-的区别"><a class="header" href="#10-matchunwrapexpect-的区别">10. <code>match</code>、<code>?</code>、<code>unwrap()</code>、<code>expect()</code> 的区别</a></h2>
+<p>假设有：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let result = std::fs::read_to_string("number.txt");
+<span class="boring">}</span></code></pre>
+<p>它的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;String, std::io::Error&gt;
+<span class="boring">}</span></code></pre>
+<p>常见处理方式有四种。</p>
+<h3 id="101-match显式处理"><a class="header" href="#101-match显式处理">10.1 <code>match</code>：显式处理</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>match std::fs::read_to_string("number.txt") {
+    Ok(content) =&gt; println!("content = {}", content),
+    Err(error) =&gt; println!("failed to read file: {}", error),
+}
+<span class="boring">}</span></code></pre>
+<p>特点：</p>
+<pre><code class="language-text">成功怎么处理，失败怎么处理，都写清楚。
+</code></pre>
+<p>适合在程序边界层处理错误，例如 <code>main</code>、CLI、用户界面。</p>
+<h3 id="102-向上传播"><a class="header" href="#102-向上传播">10.2 <code>?</code>：向上传播</a></h3>
+<pre><code class="language-rust ignore">let content = std::fs::read_to_string("number.txt")?;</code></pre>
+<p>特点：</p>
+<pre><code class="language-text">当前函数不处理错误，而是交给调用者。
+</code></pre>
+<p>适合中间函数。</p>
+<h3 id="103-unwrap失败就-panic"><a class="header" href="#103-unwrap失败就-panic">10.3 <code>unwrap()</code>：失败就 panic</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let content = std::fs::read_to_string("number.txt").unwrap();
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">如果是 Ok(value)，取出 value。
+如果是 Err(error)，程序 panic。
+</code></pre>
+<p>适合快速实验或测试代码，不适合正式处理用户输入、文件、网络等外部失败。</p>
+<h3 id="104-expect失败就-panic但带说明"><a class="header" href="#104-expect失败就-panic但带说明">10.4 <code>expect()</code>：失败就 panic，但带说明</a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let content = std::fs::read_to_string("number.txt")
+    .expect("number.txt should exist for this demo");
+<span class="boring">}</span></code></pre>
+<p><code>expect()</code> 和 <code>unwrap()</code> 类似，也会在失败时 panic，但它可以提供更清晰的上下文信息。</p>
+<p>正式代码中如果确实要 panic，通常 <code>expect()</code> 比裸 <code>unwrap()</code> 更好。</p>
+<h2 id="11-err-不是-panic"><a class="header" href="#11-err-不是-panic">11. <code>Err</code> 不是 panic</a></h2>
+<p>这是一个重要区别。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Err(error)
+<span class="boring">}</span></code></pre>
+<p>只是一个普通值，表示操作失败了，但程序还可以继续运行。</p>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">fn divide(a: i32, b: i32) -&gt; Result&lt;i32, String&gt; {
+    if b == 0 {
+        Err(String::from("cannot divide by zero"))
+    } else {
+        Ok(a / b)
+    }
+}
+
+fn main() {
+    match divide(10, 0) {
+        Ok(n) =&gt; println!("result = {n}"),
+        Err(error) =&gt; println!("error: {error}"),
+    }
+
+    println!("program is still running");
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">error: cannot divide by zero
+program is still running
+</code></pre>
+<p>而：</p>
+<pre><code class="language-rust ignore">divide(10, 0).unwrap();</code></pre>
+<p>会把 <code>Err</code> 变成 panic。</p>
+<p>所以：</p>
+<pre><code class="language-text">Result 是可恢复错误。
+panic 是不可恢复崩溃。
+</code></pre>
+<h2 id="12-多行文件解析linesenumerate-与-map_err"><a class="header" href="#12-多行文件解析linesenumerate-与-map_err">12. 多行文件解析：<code>lines()</code>、<code>enumerate()</code> 与 <code>map_err</code></a></h2>
+<p>今天的主实验读取一个多行数字文件，解析成 <code>Vec&lt;i32&gt;</code>，并在错误中报告行号。</p>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">use std::fs;
+
+fn parse_numbers_from_text(text: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, String&gt; {
+    let mut numbers = Vec::new();
+
+    for (index, line) in text.lines().enumerate() {
+        let trimmed = line.trim();
+
+        if trimmed.is_empty() {
+            continue;
+        }
+
+        let number = trimmed.parse::&lt;i32&gt;().map_err(|error| {
+            format!(
+                "line {}: cannot parse {:?}: {}",
+                index + 1,
+                trimmed,
+                error
+            )
+        })?;
+
+        numbers.push(number);
+    }
+
+    Ok(numbers)
+}
+
+fn read_numbers(path: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = fs::read_to_string(path)?;
+    let numbers = parse_numbers_from_text(&amp;content)?;
+    Ok(numbers)
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    fs::write("numbers.txt", "10\n20\n\n30\n")?;
+    fs::write("bad_numbers.txt", "10\nabc\n30\n")?;
+
+    match read_numbers("numbers.txt") {
+        Ok(numbers) =&gt; {
+            let total: i32 = numbers.iter().sum();
+            println!("numbers = {:?}", numbers);
+            println!("total = {total}");
+        }
+        Err(error) =&gt; println!("failed to read numbers: {error}"),
+    }
+
+    match read_numbers("bad_numbers.txt") {
+        Ok(numbers) =&gt; println!("numbers = {:?}", numbers),
+        Err(error) =&gt; println!("failed to read numbers: {error}"),
+    }
+
+    Ok(())
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">numbers = [10, 20, 30]
+total = 60
+failed to read numbers: line 2: cannot parse "abc": invalid digit found in string
+</code></pre>
+<h3 id="121-lines"><a class="header" href="#121-lines">12.1 <code>lines()</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text.lines()
+<span class="boring">}</span></code></pre>
+<p>会把字符串按行切开。</p>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10\n20\n30\n";
+
+    for line in text.lines() {
+        println!("line = {:?}", line);
+    }
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">line = "10"
+line = "20"
+line = "30"
+</code></pre>
+<p>每一行的类型是 <code>&amp;str</code>。</p>
+<h3 id="122-enumerate"><a class="header" href="#122-enumerate">12.2 <code>enumerate()</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text.lines().enumerate()
+<span class="boring">}</span></code></pre>
+<p>会给每个元素加上编号：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let text = "10\n20\n30\n";
+
+    for (index, line) in text.lines().enumerate() {
+        println!("index = {index}, line = {line}");
+    }
+}</code></pre>
+<p>输出：</p>
+<pre><code class="language-text">index = 0, line = 10
+index = 1, line = 20
+index = 2, line = 30
+</code></pre>
+<p>因为程序员习惯从 0 开始计数，而用户习惯从 1 开始看行号，所以错误信息中通常写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>index + 1
+<span class="boring">}</span></code></pre>
+<h3 id="123-continue"><a class="header" href="#123-continue">12.3 <code>continue</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if trimmed.is_empty() {
+    continue;
+}
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">如果这一行清理后是空字符串，就跳过本轮循环，继续处理下一行。
+</code></pre>
+<p>所以：</p>
+<pre><code class="language-text">10
+20
+
+30
+</code></pre>
+<p>中间的空行不会导致解析失败。</p>
+<h3 id="124-map_err"><a class="header" href="#124-map_err">12.4 <code>map_err</code></a></h3>
+<p>这一行是错误上下文的关键：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let number = trimmed.parse::&lt;i32&gt;().map_err(|error| {
+    format!(
+        "line {}: cannot parse {:?}: {}",
+        index + 1,
+        trimmed,
+        error
+    )
+})?;
+<span class="boring">}</span></code></pre>
+<p><code>trimmed.parse::&lt;i32&gt;()</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;i32, ParseIntError&gt;
+<span class="boring">}</span></code></pre>
+<p>但 <code>parse_numbers_from_text</code> 返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Result&lt;Vec&lt;i32&gt;, String&gt;
+<span class="boring">}</span></code></pre>
+<p>所以需要把错误类型从 <code>ParseIntError</code> 转成 <code>String</code>。</p>
+<p><code>map_err</code> 的作用是：</p>
+<pre><code class="language-text">如果是 Ok(value)，保持 Ok(value) 不变。
+如果是 Err(error)，把 error 转换成另一个错误。
+</code></pre>
+<p>也就是：</p>
+<pre><code class="language-text">Result&lt;i32, ParseIntError&gt;
+    -&gt; map_err(...)
+Result&lt;i32, String&gt;
+</code></pre>
+<p>然后最后的 <code>?</code>：</p>
+<pre><code class="language-text">Ok(number)  -&gt; 取出 number，继续执行
+Err(String) -&gt; 立刻返回 Err(String)
+</code></pre>
+<p>这样错误信息就能从：</p>
+<pre><code class="language-text">invalid digit found in string
+</code></pre>
+<p>增强为：</p>
+<pre><code class="language-text">line 2: cannot parse "abc": invalid digit found in string
+</code></pre>
+<p>这在真实工程里非常重要，因为好的错误信息应该回答：</p>
+<pre><code class="language-text">哪里错了？哪个输入错了？为什么错了？
+</code></pre>
+<h2 id="13-什么时候用-result什么时候用-panic"><a class="header" href="#13-什么时候用-result什么时候用-panic">13. 什么时候用 <code>Result</code>，什么时候用 <code>panic</code></a></h2>
+<p>Rust 通常把错误分为两类。</p>
+<h3 id="131-可恢复错误用-result"><a class="header" href="#131-可恢复错误用-result">13.1 可恢复错误：用 <code>Result</code></a></h3>
+<p>如果失败是正常可能发生的，程序应该有机会处理，就用 <code>Result</code>。</p>
+<p>例如：</p>
+<ul>
+<li>用户输入了非法数字</li>
+<li>文件不存在</li>
+<li>网络请求失败</li>
+<li>配置文件格式不对</li>
+<li>权限不足</li>
+<li>某一行文本解析失败</li>
+</ul>
+<p>这些不是程序员写错代码，而是外部世界本来就可能这样。</p>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn read_number(path: &amp;str) -&gt; Result&lt;i32, Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = std::fs::read_to_string(path)?;
+    let number = content.trim().parse::&lt;i32&gt;()?;
+    Ok(number)
+}
+<span class="boring">}</span></code></pre>
+<h3 id="132-不可恢复错误可以-panic"><a class="header" href="#132-不可恢复错误可以-panic">13.2 不可恢复错误：可以 <code>panic</code></a></h3>
+<p>如果某个错误发生时说明程序内部逻辑已经坏了，继续运行没有意义，可以用 <code>panic</code>。</p>
+<p>例如：</p>
+<ul>
+<li>数组越界访问</li>
+<li>违反程序内部不变量</li>
+<li>某个理论上绝不应该发生的分支真的发生了</li>
+<li>测试中发现结果不符合预期</li>
+</ul>
+<p>“不变量”指的是：</p>
+<pre><code class="language-text">程序在某个位置必须始终满足的条件。
+</code></pre>
+<p>例如下面这个函数假设输入切片非空：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn average(nums: &amp;[i32]) -&gt; f64 {
+    if nums.is_empty() {
+        panic!("nums should not be empty");
+    }
+
+    let sum: i32 = nums.iter().sum();
+    sum as f64 / nums.len() as f64
+}
+<span class="boring">}</span></code></pre>
+<p>如果调用者传入空切片，就违反了函数约定。</p>
+<p>不过更安全的 API 往往会用 <code>Option</code> 或 <code>Result</code> 表达这种可能性：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn average(nums: &amp;[i32]) -&gt; Option&lt;f64&gt; {
+    if nums.is_empty() {
+        return None;
+    }
+
+    let sum: i32 = nums.iter().sum();
+    Some(sum as f64 / nums.len() as f64)
+}
+<span class="boring">}</span></code></pre>
+<p>这里用 <code>Option&lt;f64&gt;</code> 很合适，因为失败原因只有一种：没有数字，无法计算平均值。</p>
+<h2 id="14-resultoptionpanic-的选择"><a class="header" href="#14-resultoptionpanic-的选择">14. <code>Result</code>、<code>Option</code>、<code>panic</code> 的选择</a></h2>
+<p>可以用下面的表判断：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>场景</th><th>推荐</th></tr>
+</thead>
+<tbody>
+<tr><td>可能没有值，但没有复杂错误原因</td><td><code>Option&lt;T&gt;</code></td></tr>
+<tr><td>可能失败，而且需要说明失败原因</td><td><code>Result&lt;T, E&gt;</code></td></tr>
+<tr><td>外部输入、文件、网络、解析</td><td><code>Result&lt;T, E&gt;</code></td></tr>
+<tr><td>程序内部逻辑不变量被破坏</td><td><code>panic!</code></td></tr>
+<tr><td>快速实验</td><td>可以临时用 <code>unwrap()</code></td></tr>
+<tr><td>测试代码</td><td><code>unwrap()</code> / <code>expect()</code> 常见</td></tr>
+<tr><td>正式代码中确信不会失败</td><td>优先 <code>expect("说明为什么不该失败")</code>，少用裸 <code>unwrap()</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>实用原则：</p>
+<pre><code class="language-text">能恢复，用 Result。
+可能没有，用 Option。
+程序员 bug，用 panic。
+实验代码可以 unwrap。
+正式代码少 unwrap，多用 ?、match、expect。
+</code></pre>
+<p>更工程化一点：</p>
+<pre><code class="language-text">在函数内部用 ? 传播错误；
+在边界层用 match 展示错误；
+在错误发生处用 map_err / 自定义错误增加上下文；
+只有不可恢复的逻辑错误才 panic。
+</code></pre>
+<h2 id="15-library-和-application-的区别"><a class="header" href="#15-library-和-application-的区别">15. Library 和 Application 的区别</a></h2>
+<p>如果你在写库代码，也就是别人会调用你的函数，通常应该少 <code>panic</code>，多返回 <code>Result</code>。</p>
+<p>库代码更推荐：</p>
+<pre><code class="language-rust ignore">fn load_config(path: &amp;str) -&gt; Result&lt;Config, ConfigError&gt; {
+    // ...
+}</code></pre>
+<p>而不是：</p>
+<pre><code class="language-rust ignore">fn load_config(path: &amp;str) -&gt; Config {
+    // ...
+    panic!("failed to load config");
+}</code></pre>
+<p>因为库不应该随便替调用者决定：</p>
+<pre><code class="language-text">程序必须崩溃。
+</code></pre>
+<p>应用程序的最外层可以决定如何展示错误、是否退出程序：</p>
+<pre><code class="language-rust ignore">fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    let config = load_config("config.toml")?;
+    run(config)?;
+    Ok(())
+}</code></pre>
+<p>或者：</p>
+<pre><code class="language-rust ignore">fn main() {
+    match run() {
+        Ok(()) =&gt; {}
+        Err(error) =&gt; {
+            eprintln!("error: {}", error);
+            std::process::exit(1);
+        }
+    }
+}</code></pre>
+<p>常见风格是：</p>
+<pre><code class="language-text">底层函数返回 Result。
+顶层函数决定如何展示错误、是否退出程序。
+</code></pre>
+<h2 id="16-今日主实验代码"><a class="header" href="#16-今日主实验代码">16. 今日主实验代码</a></h2>
+<p><code>day08_result_errors/src/main.rs</code>：</p>
+<pre class="playground"><code class="language-rust">use std::fs;
+use std::io;
+use std::num::ParseIntError;
+
+fn divide(a: i32, b: i32) -&gt; Result&lt;i32, String&gt; {
+    if b == 0 {
+        Err(String::from("cannot divide by zero"))
+    } else {
+        Ok(a / b)
+    }
+}
+
+fn read_username_manual(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let content_result = fs::read_to_string(path);
+
+    match content_result {
+        Ok(content) =&gt; Ok(content.trim().to_string()),
+        Err(error) =&gt; Err(error),
+    }
+}
+
+fn read_username_question_mark(path: &amp;str) -&gt; Result&lt;String, io::Error&gt; {
+    let content = fs::read_to_string(path)?;
+    Ok(content.trim().to_string())
+}
+
+fn parse_number(text: &amp;str) -&gt; Result&lt;i32, ParseIntError&gt; {
+    let number = text.trim().parse::&lt;i32&gt;()?;
+    Ok(number)
+}
+
+fn read_number(path: &amp;str) -&gt; Result&lt;i32, Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = fs::read_to_string(path)?;
+    let number = content.trim().parse::&lt;i32&gt;()?;
+    Ok(number)
+}
+
+fn parse_numbers_from_text(text: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, String&gt; {
+    let mut numbers = Vec::new();
+
+    for (index, line) in text.lines().enumerate() {
+        let trimmed = line.trim();
+
+        if trimmed.is_empty() {
+            continue;
+        }
+
+        let number = trimmed.parse::&lt;i32&gt;().map_err(|error| {
+            format!(
+                "line {}: cannot parse {:?}: {}",
+                index + 1,
+                trimmed,
+                error
+            )
+        })?;
+
+        numbers.push(number);
+    }
+
+    Ok(numbers)
+}
+
+fn read_numbers(path: &amp;str) -&gt; Result&lt;Vec&lt;i32&gt;, Box&lt;dyn std::error::Error&gt;&gt; {
+    let content = fs::read_to_string(path)?;
+    let numbers = parse_numbers_from_text(&amp;content)?;
+    Ok(numbers)
+}
+
+fn main() -&gt; Result&lt;(), Box&lt;dyn std::error::Error&gt;&gt; {
+    println!("== Result basics ==");
+
+    for (a, b) in [(10, 2), (10, 0)] {
+        match divide(a, b) {
+            Ok(value) =&gt; println!("{a} / {b} = {value}"),
+            Err(message) =&gt; println!("failed to divide {a} by {b}: {message}"),
+        }
+    }
+
+    println!("\n== Create demo files ==");
+    fs::write("username.txt", "Alice\n")?;
+    fs::write("number.txt", "42\n")?;
+    fs::write("bad_number.txt", "not a number\n")?;
+    fs::write("numbers.txt", "10\n20\n\n30\n")?;
+    fs::write("bad_numbers.txt", "10\nabc\n30\n")?;
+
+    println!("\n== Read username: manual match ==");
+    match read_username_manual("username.txt") {
+        Ok(name) =&gt; println!("username = {name}"),
+        Err(error) =&gt; println!("failed to read username: {error}"),
+    }
+
+    println!("\n== Read username: ? operator ==");
+    let name = read_username_question_mark("username.txt")?;
+    println!("username = {name}");
+
+    println!("\n== Parse number ==");
+    match parse_number("123") {
+        Ok(n) =&gt; println!("parsed number = {n}"),
+        Err(error) =&gt; println!("parse error: {error}"),
+    }
+
+    match parse_number("abc") {
+        Ok(n) =&gt; println!("parsed number = {n}"),
+        Err(error) =&gt; println!("parse error: {error}"),
+    }
+
+    println!("\n== Read number from file ==");
+    match read_number("number.txt") {
+        Ok(n) =&gt; println!("number from file = {n}"),
+        Err(error) =&gt; println!("failed to read number: {error}"),
+    }
+
+    match read_number("missing.txt") {
+        Ok(n) =&gt; println!("number from file = {n}"),
+        Err(error) =&gt; println!("failed to read number: {error}"),
+    }
+
+    println!("\n== Read many numbers ==");
+    match read_numbers("numbers.txt") {
+        Ok(numbers) =&gt; {
+            let total: i32 = numbers.iter().sum();
+            println!("numbers = {:?}", numbers);
+            println!("total = {total}");
+        }
+        Err(error) =&gt; println!("failed to read numbers: {error}"),
+    }
+
+    match read_numbers("bad_numbers.txt") {
+        Ok(numbers) =&gt; println!("numbers = {:?}", numbers),
+        Err(error) =&gt; println!("failed to read numbers: {error}"),
+    }
+
+    Ok(())
+}</code></pre>
+<p>运行输出：</p>
+<pre><code class="language-text">== Result basics ==
+10 / 2 = 5
+failed to divide 10 by 0: cannot divide by zero
+
+== Create demo files ==
+
+== Read username: manual match ==
+username = Alice
+
+== Read username: ? operator ==
+username = Alice
+
+== Parse number ==
+parsed number = 123
+parse error: invalid digit found in string
+
+== Read number from file ==
+number from file = 42
+failed to read number: No such file or directory (os error 2)
+
+== Read many numbers ==
+numbers = [10, 20, 30]
+total = 60
+failed to read numbers: line 2: cannot parse "abc": invalid digit found in string
+</code></pre>
+<h2 id="今日总结"><a class="header" href="#今日总结">今日总结</a></h2>
+<p>Day 8 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Result&lt;T, E&gt;</code></td><td>表达成功或失败</td></tr>
+<tr><td><code>Ok(T)</code></td><td>成功，并携带结果</td></tr>
+<tr><td><code>Err(E)</code></td><td>失败，并携带错误信息</td></tr>
+<tr><td><code>match</code></td><td>显式处理成功和失败</td></tr>
+<tr><td><code>?</code></td><td>成功则取值，失败则提前返回</td></tr>
+<tr><td><code>std::fs::read_to_string</code></td><td>读取文件，返回 <code>Result&lt;String, io::Error&gt;</code></td></tr>
+<tr><td><code>.trim()</code></td><td>去掉字符串两端空白，常用于清理换行</td></tr>
+<tr><td><code>.parse::&lt;i32&gt;()</code></td><td>字符串解析数字，返回 <code>Result&lt;i32, ParseIntError&gt;</code></td></tr>
+<tr><td><code>Box&lt;dyn Error&gt;</code></td><td>当前阶段可理解为通用错误盒子</td></tr>
+<tr><td><code>unwrap()</code></td><td>成功取值，失败 panic</td></tr>
+<tr><td><code>expect()</code></td><td>成功取值，失败 panic，但带自定义说明</td></tr>
+<tr><td><code>map_err</code></td><td>转换错误类型，常用于增加上下文</td></tr>
+<tr><td><code>panic!</code></td><td>表示不可恢复错误或程序内部不变量被破坏</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">Rust 不把普通失败藏起来，而是用 Result 把失败写进类型，让调用者必须面对。
+</code></pre>
+<h2 id="下次继续"><a class="header" href="#下次继续">下次继续</a></h2>
+<p>Day 9 建议主题：Iterator 与 closure 初步。</p>
+<p>建议内容：</p>
+<ul>
+<li><code>iter()</code> / <code>iter_mut()</code> / <code>into_iter()</code> 的区别</li>
+<li><code>map</code> / <code>filter</code> / <code>collect</code></li>
+<li>closure 语法 <code>|x| x + 1</code></li>
+<li>iterator 链式处理数据</li>
+<li>用迭代器重写部分 <code>for</code> 循环</li>
+</ul>
+
+                    </main>
+
+                    <nav class="nav-wrapper" aria-label="Page navigation">
+                        <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="day07.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
+
+
+                        <div style="clear: both"></div>
+                    </nav>
+                </div>
+            </div>
+
+            <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="day07.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
+
+            </nav>
+
+        </div>
+
+        <template id=fa-eye><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M288 32c-80.8 0-145.5 36.8-192.6 80.6C48.6 156 17.3 208 2.5 243.7c-3.3 7.9-3.3 16.7 0 24.6C17.3 304 48.6 356 95.4 399.4C142.5 443.2 207.2 480 288 480s145.5-36.8 192.6-80.6c46.8-43.5 78.1-95.4 93-131.1c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C433.5 68.8 368.8 32 288 32zM432 256c0 79.5-64.5 144-144 144s-144-64.5-144-144s64.5-144 144-144s144 64.5 144 144zM288 192c0 35.3-28.7 64-64 64c-11.5 0-22.3-3-31.6-8.4c-.2 2.8-.4 5.5-.4 8.4c0 53 43 96 96 96s96-43 96-96s-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6z"/></svg></span></template>
+        <template id=fa-eye-slash><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M38.8 5.1C28.4-3.1 13.3-1.2 5.1 9.2S-1.2 34.7 9.2 42.9l592 464c10.4 8.2 25.5 6.3 33.7-4.1s6.3-25.5-4.1-33.7L525.6 386.7c39.6-40.6 66.4-86.1 79.9-118.4c3.3-7.9 3.3-16.7 0-24.6c-14.9-35.7-46.2-87.7-93-131.1C465.5 68.8 400.8 32 320 32c-68.2 0-125 26.3-169.3 60.8L38.8 5.1zM223.1 149.5C248.6 126.2 282.7 112 320 112c79.5 0 144 64.5 144 144c0 24.9-6.3 48.3-17.4 68.7L408 294.5c5.2-11.8 8-24.8 8-38.5c0-53-43-96-96-96c-2.8 0-5.6 .1-8.4 .4c5.3 9.3 8.4 20.1 8.4 31.6c0 10.2-2.4 19.8-6.6 28.3l-90.3-70.8zm223.1 298L373 389.9c-16.4 6.5-34.3 10.1-53 10.1c-79.5 0-144-64.5-144-144c0-6.9 .5-13.6 1.4-20.2L83.1 161.5C60.3 191.2 44 220.8 34.5 243.7c-3.3 7.9-3.3 16.7 0 24.6c14.9 35.7 46.2 87.7 93 131.1C174.5 443.2 239.2 480 320 480c47.8 0 89.9-12.9 126.2-32.5z"/></svg></span></template>
+        <template id=fa-copy><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M502.6 70.63l-61.25-61.25C435.4 3.371 427.2 0 418.7 0H255.1c-35.35 0-64 28.66-64 64l.0195 256C192 355.4 220.7 384 256 384h192c35.2 0 64-28.8 64-64V93.25C512 84.77 508.6 76.63 502.6 70.63zM464 320c0 8.836-7.164 16-16 16H255.1c-8.838 0-16-7.164-16-16L239.1 64.13c0-8.836 7.164-16 16-16h128L384 96c0 17.67 14.33 32 32 32h47.1V320zM272 448c0 8.836-7.164 16-16 16H63.1c-8.838 0-16-7.164-16-16L47.98 192.1c0-8.836 7.164-16 16-16H160V128H63.99c-35.35 0-64 28.65-64 64l.0098 256C.002 483.3 28.66 512 64 512h192c35.2 0 64-28.8 64-64v-32h-47.1L272 448z"/></svg></span></template>
+        <template id=fa-play><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"/></svg></span></template>
+        <template id=fa-clock-rotate-left><span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M75 75L41 41C25.9 25.9 0 36.6 0 57.9V168c0 13.3 10.7 24 24 24H134.1c21.4 0 32.1-25.9 17-41l-30.8-30.8C155 85.5 203 64 256 64c106 0 192 86 192 192s-86 192-192 192c-40.8 0-78.6-12.7-109.7-34.4c-14.5-10.1-34.4-6.6-44.6 7.9s-6.6 34.4 7.9 44.6C151.2 495 201.7 512 256 512c141.4 0 256-114.6 256-256S397.4 0 256 0C185.3 0 121.3 28.7 75 75zm181 53c-13.3 0-24 10.7-24 24V256c0 6.4 2.5 12.5 7 17l72 72c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9l-65-65V152c0-13.3-10.7-24-24-24z"/></svg></span></template>
+
+
+
+        <script>
+            window.playground_copyable = true;
+        </script>
+
+
+        <script src="elasticlunr-ef4e11c1.min.js"></script>
+        <script src="mark-09e88c2c.min.js"></script>
+        <script src="searcher-c2a407aa.js"></script>
+
+        <script src="clipboard-1626706a.min.js"></script>
+        <script src="highlight-abc7f01d.js"></script>
+        <script src="book-a0b12cfe.js"></script>
+
+        <!-- Custom JS scripts -->
+
+
+
+    </div>
+    </body>
+</html>

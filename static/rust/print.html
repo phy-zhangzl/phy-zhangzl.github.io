@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "rust";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-d28f18ac.js";
+            window.path_to_searchindex_js = "searchindex-bd04c544.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-729a5e0a.js"></script>
+        <script src="toc-18be313e.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -6842,6 +6842,783 @@ fn main() {
 <li><code>String</code> 作为 key 时的所有权问题</li>
 <li>小型数据统计练习</li>
 </ul>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-10---hashmap-与-hashset"><a class="header" href="#day-10---hashmap-与-hashset">Day 10 - <code>HashMap</code> 与 <code>HashSet</code></a></h1>
+<p>日期：2026-05-21</p>
+<h2 id="今日目标-9"><a class="header" href="#今日目标-9">今日目标</a></h2>
+<p>Day 10 学习 Rust 标准库中最常用的哈希集合类型：</p>
+<ul>
+<li><code>HashMap&lt;K, V&gt;</code>：key-value 映射</li>
+<li><code>HashSet&lt;T&gt;</code>：唯一值集合</li>
+</ul>
+<p>今日重点：</p>
+<ul>
+<li>使用 <code>HashMap::new()</code> 创建 map</li>
+<li>使用 <code>insert</code> 插入和覆盖 value</li>
+<li>使用 <code>get</code> 查询 value</li>
+<li>理解 <code>get</code> 返回 <code>Option&lt;&amp;V&gt;</code></li>
+<li>使用 <code>entry(...).or_insert(...)</code> 进行默认插入和原地更新</li>
+<li>用 <code>HashMap</code> 做词频统计</li>
+<li>理解 <code>HashMap&lt;String, V&gt;</code> 中 key/value 的所有权</li>
+<li>理解为什么 <code>HashMap&lt;String, V&gt;</code> 可以用 <code>&amp;str</code> 查询</li>
+<li>使用 <code>HashSet</code> 去重和查找重复项</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day10_hashmaps_sets
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day10_hashmaps_sets
+cargo run
+</code></pre>
+<h2 id="1-hashmap-和-hashset-在-rust-全貌中的位置"><a class="header" href="#1-hashmap-和-hashset-在-rust-全貌中的位置">1. <code>HashMap</code> 和 <code>HashSet</code> 在 Rust 全貌中的位置</a></h2>
+<p>前面已经学过：</p>
+<pre><code class="language-text">Vec&lt;T&gt;       -&gt; 顺序存储
+String       -&gt; 可增长字符串
+Iterator     -&gt; 数据流处理
+Result       -&gt; 可恢复错误
+</code></pre>
+<p>今天的两个容器是：</p>
+<pre><code class="language-text">HashMap&lt;K,V&gt; -&gt; 按 key 查 value
+HashSet&lt;T&gt;   -&gt; 只关心某个值是否出现过
+</code></pre>
+<p>Python 类比：</p>
+<pre><code class="language-text">Rust HashMap&lt;K, V&gt; ≈ Python dict
+Rust HashSet&lt;T&gt;    ≈ Python set
+</code></pre>
+<p>C++ 类比：</p>
+<pre><code class="language-text">Rust HashMap&lt;K, V&gt; ≈ C++ unordered_map
+Rust HashSet&lt;T&gt;    ≈ C++ unordered_set
+</code></pre>
+<p>使用前需要导入：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::{HashMap, HashSet};
+<span class="boring">}</span></code></pre>
+<p><code>HashMap</code> 和 <code>HashSet</code> 不在 Rust prelude 中，因此不像 <code>Vec</code>、<code>String</code>、<code>Option</code> 那样默认可用。</p>
+<h2 id="2-hashmap-基础insert-与-get"><a class="header" href="#2-hashmap-基础insert-与-get">2. <code>HashMap</code> 基础：<code>insert</code> 与 <code>get</code></a></h2>
+<p>完整示例：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+    scores.insert(String::from("Bob"), 67);
+    scores.insert(String::from("Carol"), 88);
+
+    println!("scores = {:?}", scores);
+
+    match scores.get("Alice") {
+        Some(score) =&gt; println!("Alice's score = {score}"),
+        None =&gt; println!("Alice not found"),
+    }
+
+    match scores.get("David") {
+        Some(score) =&gt; println!("David's score = {score}"),
+        None =&gt; println!("David not found"),
+    }
+}</code></pre>
+<p><code>scores</code> 的类型由插入的数据推断出来：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>HashMap&lt;String, i32&gt;
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">key 是 String
+value 是 i32
+</code></pre>
+<p><code>get</code> 返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Option&lt;&amp;i32&gt;
+<span class="boring">}</span></code></pre>
+<p>原因有两个：</p>
+<pre><code class="language-text">1. key 可能不存在，所以外层是 Option。
+2. value 归 HashMap 所有，所以 get 只借用，返回 &amp;i32。
+</code></pre>
+<p>所以：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scores.get("Alice")
+<span class="boring">}</span></code></pre>
+<p>可能是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Some(&amp;95)
+<span class="boring">}</span></code></pre>
+<p>也可能是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>None
+<span class="boring">}</span></code></pre>
+<p>这和 Day 7 的 <code>Option</code> 直接连接起来。</p>
+<h2 id="3-insert-会覆盖旧值"><a class="header" href="#3-insert-会覆盖旧值">3. <code>insert</code> 会覆盖旧值</a></h2>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Bob"), 67);
+    scores.insert(String::from("Bob"), 72);
+
+    println!("scores = {:?}", scores);
+}</code></pre>
+<p>结果中 <code>Bob</code> 的分数是 <code>72</code>。</p>
+<p><code>insert</code> 的语义：</p>
+<pre><code class="language-text">如果 key 不存在，插入新 key-value。
+如果 key 已存在，覆盖旧 value。
+</code></pre>
+<p><code>HashMap</code> 中每个 key 只能对应一个 value。</p>
+<h2 id="4-entryor_insert"><a class="header" href="#4-entryor_insert">4. <code>entry(...).or_insert(...)</code></a></h2>
+<p>有时我们不想覆盖已有值，而是希望：</p>
+<pre><code class="language-text">如果 key 存在，就保留原值。
+如果 key 不存在，就插入默认值。
+</code></pre>
+<p>可以使用：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+
+    scores.entry(String::from("Alice")).or_insert(100);
+    scores.entry(String::from("David")).or_insert(81);
+
+    println!("scores = {:?}", scores);
+}</code></pre>
+<p>结果：</p>
+<pre><code class="language-text">Alice 仍然是 95
+David 被插入为 81
+</code></pre>
+<p>含义：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scores.entry(key).or_insert(default_value)
+<span class="boring">}</span></code></pre>
+<p>可以读作：</p>
+<pre><code class="language-text">找到 key 对应的 entry。
+如果 key 不存在，就插入 default_value。
+无论原来存在还是刚插入，都返回这个 value 的可变引用。
+</code></pre>
+<p>最后一点非常重要：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>or_insert(...)
+<span class="boring">}</span></code></pre>
+<p>返回的是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;mut V
+<span class="boring">}</span></code></pre>
+<p>不是 <code>V</code> 本身。</p>
+<h2 id="5-词频统计entry-的经典用法"><a class="header" href="#5-词频统计entry-的经典用法">5. 词频统计：<code>entry</code> 的经典用法</a></h2>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let text = "rust rust ai infra rust ai";
+    let mut word_counts = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = word_counts.entry(word).or_insert(0);
+        *count += 1;
+    }
+
+    println!("word_counts = {:?}", word_counts);
+}</code></pre>
+<p>这里 <code>word_counts</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>HashMap&lt;&amp;str, i32&gt;
+<span class="boring">}</span></code></pre>
+<p>因为：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>text.split_whitespace()
+<span class="boring">}</span></code></pre>
+<p>产生的是 <code>&amp;str</code>。</p>
+<p>这一句：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let count = word_counts.entry(word).or_insert(0);
+<span class="boring">}</span></code></pre>
+<p>中，<code>count</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;mut i32
+<span class="boring">}</span></code></pre>
+<p>也就是说，<code>count</code> 不是一个独立的 <code>i32</code> 副本，而是指向 <code>word_counts</code> 内部某个 value 的可变引用。</p>
+<p>因此：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>*count += 1;
+<span class="boring">}</span></code></pre>
+<p>修改的是 <code>HashMap</code> 里面的 value 本身。</p>
+<h3 id="51-为什么不需要把-count-放回-word_counts"><a class="header" href="#51-为什么不需要把-count-放回-word_counts">5.1 为什么不需要把 <code>count</code> 放回 <code>word_counts</code></a></h3>
+<p>这是今天很关键的理解点。</p>
+<p>假设第一次遇到 <code>"rust"</code>：</p>
+<pre><code class="language-text">word_counts = {}
+</code></pre>
+<p>执行：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let count = word_counts.entry("rust").or_insert(0);
+<span class="boring">}</span></code></pre>
+<p>因为 <code>"rust"</code> 不存在，所以 map 变成：</p>
+<pre><code class="language-text">word_counts = { "rust": 0 }
+</code></pre>
+<p>然后 <code>or_insert(0)</code> 返回 map 内部这个 <code>0</code> 的可变引用：</p>
+<pre><code class="language-text">count ---&gt; word_counts["rust"]
+</code></pre>
+<p>执行：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>*count += 1;
+<span class="boring">}</span></code></pre>
+<p>就会把 map 内部的值改成：</p>
+<pre><code class="language-text">word_counts = { "rust": 1 }
+</code></pre>
+<p>第二次遇到 <code>"rust"</code> 时，<code>entry("rust")</code> 找到已有 value，<code>or_insert(0)</code> 不会插入新值，而是返回已有计数的可变引用。再次执行 <code>*count += 1</code>，就变成 <code>2</code>。</p>
+<p>所以这里不是：</p>
+<pre><code class="language-text">取出 count -&gt; 修改 count -&gt; 忘了放回 map
+</code></pre>
+<p>而是：</p>
+<pre><code class="language-text">借到 map 内部 value 的可变引用 -&gt; 直接修改 map 内部 value
+</code></pre>
+<p>这和 Day 9 的 <code>iter_mut()</code> 本质一样：</p>
+<pre class="playground"><code class="language-rust">fn main() {
+    let mut scores = vec![58, 76, 90];
+
+    for score in scores.iter_mut() {
+        *score += 5;
+    }
+
+    println!("scores = {:?}", scores);
+}</code></pre>
+<p>这里 <code>score: &amp;mut i32</code> 指向 <code>Vec</code> 里的元素；词频统计里 <code>count: &amp;mut i32</code> 指向 <code>HashMap</code> 里的 value。</p>
+<h2 id="6-hashmap-遍历顺序不固定"><a class="header" href="#6-hashmap-遍历顺序不固定">6. <code>HashMap</code> 遍历顺序不固定</a></h2>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+    scores.insert(String::from("Bob"), 67);
+    scores.insert(String::from("Carol"), 88);
+
+    for (name, score) in &amp;scores {
+        println!("{name}: {score}");
+    }
+}</code></pre>
+<p><code>HashMap</code> 不保证遍历顺序。</p>
+<p>所以输出顺序可能是：</p>
+<pre><code class="language-text">Alice: 95
+Bob: 67
+Carol: 88
+</code></pre>
+<p>也可能是其他顺序。</p>
+<p>不要写依赖 <code>HashMap</code> 遍历顺序的逻辑。</p>
+<p>如果需要排序，常见做法是先收集成 <code>Vec</code> 再排序：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+    scores.insert(String::from("Bob"), 67);
+    scores.insert(String::from("Carol"), 88);
+
+    let mut items: Vec&lt;_&gt; = scores.iter().collect();
+    items.sort_by_key(|(name, _score)| *name);
+
+    for (name, score) in items {
+        println!("{name}: {score}");
+    }
+}</code></pre>
+<h2 id="7-hashmapstring-v-中-key-的所有权"><a class="header" href="#7-hashmapstring-v-中-key-的所有权">7. <code>HashMap&lt;String, V&gt;</code> 中 key 的所有权</a></h2>
+<p><code>HashMap&lt;K, V&gt;</code> 拥有它里面的 key 和 value。</p>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    let name = String::from("Alice");
+
+    scores.insert(name, 95);
+
+    println!("scores = {:?}", scores);
+
+    // 取消注释会报错：name 已经被 move 进 HashMap。
+    // println!("name = {name}");
+}</code></pre>
+<p>这一句：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scores.insert(name, 95);
+<span class="boring">}</span></code></pre>
+<p>把 <code>name: String</code> 移动进了 <code>scores</code>。</p>
+<p>也就是：</p>
+<pre><code class="language-text">name 的所有权从局部变量 name 转移给 HashMap。
+</code></pre>
+<p>这和 Day 2 学过的 move 一样：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let s1 = String::from("hello");
+let s2 = s1;
+
+// println!("{s1}"); // s1 已经被 move
+<span class="boring">}</span></code></pre>
+<p><code>insert</code> 只是把 move 的目标换成了 <code>HashMap</code>。</p>
+<h3 id="71-如果插入后还想使用原-string"><a class="header" href="#71-如果插入后还想使用原-string">7.1 如果插入后还想使用原 <code>String</code></a></h3>
+<p>可以使用 <code>clone()</code>：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    let name = String::from("Alice");
+
+    scores.insert(name.clone(), 95);
+
+    println!("name is still usable: {name}");
+    println!("scores = {:?}", scores);
+}</code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>name.clone()
+<span class="boring">}</span></code></pre>
+<p>创建了一个新的 <code>String</code> 放进 map，原来的 <code>name</code> 仍然可用。</p>
+<p>代价是多复制一份字符串内容。</p>
+<h2 id="8-value-的所有权也一样"><a class="header" href="#8-value-的所有权也一样">8. value 的所有权也一样</a></h2>
+<p>如果 value 也是 <code>String</code>，也会被 move 进 map：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut users = HashMap::new();
+
+    let name = String::from("Alice");
+    let city = String::from("Beijing");
+
+    users.insert(name, city);
+
+    println!("users = {:?}", users);
+
+    // 取消注释会报错：name 和 city 都已经被 move。
+    // println!("name = {name}");
+    // println!("city = {city}");
+}</code></pre>
+<p>这里 <code>users</code> 的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>HashMap&lt;String, String&gt;
+<span class="boring">}</span></code></pre>
+<p>key 和 value 都由 map 拥有。</p>
+<h2 id="9-为什么-hashmapstring-i32-可以用-getalice"><a class="header" href="#9-为什么-hashmapstring-i32-可以用-getalice">9. 为什么 <code>HashMap&lt;String, i32&gt;</code> 可以用 <code>get("Alice")</code></a></h2>
+<p>看这个例子：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+
+    println!("{:?}", scores.get("Alice"));
+}</code></pre>
+<p><code>scores</code> 的 key 类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>String
+<span class="boring">}</span></code></pre>
+<p>但查询时使用的是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>"Alice"
+<span class="boring">}</span></code></pre>
+<p>它的类型是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;str
+<span class="boring">}</span></code></pre>
+<p>这为什么可以？</p>
+<p>直觉解释：</p>
+<pre><code class="language-text">String 拥有字符串内容；
+&amp;str 是字符串切片，只是借用字符串内容；
+String 可以按 str 来借用。
+</code></pre>
+<p>所以标准库允许：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>HashMap&lt;String, V&gt;
+<span class="boring">}</span></code></pre>
+<p>用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;str
+<span class="boring">}</span></code></pre>
+<p>查询。</p>
+<p>这样就不需要临时构造一个新的 <code>String</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>scores.get(&amp;String::from("Alice"));
+<span class="boring">}</span></code></pre>
+<p>这种写法会产生不必要的分配。</p>
+<p>背后依赖标准库中的 trait，例如 <code>Borrow</code>。当前阶段不用深挖，只需要记住：</p>
+<pre><code class="language-text">如果 HashMap 的 key 是 String，通常可以用 &amp;str 查询。
+</code></pre>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+
+    let query = String::from("Alice");
+
+    println!("{:?}", scores.get("Alice"));
+    println!("{:?}", scores.get(query.as_str()));
+    println!("query is still usable: {query}");
+}</code></pre>
+<p><code>query.as_str()</code> 返回 <code>&amp;str</code>，只是借用 <code>query</code> 的内容，不会 move <code>query</code>。</p>
+<h2 id="10-get_mut拿到-value-的可变引用"><a class="header" href="#10-get_mut拿到-value-的可变引用">10. <code>get_mut</code>：拿到 value 的可变引用</a></h2>
+<p>如果要修改已有 value，可以使用 <code>get_mut</code>：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+
+    if let Some(score) = scores.get_mut("Alice") {
+        *score += 5;
+    }
+
+    println!("scores = {:?}", scores);
+}</code></pre>
+<p><code>get_mut</code> 返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Option&lt;&amp;mut V&gt;
+<span class="boring">}</span></code></pre>
+<p>在这个例子里是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>Option&lt;&amp;mut i32&gt;
+<span class="boring">}</span></code></pre>
+<p>所以：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if let Some(score) = scores.get_mut("Alice") {
+    *score += 5;
+}
+<span class="boring">}</span></code></pre>
+<p>里面的 <code>score</code> 是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>&amp;mut i32
+<span class="boring">}</span></code></pre>
+<p>需要写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>*score += 5;
+<span class="boring">}</span></code></pre>
+<p>这和：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>let count = word_counts.entry(word).or_insert(0);
+*count += 1;
+<span class="boring">}</span></code></pre>
+<p>是同一类模式：拿到容器内部 value 的可变引用，然后原地修改。</p>
+<h2 id="11-hashmapstring-v-vs-hashmapstr-v"><a class="header" href="#11-hashmapstring-v-vs-hashmapstr-v">11. <code>HashMap&lt;String, V&gt;</code> vs <code>HashMap&lt;&amp;str, V&gt;</code></a></h2>
+<p>这两个选择很常见。</p>
+<h3 id="111-hashmapstring-v"><a class="header" href="#111-hashmapstring-v">11.1 <code>HashMap&lt;String, V&gt;</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>HashMap&lt;String, i32&gt;
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">map 拥有 key。
+</code></pre>
+<p>优点：</p>
+<pre><code class="language-text">数据独立存在，最稳妥。
+可以从文件、网络、用户输入中读取字符串作为 key。
+适合跨函数返回或长期保存。
+</code></pre>
+<p>缺点：</p>
+<pre><code class="language-text">插入时可能需要 move 或 clone String。
+</code></pre>
+<p>真实工程中更常用。</p>
+<h3 id="112-hashmapstr-v"><a class="header" href="#112-hashmapstr-v">11.2 <code>HashMap&lt;&amp;str, V&gt;</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>HashMap&lt;&amp;str, i32&gt;
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">map 不拥有 key，只保存字符串引用。
+</code></pre>
+<p>优点：</p>
+<pre><code class="language-text">不复制字符串。
+</code></pre>
+<p>缺点：</p>
+<pre><code class="language-text">被引用的字符串必须活得比 map 久。
+</code></pre>
+<p>例如词频统计可以使用 <code>HashMap&lt;&amp;str, i32&gt;</code>：</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashMap;
+
+fn main() {
+    let text = "rust rust ai";
+    let mut counts = HashMap::new();
+
+    for word in text.split_whitespace() {
+        *counts.entry(word).or_insert(0) += 1;
+    }
+
+    println!("counts = {:?}", counts);
+}</code></pre>
+<p>这里 <code>word</code> 都是从 <code>text</code> 借来的 <code>&amp;str</code>，而 <code>text</code> 活得足够久。</p>
+<p>但下面这种思路不行：</p>
+<pre><code class="language-rust ignore">use std::collections::HashMap;
+
+fn build_map() -&gt; HashMap&lt;&amp;str, i32&gt; {
+    let name = String::from("Alice");
+    let mut scores = HashMap::new();
+
+    scores.insert(name.as_str(), 95);
+
+    scores
+}</code></pre>
+<p>因为 <code>name</code> 是函数里的局部 <code>String</code>。函数结束后 <code>name</code> 被释放，如果返回 <code>HashMap&lt;&amp;str, i32&gt;</code>，map 里就会保存指向已释放字符串的引用。Rust 会阻止这种悬垂引用。</p>
+<p>重要结论：</p>
+<pre><code class="language-text">HashMap&lt;String, V&gt; 是拥有 key；
+HashMap&lt;&amp;str, V&gt; 是借用 key。
+</code></pre>
+<h2 id="12-hashset只关心值是否出现过"><a class="header" href="#12-hashset只关心值是否出现过">12. <code>HashSet</code>：只关心值是否出现过</a></h2>
+<p><code>HashSet&lt;T&gt;</code> 可以理解为只有 key、没有 value 的 <code>HashMap</code>。</p>
+<pre class="playground"><code class="language-rust">use std::collections::HashSet;
+
+fn main() {
+    let text = "rust rust ai infra rust ai";
+    let mut seen_words = HashSet::new();
+
+    for word in text.split_whitespace() {
+        seen_words.insert(word);
+    }
+
+    println!("seen_words = {:?}", seen_words);
+    println!("contains rust? {}", seen_words.contains("rust"));
+    println!("contains python? {}", seen_words.contains("python"));
+}</code></pre>
+<p><code>HashSet</code> 关心：</p>
+<pre><code class="language-text">某个值是否出现过。
+</code></pre>
+<p>不关心出现了几次。</p>
+<p>例如：</p>
+<pre><code class="language-text">rust rust ai infra rust ai
+</code></pre>
+<p>放进 <code>HashSet</code> 后只剩唯一值：</p>
+<pre><code class="language-text">{"rust", "ai", "infra"}
+</code></pre>
+<p>同样，<code>HashSet</code> 也不保证打印顺序。</p>
+<h2 id="13-用-hashset-找重复项"><a class="header" href="#13-用-hashset-找重复项">13. 用 <code>HashSet</code> 找重复项</a></h2>
+<pre class="playground"><code class="language-rust">use std::collections::HashSet;
+
+fn main() {
+    let names = vec!["Alice", "Bob", "Alice", "Carol", "Bob", "David"];
+    let mut seen = HashSet::new();
+    let mut duplicates = HashSet::new();
+
+    for name in names {
+        if !seen.insert(name) {
+            duplicates.insert(name);
+        }
+    }
+
+    println!("duplicates = {:?}", duplicates);
+}</code></pre>
+<p>关键是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>seen.insert(name)
+<span class="boring">}</span></code></pre>
+<p>返回：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>bool
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">true  -&gt; 这个值原来不存在，这次成功插入
+false -&gt; 这个值原来已经存在，没有再次插入
+</code></pre>
+<p>所以：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>if !seen.insert(name) {
+    duplicates.insert(name);
+}
+<span class="boring">}</span></code></pre>
+<p>意思是：</p>
+<pre><code class="language-text">如果 name 之前已经出现过，就把它加入 duplicates。
+</code></pre>
+<h2 id="14-今日主实验代码-1"><a class="header" href="#14-今日主实验代码-1">14. 今日主实验代码</a></h2>
+<p><code>day10_hashmaps_sets/src/main.rs</code>：</p>
+<pre class="playground"><code class="language-rust">use std::collections::{HashMap, HashSet};
+
+fn main() {
+    println!("== 1. HashMap basics: insert and get ==");
+
+    let mut scores = HashMap::new();
+
+    scores.insert(String::from("Alice"), 95);
+    scores.insert(String::from("Bob"), 67);
+    scores.insert(String::from("Carol"), 88);
+
+    println!("scores = {:?}", scores);
+
+    let name = "Alice";
+    match scores.get(name) {
+        Some(score) =&gt; println!("{name}'s score = {score}"),
+        None =&gt; println!("{name} not found"),
+    }
+
+    match scores.get("David") {
+        Some(score) =&gt; println!("David's score = {score}"),
+        None =&gt; println!("David not found"),
+    }
+
+    println!("\n== 2. insert overwrites an old value ==");
+
+    scores.insert(String::from("Bob"), 72);
+    println!("scores after updating Bob = {:?}", scores);
+
+    println!("\n== 3. entry(): insert only if missing ==");
+
+    scores.entry(String::from("Alice")).or_insert(100);
+    scores.entry(String::from("David")).or_insert(81);
+
+    println!("scores after entry/or_insert = {:?}", scores);
+
+    println!("\n== 4. Count word frequency with HashMap ==");
+
+    let text = "rust rust ai infra rust ai";
+    let mut word_counts = HashMap::new();
+
+    for word in text.split_whitespace() {
+        let count = word_counts.entry(word).or_insert(0);
+        *count += 1;
+    }
+
+    println!("word_counts = {:?}", word_counts);
+
+    println!("\n== 5. Iterate over HashMap ==");
+
+    for (name, score) in &amp;scores {
+        println!("{name}: {score}");
+    }
+
+    println!("\n== 6. HashSet basics: unique values ==");
+
+    let mut seen_words = HashSet::new();
+
+    for word in text.split_whitespace() {
+        seen_words.insert(word);
+    }
+
+    println!("seen_words = {:?}", seen_words);
+    println!("contains rust? {}", seen_words.contains("rust"));
+    println!("contains python? {}", seen_words.contains("python"));
+
+    println!("\n== 7. Find duplicates with HashSet ==");
+
+    let names = vec!["Alice", "Bob", "Alice", "Carol", "Bob", "David"];
+    let mut seen = HashSet::new();
+    let mut duplicates = HashSet::new();
+
+    for name in names {
+        if !seen.insert(name) {
+            duplicates.insert(name);
+        }
+    }
+
+    println!("duplicates = {:?}", duplicates);
+}</code></pre>
+<p>运行输出示例：</p>
+<pre><code class="language-text">== 1. HashMap basics: insert and get ==
+scores = {"Bob": 67, "Carol": 88, "Alice": 95}
+Alice's score = 95
+David not found
+
+== 2. insert overwrites an old value ==
+scores after updating Bob = {"Carol": 88, "Alice": 95, "Bob": 72}
+
+== 3. entry(): insert only if missing ==
+scores after entry/or_insert = {"Carol": 88, "Alice": 95, "David": 81, "Bob": 72}
+
+== 4. Count word frequency with HashMap ==
+word_counts = {"ai": 2, "rust": 3, "infra": 1}
+
+== 5. Iterate over HashMap ==
+Carol: 88
+Alice: 95
+David: 81
+Bob: 72
+
+== 6. HashSet basics: unique values ==
+seen_words = {"ai", "infra", "rust"}
+contains rust? true
+contains python? false
+
+== 7. Find duplicates with HashSet ==
+duplicates = {"Alice", "Bob"}
+</code></pre>
+<p>注意：<code>HashMap</code> 和 <code>HashSet</code> 的输出顺序不固定，你本地看到的顺序可能不同。</p>
+<h2 id="今日总结-8"><a class="header" href="#今日总结-8">今日总结</a></h2>
+<p>Day 10 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>HashMap&lt;K, V&gt;</code></td><td>key-value 映射</td></tr>
+<tr><td><code>HashSet&lt;T&gt;</code></td><td>唯一值集合</td></tr>
+<tr><td><code>HashMap::new()</code></td><td>创建空 map</td></tr>
+<tr><td><code>insert</code></td><td>插入新值；key 已存在时覆盖旧值</td></tr>
+<tr><td><code>get</code></td><td>查询，返回 <code>Option&lt;&amp;V&gt;</code></td></tr>
+<tr><td><code>get_mut</code></td><td>查询并可变借用 value，返回 <code>Option&lt;&amp;mut V&gt;</code></td></tr>
+<tr><td><code>entry</code></td><td>获取 key 对应的 entry</td></tr>
+<tr><td><code>or_insert</code></td><td>key 不存在时插入默认值，并返回 <code>&amp;mut V</code></td></tr>
+<tr><td><code>HashMap&lt;String, V&gt;</code></td><td>map 拥有 key</td></tr>
+<tr><td><code>HashMap&lt;&amp;str, V&gt;</code></td><td>map 借用 key，有生命周期限制</td></tr>
+<tr><td><code>String</code> key</td><td>插入时会 move；如还要用原变量，需要 <code>clone()</code></td></tr>
+<tr><td><code>get("Alice")</code></td><td><code>HashMap&lt;String, V&gt;</code> 通常可用 <code>&amp;str</code> 查询</td></tr>
+<tr><td><code>HashSet::insert</code></td><td>返回 <code>bool</code>，表示是否新插入成功</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">HashMap 用来按 key 查 value；HashSet 用来判断值是否出现过。
+</code></pre>
+<p>更 Rust 的总结：</p>
+<pre><code class="language-text">HashMap 拥有自己的 key/value；get 借用 value；entry/or_insert 返回内部 value 的可变引用，因此可以原地更新。
+</code></pre>
+<h2 id="下次继续-9"><a class="header" href="#下次继续-9">下次继续</a></h2>
+<p>你当前在 rustlings 中已经练到 <code>10_modules</code>，所以下一日建议直接进入：</p>
+<pre><code class="language-text">Day 11：module / crate / use / pub / tests
+</code></pre>
+<p>建议内容：</p>
+<ul>
+<li><code>mod</code> 是什么</li>
+<li><code>main.rs</code> 与 <code>lib.rs</code></li>
+<li><code>mod</code> 声明模块</li>
+<li><code>use</code> 引入路径</li>
+<li><code>pub</code> 控制可见性</li>
+<li><code>crate::</code> / <code>super::</code> / <code>self::</code></li>
+<li>把一个大文件拆成多个文件</li>
+<li>基础单元测试 <code>#[test]</code></li>
+</ul>
+<p>这会和 rustlings 的 <code>modules</code> 练习直接对应。</p>
 
                     </main>
 

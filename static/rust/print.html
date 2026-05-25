@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "rust";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-17ee138b.js";
+            window.path_to_searchindex_js = "searchindex-7988473d.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-f5261f35.js"></script>
+        <script src="toc-1741db8f.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -8387,6 +8387,679 @@ super:: 从当前模块的父模块开始找。
 <p>Day 12 的目标是理解：</p>
 <pre><code class="language-text">trait 是 Rust 中表达“某种能力/行为”的核心机制。
 </code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-12---trait-与泛型入门"><a class="header" href="#day-12---trait-与泛型入门">Day 12 - trait 与泛型入门</a></h1>
+<p>日期：2026-05-25</p>
+<h2 id="今日目标-11"><a class="header" href="#今日目标-11">今日目标</a></h2>
+<p>Day 12 学习 Rust 的 trait 与泛型。trait 是 Rust 中表达“能力 / 行为 / 接口约束”的核心机制；泛型让同一份代码适用于多种类型；trait bound 则把二者连接起来。</p>
+<p>今日重点：</p>
+<ul>
+<li>定义 trait：<code>trait Summary { ... }</code></li>
+<li>为具体类型实现 trait：<code>impl Summary for Student</code></li>
+<li>默认方法</li>
+<li><code>impl Trait</code> 参数与命名泛型 <code>T: Trait</code></li>
+<li>多个 trait bound 与 <code>where</code> 子句</li>
+<li>返回 <code>impl Trait</code> 与 <code>Box&lt;dyn Trait&gt;</code> 的区别</li>
+<li><code>Self</code>、trait 关联函数、泛型构造函数</li>
+<li>泛型 struct 上的 trait bound</li>
+<li>关联类型：<code>I::Item</code></li>
+<li><code>dyn Trait</code> 与 object safety / dyn compatibility 的直觉</li>
+<li>closure 与 <code>Fn</code> / <code>FnMut</code> / <code>FnOnce</code></li>
+<li>常见标准库 trait：<code>Debug</code>、<code>Display</code>、<code>Clone</code>、<code>Copy</code>、<code>Default</code>、<code>From</code>、<code>Into</code>、<code>Iterator</code>、<code>IntoIterator</code></li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day12_traits_generics
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day12_traits_generics
+cargo run
+</code></pre>
+<h2 id="1-trait-是什么"><a class="header" href="#1-trait-是什么">1. trait 是什么</a></h2>
+<p>trait 可以理解为“某种能力”或“某套接口约定”。</p>
+<p>例如：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>trait Summary {
+    fn summarize(&amp;self) -&gt; String;
+
+    fn label(&amp;self) -&gt; String {
+        format!("[Summary] {}", self.summarize())
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>这里定义了一个 <code>Summary</code> trait，表示实现者必须具备：</p>
+<pre><code class="language-text">summarize() -&gt; String
+</code></pre>
+<p>这个能力。</p>
+<p>其中：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn summarize(&amp;self) -&gt; String;
+<span class="boring">}</span></code></pre>
+<p>没有函数体，表示实现者必须自己提供实现。</p>
+<p>而：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>fn label(&amp;self) -&gt; String {
+    format!("[Summary] {}", self.summarize())
+}
+<span class="boring">}</span></code></pre>
+<p>有默认实现。只要类型实现了 <code>summarize()</code>，就自动得到 <code>label()</code>。</p>
+<h2 id="2-为具体类型实现-trait"><a class="header" href="#2-为具体类型实现-trait">2. 为具体类型实现 trait</a></h2>
+<p>先定义两个具体类型：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone)]
+struct Student {
+    name: String,
+    score: i32,
+}
+
+#[derive(Debug)]
+struct Course {
+    title: String,
+    credits: u32,
+}
+<span class="boring">}</span></code></pre>
+<p>然后分别实现 <code>Summary</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>impl Summary for Student {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{} scored {}", self.name, self.score)
+    }
+}
+
+impl Summary for Course {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{} ({} credits)", self.title, self.credits)
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>含义是：</p>
+<pre><code class="language-text">Student 拥有 Summary 能力。
+Course 也拥有 Summary 能力。
+</code></pre>
+<p>所以可以调用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#[derive(Debug, Clone)]
+</span><span class="boring">struct Student { name: String, score: i32 }
+</span><span class="boring">#[derive(Debug)]
+</span><span class="boring">struct Course { title: String, credits: u32 }
+</span><span class="boring">trait Summary {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String;
+</span><span class="boring">    fn label(&amp;self) -&gt; String { format!("[Summary] {}", self.summarize()) }
+</span><span class="boring">}
+</span><span class="boring">impl Summary for Student {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String { format!("{} scored {}", self.name, self.score) }
+</span><span class="boring">}
+</span><span class="boring">impl Summary for Course {
+</span><span class="boring">    fn summarize(&amp;self) -&gt; String { format!("{} ({} credits)", self.title, self.credits) }
+</span><span class="boring">}
+</span>fn main() {
+    let alice = Student {
+        name: String::from("Alice"),
+        score: 95,
+    };
+
+    let rust_course = Course {
+        title: String::from("Rust 101"),
+        credits: 3,
+    };
+
+    println!("{}", alice.summarize());
+    println!("{}", rust_course.summarize());
+    println!("{}", alice.label());
+}</code></pre>
+<p>输出类似：</p>
+<pre><code class="language-text">Alice scored 95
+Rust 101 (3 credits)
+[Summary] Alice scored 95
+</code></pre>
+<h2 id="3-rust-中几种常见的-impl"><a class="header" href="#3-rust-中几种常见的-impl">3. Rust 中几种常见的 <code>impl</code></a></h2>
+<p><code>impl</code> 在 Rust 里有几种语境。</p>
+<h3 id="31-固有实现impl-student"><a class="header" href="#31-固有实现impl-student">3.1 固有实现：<code>impl Student</code></a></h3>
+<pre><code class="language-rust ignore">impl Student {
+    fn new(name: &amp;str, score: i32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            score,
+        }
+    }
+}</code></pre>
+<p>这是给 <code>Student</code> 本身定义方法，不涉及 trait。</p>
+<h3 id="32-trait-实现impl-summary-for-student"><a class="header" href="#32-trait-实现impl-summary-for-student">3.2 trait 实现：<code>impl Summary for Student</code></a></h3>
+<pre><code class="language-rust ignore">impl Summary for Student {
+    fn summarize(&amp;self) -&gt; String {
+        format!("{} scored {}", self.name, self.score)
+    }
+}</code></pre>
+<p>这是让 <code>Student</code> 实现 <code>Summary</code> 这套能力。</p>
+<h3 id="33-参数位置的-impl-trait"><a class="header" href="#33-参数位置的-impl-trait">3.3 参数位置的 <code>impl Trait</code></a></h3>
+<pre><code class="language-rust ignore">fn print_summary(item: &amp;impl Summary) {
+    println!("{}", item.summarize());
+}</code></pre>
+<p>表示：</p>
+<pre><code class="language-text">参数 item 可以是任何实现了 Summary 的类型。
+</code></pre>
+<p>它接近于：</p>
+<pre><code class="language-rust ignore">fn print_summary&lt;T: Summary&gt;(item: &amp;T) {
+    println!("{}", item.summarize());
+}</code></pre>
+<h3 id="34-返回位置的-impl-trait"><a class="header" href="#34-返回位置的-impl-trait">3.4 返回位置的 <code>impl Trait</code></a></h3>
+<pre><code class="language-rust ignore">fn make_default_student() -&gt; impl Summary {
+    Student {
+        name: String::from("Generated Student"),
+        score: 76,
+    }
+}</code></pre>
+<p>表示：</p>
+<pre><code class="language-text">这个函数返回某个实现了 Summary 的固定具体类型，但把具体类型名隐藏起来。
+</code></pre>
+<p>注意：返回 <code>impl Trait</code> 不是“可以随便返回任意实现该 trait 的类型”。所有返回路径必须返回同一个具体类型。</p>
+<h2 id="4-impl-trait-参数-vs-命名泛型-t"><a class="header" href="#4-impl-trait-参数-vs-命名泛型-t">4. <code>impl Trait</code> 参数 vs 命名泛型 <code>T</code></a></h2>
+<p>单参数时：</p>
+<pre><code class="language-rust ignore">fn print_summary(item: &amp;impl Summary)</code></pre>
+<p>和：</p>
+<pre><code class="language-rust ignore">fn print_summary_generic&lt;T: Summary&gt;(item: &amp;T)</code></pre>
+<p>非常接近。</p>
+<p>但多个参数时有重要区别。</p>
+<pre><code class="language-rust ignore">fn print_two_summaries_impl(left: &amp;impl Summary, right: &amp;impl Summary) {
+    println!("left = {}", left.summarize());
+    println!("right = {}", right.summarize());
+}</code></pre>
+<p>这个函数的两个参数可以是不同具体类型，只要都实现了 <code>Summary</code>。</p>
+<p>例如可以传：</p>
+<pre><code class="language-rust ignore">print_two_summaries_impl(&amp;alice, &amp;rust_course);</code></pre>
+<p>而：</p>
+<pre><code class="language-rust ignore">fn print_two_summaries_same_type&lt;T: Summary&gt;(left: &amp;T, right: &amp;T) {
+    println!("left same-type = {}", left.summarize());
+    println!("right same-type = {}", right.summarize());
+}</code></pre>
+<p>这里两个参数共享同一个 <code>T</code>，所以必须是同一个具体类型。</p>
+<p>可以：</p>
+<pre><code class="language-rust ignore">print_two_summaries_same_type(&amp;alice, &amp;bob);</code></pre>
+<p>但不能：</p>
+<pre><code class="language-rust ignore">print_two_summaries_same_type(&amp;alice, &amp;rust_course);</code></pre>
+<p>典型报错：</p>
+<pre><code class="language-text">error[E0308]: mismatched types
+expected `&amp;Student`, found `&amp;Course`
+</code></pre>
+<p>原因是编译器先从 <code>&amp;alice</code> 推断：</p>
+<pre><code class="language-text">T = Student
+</code></pre>
+<p>于是第二个参数也必须是 <code>&amp;Student</code>。</p>
+<h2 id="5-多个-trait-bound-与-where"><a class="header" href="#5-多个-trait-bound-与-where">5. 多个 trait bound 与 <code>where</code></a></h2>
+<p>可以要求一个类型同时具备多种能力：</p>
+<pre><code class="language-rust ignore">fn print_debug_summary&lt;T: std::fmt::Debug + Summary&gt;(item: &amp;T) {
+    println!("debug + summary = {:?} =&gt; {}", item, item.summarize());
+}</code></pre>
+<p>这里：</p>
+<pre><code class="language-rust ignore">T: std::fmt::Debug + Summary</code></pre>
+<p>表示：</p>
+<pre><code class="language-text">T 必须同时实现 Debug 和 Summary。
+</code></pre>
+<p>当约束变长时，可以使用 <code>where</code>：</p>
+<pre><code class="language-rust ignore">fn print_debug_summary_where&lt;T&gt;(item: &amp;T)
+where
+    T: std::fmt::Debug + Summary,
+{
+    println!("where version = {:?} =&gt; {}", item, item.summarize());
+}</code></pre>
+<p>这和上面的含义相同，只是更适合复杂签名。</p>
+<h2 id="6-返回-impl-trait-与-boxdyn-trait"><a class="header" href="#6-返回-impl-trait-与-boxdyn-trait">6. 返回 <code>impl Trait</code> 与 <code>Box&lt;dyn Trait&gt;</code></a></h2>
+<p>返回 <code>impl Trait</code>：</p>
+<pre><code class="language-rust ignore">fn make_default_student() -&gt; impl Summary {
+    Student {
+        name: String::from("Generated Student"),
+        score: 76,
+    }
+}</code></pre>
+<p>特点：</p>
+<pre><code class="language-text">静态分发；
+具体类型固定；
+只是隐藏具体类型名。
+</code></pre>
+<p>下面这种不能编译：</p>
+<pre><code class="language-rust ignore">fn choose_summary_impl(use_student: bool) -&gt; impl Summary {
+    if use_student {
+        Student {
+            name: String::from("Generated Student"),
+            score: 76,
+        }
+    } else {
+        Course {
+            title: String::from("Generated Course"),
+            credits: 2,
+        }
+    }
+}</code></pre>
+<p>因为 <code>if</code> 分支返回 <code>Student</code>，<code>else</code> 分支返回 <code>Course</code>。</p>
+<p>编译器会提示：</p>
+<pre><code class="language-text">if and else have incompatible types
+expected `Student`, found `Course`
+</code></pre>
+<p>如果确实需要在不同分支返回不同具体类型，可以使用 trait object：</p>
+<pre><code class="language-rust ignore">fn choose_summary(use_student: bool) -&gt; Box&lt;dyn Summary&gt; {
+    if use_student {
+        Box::new(Student {
+            name: String::from("Boxed Alice"),
+            score: 91,
+        })
+    } else {
+        Box::new(Course {
+            title: String::from("Rust Systems"),
+            credits: 4,
+        })
+    }
+}</code></pre>
+<p><code>Box&lt;dyn Summary&gt;</code> 的特点：</p>
+<pre><code class="language-text">动态分发；
+可以隐藏不同具体类型；
+通过 Box 指针间接存放；
+有少量运行时成本。
+</code></pre>
+<p>对比：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>写法</th><th style="text-align: right">真实类型是否固定</th><th style="text-align: right">是否动态分发</th><th style="text-align: right">不同分支能否返回不同具体类型</th></tr>
+</thead>
+<tbody>
+<tr><td><code>-&gt; Student</code></td><td style="text-align: right">固定为 <code>Student</code></td><td style="text-align: right">否</td><td style="text-align: right">否</td></tr>
+<tr><td><code>-&gt; impl Summary</code></td><td style="text-align: right">固定，但名字隐藏</td><td style="text-align: right">否</td><td style="text-align: right">否</td></tr>
+<tr><td><code>-&gt; Box&lt;dyn Summary&gt;</code></td><td style="text-align: right">不固定</td><td style="text-align: right">是</td><td style="text-align: right">是</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="7-self-与-trait-关联函数"><a class="header" href="#7-self-与-trait-关联函数">7. <code>Self</code> 与 trait 关联函数</a></h2>
+<p>定义一个“能构造示例值”的 trait：</p>
+<pre><code class="language-rust ignore">trait BuildExample {
+    fn example() -&gt; Self;
+}</code></pre>
+<p>这里 <code>Self</code> 表示：</p>
+<pre><code class="language-text">当前实现这个 trait 的具体类型。
+</code></pre>
+<p>为 <code>Student</code> 实现：</p>
+<pre><code class="language-rust ignore">impl BuildExample for Student {
+    fn example() -&gt; Self {
+        Self {
+            name: String::from("Example Student"),
+            score: 89,
+        }
+    }
+}</code></pre>
+<p>这里 <code>Self</code> 就是 <code>Student</code>。</p>
+<p>为 <code>Course</code> 实现：</p>
+<pre><code class="language-rust ignore">impl BuildExample for Course {
+    fn example() -&gt; Self {
+        Self {
+            title: String::from("Example Course"),
+            credits: 2,
+        }
+    }
+}</code></pre>
+<p>这里 <code>Self</code> 就是 <code>Course</code>。</p>
+<p>可以写泛型构造函数：</p>
+<pre><code class="language-rust ignore">fn make_example&lt;T: BuildExample&gt;() -&gt; T {
+    T::example()
+}</code></pre>
+<p>使用：</p>
+<pre><code class="language-rust ignore">let example_student: Student = make_example();
+let example_course: Course = make_example();
+let explicit_student = make_example::&lt;Student&gt;();</code></pre>
+<p>因为 <code>make_example()</code> 没有参数，所以编译器不能从参数推断 <code>T</code>。需要通过左侧类型标注或 turbofish 指定：</p>
+<pre><code class="language-rust ignore">make_example::&lt;Student&gt;()</code></pre>
+<h2 id="8-self-vs-self"><a class="header" href="#8-self-vs-self">8. <code>Self</code> vs <code>self</code></a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>写法</th><th>含义</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Self</code></td><td>当前类型</td></tr>
+<tr><td><code>self</code></td><td>当前值，拿走所有权</td></tr>
+<tr><td><code>&amp;self</code></td><td>不可变借用当前值</td></tr>
+<tr><td><code>&amp;mut self</code></td><td>可变借用当前值</td></tr>
+</tbody>
+</table>
+</div>
+<p>例如：</p>
+<pre><code class="language-rust ignore">fn example() -&gt; Self</code></pre>
+<p>返回当前类型。</p>
+<pre><code class="language-rust ignore">fn summarize(&amp;self) -&gt; String</code></pre>
+<p>不可变借用当前值。</p>
+<h2 id="9-泛型-struct-上的-trait-bound"><a class="header" href="#9-泛型-struct-上的-trait-bound">9. 泛型 struct 上的 trait bound</a></h2>
+<p>可以定义一个只接收 <code>Summary</code> 元素的报告类型：</p>
+<pre><code class="language-rust ignore">struct SummaryReport&lt;T: Summary&gt; {
+    title: String,
+    items: Vec&lt;T&gt;,
+}
+
+impl&lt;T: Summary&gt; SummaryReport&lt;T&gt; {
+    fn new(title: &amp;str, items: Vec&lt;T&gt;) -&gt; Self {
+        Self {
+            title: title.to_string(),
+            items,
+        }
+    }
+
+    fn print(&amp;self) {
+        println!("-- {} --", self.title);
+        for item in &amp;self.items {
+            println!("{}", item.summarize());
+        }
+    }
+}</code></pre>
+<p>这里：</p>
+<pre><code class="language-rust ignore">T: Summary</code></pre>
+<p>表示 <code>SummaryReport&lt;T&gt;</code> 里的 <code>T</code> 必须实现 <code>Summary</code>，因为 <code>print()</code> 里需要调用：</p>
+<pre><code class="language-rust ignore">item.summarize()</code></pre>
+<p>使用：</p>
+<pre><code class="language-rust ignore">let student_report = SummaryReport::new("Student report", vec![alice.clone(), bob.clone()]);
+student_report.print();</code></pre>
+<p>此时：</p>
+<pre><code class="language-text">T = Student
+</code></pre>
+<p>也可以：</p>
+<pre><code class="language-rust ignore">let course_report = SummaryReport::new(
+    "Course report",
+    vec![Course {
+        title: String::from("Traits Lab"),
+        credits: 1,
+    }],
+);
+course_report.print();</code></pre>
+<p>此时：</p>
+<pre><code class="language-text">T = Course
+</code></pre>
+<p>注意：<code>Vec&lt;T&gt;</code> 是同质容器。同一个 <code>SummaryReport&lt;T&gt;</code> 里不能直接混放 <code>Student</code> 和 <code>Course</code>。如果需要混放，要使用类似 <code>Vec&lt;Box&lt;dyn Summary&gt;&gt;</code> 的形式。</p>
+<h2 id="10-关联类型iitem"><a class="header" href="#10-关联类型iitem">10. 关联类型：<code>I::Item</code></a></h2>
+<p><code>IntoIterator</code> 是标准库中的 trait，表示：</p>
+<pre><code class="language-text">某个类型可以被转换成 iterator。
+</code></pre>
+<p>它有一个关联类型 <code>Item</code>，表示迭代出来的元素类型。</p>
+<p>例如：</p>
+<pre><code class="language-rust ignore">fn print_debug_items&lt;I&gt;(items: I)
+where
+    I: IntoIterator,
+    I::Item: std::fmt::Debug,
+{
+    for item in items {
+        println!("item = {:?}", item);
+    }
+}</code></pre>
+<p>这里：</p>
+<pre><code class="language-rust ignore">I::Item</code></pre>
+<p>表示：</p>
+<pre><code class="language-text">I 被迭代时产生的元素类型。
+</code></pre>
+<p>所以：</p>
+<pre><code class="language-rust ignore">I::Item: std::fmt::Debug</code></pre>
+<p>意思是：</p>
+<pre><code class="language-text">迭代出来的每个元素都必须支持 Debug 打印。
+</code></pre>
+<p>可以调用：</p>
+<pre><code class="language-rust ignore">print_debug_items(vec![10, 20, 30]);
+print_debug_items(["rust", "trait", "generic"]);</code></pre>
+<h2 id="11-dyn-trait-与-dyn-compatibility"><a class="header" href="#11-dyn-trait-与-dyn-compatibility">11. <code>dyn Trait</code> 与 dyn compatibility</a></h2>
+<p>不是所有 trait 都适合做 <code>dyn Trait</code>。</p>
+<p>可以做 trait object 的例子：</p>
+<pre><code class="language-rust ignore">trait Named {
+    fn name(&amp;self) -&gt; &amp;str;
+
+    fn display_name(&amp;self) -&gt; String {
+        format!("name = {}", self.name())
+    }
+}</code></pre>
+<p>为 <code>Student</code> 和 <code>Course</code> 实现：</p>
+<pre><code class="language-rust ignore">impl Named for Student {
+    fn name(&amp;self) -&gt; &amp;str {
+        &amp;self.name
+    }
+}
+
+impl Named for Course {
+    fn name(&amp;self) -&gt; &amp;str {
+        &amp;self.title
+    }
+}</code></pre>
+<p>可以使用：</p>
+<pre><code class="language-rust ignore">let named_items: Vec&lt;&amp;dyn Named&gt; = vec![&amp;alice, &amp;rust_course];</code></pre>
+<p>因为 <code>Named</code> 的方法不要求调用者知道具体类型。</p>
+<p>不适合 trait object 的例子：</p>
+<pre><code class="language-rust ignore">trait DuplicateValue {
+    fn duplicate_value(&amp;self) -&gt; Self;
+}</code></pre>
+<p>这个方法返回 <code>Self</code>。如果只有 <code>&amp;dyn DuplicateValue</code>，调用者不知道背后具体类型是 <code>Student</code>、<code>Course</code> 还是别的类型，所以这种 trait 不适合直接做 <code>dyn Trait</code> 调用。</p>
+<p>直觉：</p>
+<pre><code class="language-text">如果 dyn Trait 把具体类型藏起来，那么 trait 的方法就不能要求调用者知道这个具体类型。
+</code></pre>
+<p>因此返回 <code>Self</code>、泛型方法、无 <code>self</code> 的构造函数等，常常更适合泛型约束，而不是 trait object。</p>
+<h2 id="12-closure-与-fn--fnmut--fnonce"><a class="header" href="#12-closure-与-fn--fnmut--fnonce">12. closure 与 <code>Fn</code> / <code>FnMut</code> / <code>FnOnce</code></a></h2>
+<p>closure 能传给函数，是因为 closure 类型会自动实现 <code>Fn</code> / <code>FnMut</code> / <code>FnOnce</code> 这些 trait。</p>
+<h3 id="121-fn"><a class="header" href="#121-fn">12.1 <code>Fn</code></a></h3>
+<pre><code class="language-rust ignore">fn call_read_twice&lt;F&gt;(f: F)
+where
+    F: Fn() -&gt; i32,
+{
+    println!("first read call = {}", f());
+    println!("second read call = {}", f());
+}</code></pre>
+<p>只读捕获可以满足 <code>Fn</code>：</p>
+<pre><code class="language-rust ignore">let base = 100;
+let read_base = || base + 1;
+call_read_twice(read_base);</code></pre>
+<h3 id="122-fnmut"><a class="header" href="#122-fnmut">12.2 <code>FnMut</code></a></h3>
+<pre><code class="language-rust ignore">fn call_mut_twice&lt;F&gt;(mut f: F)
+where
+    F: FnMut() -&gt; i32,
+{
+    println!("first mutable call = {}", f());
+    println!("second mutable call = {}", f());
+}</code></pre>
+<p>修改捕获变量需要 <code>FnMut</code>：</p>
+<pre><code class="language-rust ignore">let mut counter = 0;
+let next_count = || {
+    counter += 1;
+    counter
+};
+call_mut_twice(next_count);</code></pre>
+<h3 id="123-fnonce"><a class="header" href="#123-fnonce">12.3 <code>FnOnce</code></a></h3>
+<pre><code class="language-rust ignore">fn call_once&lt;F&gt;(f: F)
+where
+    F: FnOnce() -&gt; String,
+{
+    println!("one-time call = {}", f());
+}</code></pre>
+<p>消耗捕获变量需要 <code>FnOnce</code>：</p>
+<pre><code class="language-rust ignore">let message = String::from("owned message moved into closure");
+let consume_message = || message;
+call_once(consume_message);</code></pre>
+<p>判断规则：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>closure 行为</th><th>通常实现</th></tr>
+</thead>
+<tbody>
+<tr><td>只读捕获，不修改，不消耗</td><td><code>Fn</code></td></tr>
+<tr><td>修改捕获变量</td><td><code>FnMut</code></td></tr>
+<tr><td>消耗捕获变量所有权</td><td><code>FnOnce</code></td></tr>
+</tbody>
+</table>
+</div>
+<p>关系：</p>
+<pre><code class="language-text">Fn 可以当 FnMut / FnOnce 用。
+FnMut 可以当 FnOnce 用。
+FnOnce 不一定能当 FnMut / Fn 用。
+</code></pre>
+<p>注意：返回 <code>String</code> 不一定是 <code>FnOnce</code>。关键看是否 move 出捕获值。</p>
+<pre><code class="language-rust ignore">let greeting = String::from("hello");
+let clone_greeting = || greeting.clone();</code></pre>
+<p>这里每次 clone 一份新 <code>String</code>，没有消耗 <code>greeting</code> 本体，所以可以调用多次。</p>
+<h2 id="13-display-与-debug"><a class="header" href="#13-display-与-debug">13. <code>Display</code> 与 <code>Debug</code></a></h2>
+<p><code>Debug</code> 用于开发者调试：</p>
+<pre><code class="language-rust ignore">println!("{:?}", value);</code></pre>
+<p><code>Display</code> 用于用户友好展示：</p>
+<pre><code class="language-rust ignore">println!("{}", value);</code></pre>
+<p>为 <code>Student</code> 实现 <code>Display</code>：</p>
+<pre><code class="language-rust ignore">impl std::fmt::Display for Student {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        write!(f, "{} [{}]", self.name, self.score)
+    }
+}</code></pre>
+<p>为 <code>Course</code> 实现 <code>Display</code>：</p>
+<pre><code class="language-rust ignore">impl std::fmt::Display for Course {
+    fn fmt(&amp;self, f: &amp;mut std::fmt::Formatter&lt;'_&gt;) -&gt; std::fmt::Result {
+        write!(f, "{} ({} credits)", self.title, self.credits)
+    }
+}</code></pre>
+<p>对比：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>trait</th><th>格式符</th><th>目标</th><th>是否常见 derive</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Debug</code></td><td><code>{:?}</code></td><td>给开发者调试</td><td>可以 <code>derive</code></td></tr>
+<tr><td><code>Display</code></td><td><code>{}</code></td><td>给用户阅读</td><td>通常手写</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="14-from-与-into"><a class="header" href="#14-from-与-into">14. <code>From</code> 与 <code>Into</code></a></h2>
+<p>实现：</p>
+<pre><code class="language-rust ignore">impl From&lt;(&amp;str, i32)&gt; for Student {
+    fn from(value: (&amp;str, i32)) -&gt; Self {
+        let (name, score) = value;
+        Self {
+            name: name.to_string(),
+            score,
+        }
+    }
+}</code></pre>
+<p>使用：</p>
+<pre><code class="language-rust ignore">let from_tuple = Student::from(("From Tuple", 88));
+let into_student: Student = ("Into Tuple", 79).into();</code></pre>
+<p>通常优先实现 <code>From&lt;A&gt; for B</code>，因为标准库会自动提供对应的 <code>Into&lt;B&gt; for A</code>。</p>
+<p><code>.into()</code> 往往需要上下文告诉编译器目标类型：</p>
+<pre><code class="language-rust ignore">let into_student: Student = ("Into Tuple", 79).into();</code></pre>
+<h2 id="15-default"><a class="header" href="#15-default">15. <code>Default</code></a></h2>
+<p>实现默认值：</p>
+<pre><code class="language-rust ignore">impl Default for Student {
+    fn default() -&gt; Self {
+        Self {
+            name: String::from("Unnamed"),
+            score: 0,
+        }
+    }
+}</code></pre>
+<p>泛型函数：</p>
+<pre><code class="language-rust ignore">fn make_default_value&lt;T: Default&gt;() -&gt; T {
+    T::default()
+}</code></pre>
+<p>使用：</p>
+<pre><code class="language-rust ignore">let default_student: Student = make_default_value();</code></pre>
+<p><code>Default</code> 常用于配置结构体：</p>
+<pre><code class="language-rust ignore">let config = TrainConfig {
+    lr: 1e-4,
+    ..Default::default()
+};</code></pre>
+<h2 id="16-iterator-与-intoiterator"><a class="header" href="#16-iterator-与-intoiterator">16. <code>Iterator</code> 与 <code>IntoIterator</code></a></h2>
+<p><code>Iterator</code> 表示“迭代器本体”，核心方法类似：</p>
+<pre><code class="language-rust ignore">fn next(&amp;mut self) -&gt; Option&lt;Self::Item&gt;;</code></pre>
+<p><code>IntoIterator</code> 表示“可以被转换成迭代器”。<code>for</code> 循环本质上依赖 <code>IntoIterator</code>。</p>
+<p>更精确的关联类型约束：</p>
+<pre><code class="language-rust ignore">fn total_numbers&lt;I&gt;(items: I) -&gt; i32
+where
+    I: IntoIterator&lt;Item = i32&gt;,
+{
+    items.into_iter().sum()
+}</code></pre>
+<p>这里：</p>
+<pre><code class="language-rust ignore">I: IntoIterator&lt;Item = i32&gt;</code></pre>
+<p>表示：</p>
+<pre><code class="language-text">I 必须可以被迭代，并且迭代出来的元素类型必须正好是 i32。
+</code></pre>
+<p>调用：</p>
+<pre><code class="language-rust ignore">let total = total_numbers([1, 2, 3, 4]);
+println!("total numbers = {total}");</code></pre>
+<h2 id="17-常见标准库-trait-小地图"><a class="header" href="#17-常见标准库-trait-小地图">17. 常见标准库 trait 小地图</a></h2>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>trait</th><th>作用</th><th>常见语法</th></tr>
+</thead>
+<tbody>
+<tr><td><code>Debug</code></td><td>调试打印</td><td><code>{:?}</code></td></tr>
+<tr><td><code>Display</code></td><td>用户友好打印</td><td><code>{}</code></td></tr>
+<tr><td><code>Clone</code></td><td>显式复制</td><td><code>.clone()</code></td></tr>
+<tr><td><code>Copy</code></td><td>赋值 / 传参自动复制</td><td><code>let b = a;</code> 后 <code>a</code> 仍可用</td></tr>
+<tr><td><code>Default</code></td><td>默认值</td><td><code>T::default()</code></td></tr>
+<tr><td><code>From</code></td><td>从 A 构造 B</td><td><code>B::from(a)</code></td></tr>
+<tr><td><code>Into</code></td><td>转换成目标类型</td><td><code>a.into()</code></td></tr>
+<tr><td><code>Iterator</code></td><td>迭代器本体</td><td><code>.next()</code></td></tr>
+<tr><td><code>IntoIterator</code></td><td>可转换成迭代器</td><td><code>for item in items</code></td></tr>
+<tr><td><code>Fn</code></td><td>不可变重复调用 closure</td><td><code>F: Fn(...) -&gt; ...</code></td></tr>
+<tr><td><code>FnMut</code></td><td>可变调用 closure</td><td><code>F: FnMut(...) -&gt; ...</code></td></tr>
+<tr><td><code>FnOnce</code></td><td>至少能调用一次</td><td><code>F: FnOnce(...) -&gt; ...</code></td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="18-今日主实验代码"><a class="header" href="#18-今日主实验代码">18. 今日主实验代码</a></h2>
+<p>完整实验在：</p>
+<pre><code class="language-text">day12_traits_generics/src/main.rs
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day12_traits_generics
+cargo run
+</code></pre>
+<p>输出重点包括：</p>
+<pre><code class="language-text">== 2.1 impl Trait vs named generic T ==
+== 3.2 Returning impl Trait ==
+== 3.3 Self in traits and generic constructors ==
+== 3.5 Associated type from IntoIterator ==
+== 3.6 dyn-compatible traits ==
+== 3.7 Closure traits: Fn, FnMut, FnOnce ==
+== 3.8 Common standard library traits ==
+== 5. dyn Trait: different concrete types behind one interface ==
+</code></pre>
+<h2 id="今日总结-10"><a class="header" href="#今日总结-10">今日总结</a></h2>
+<p>Day 12 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td>trait</td><td>表达能力 / 行为 / 接口约束</td></tr>
+<tr><td><code>impl Trait for Type</code></td><td>为具体类型实现某种能力</td></tr>
+<tr><td>默认方法</td><td>trait 方法可以提供默认实现</td></tr>
+<tr><td><code>T: Trait</code></td><td>泛型类型必须满足 trait bound</td></tr>
+<tr><td><code>impl Trait</code> 参数</td><td>接受某个实现 trait 的参数，常作为泛型简写</td></tr>
+<tr><td>命名泛型 <code>T</code></td><td>可以表达多个参数必须同一类型</td></tr>
+<tr><td><code>where</code></td><td>更清晰地写复杂 trait bound</td></tr>
+<tr><td>返回 <code>impl Trait</code></td><td>返回固定但隐藏名字的具体类型</td></tr>
+<tr><td><code>dyn Trait</code></td><td>运行时多态，隐藏具体类型并动态分发</td></tr>
+<tr><td><code>Self</code></td><td>当前实现类型</td></tr>
+<tr><td>关联类型</td><td>trait 中依赖实现者确定的类型，如 <code>I::Item</code></td></tr>
+<tr><td><code>Fn</code> / <code>FnMut</code> / <code>FnOnce</code></td><td>closure 的调用能力 trait</td></tr>
+<tr><td>标准库 trait</td><td>Rust 生态中通用能力约定</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">Rust 的泛型不是“什么都能传”，而是“任何满足 trait bound 的类型都能传”。
+</code></pre>
+<h2 id="下次继续-11"><a class="header" href="#下次继续-11">下次继续</a></h2>
+<p>Day 13 建议主题：生命周期 lifetime 入门。</p>
+<p>它会和 Day 3 的借用规则、Day 12 的泛型联系起来：</p>
+<ul>
+<li>为什么引用需要生命周期</li>
+<li>函数返回引用时为什么要标注生命周期</li>
+<li>lifetime elision 省略规则</li>
+<li>struct 中保存引用</li>
+<li><code>'static</code> 的基本含义</li>
+</ul>
 
                     </main>
 

@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "rust";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-bd04c544.js";
+            window.path_to_searchindex_js = "searchindex-17ee138b.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-18be313e.js"></script>
+        <script src="toc-f5261f35.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -7619,6 +7619,774 @@ duplicates = {"Alice", "Bob"}
 <li>基础单元测试 <code>#[test]</code></li>
 </ul>
 <p>这会和 rustlings 的 <code>modules</code> 练习直接对应。</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="day-11---modulecrateusepub-与测试"><a class="header" href="#day-11---modulecrateusepub-与测试">Day 11 - Module、crate、<code>use</code>、<code>pub</code> 与测试</a></h1>
+<p>日期：2026-05-21</p>
+<h2 id="今日目标-10"><a class="header" href="#今日目标-10">今日目标</a></h2>
+<p>Day 11 学习 Rust 的模块系统。目标不是背语法，而是理解 Rust 如何把一个逐渐变大的程序拆成多个文件、多个模块，并通过清晰的公开 API 组织工程结构。</p>
+<p>今日重点：</p>
+<ul>
+<li><code>mod</code>：把文件或子模块挂到模块树上</li>
+<li><code>pub</code>：控制模块、函数、类型、字段的可见性</li>
+<li><code>use</code>：把路径引入当前作用域，减少重复长路径</li>
+<li><code>crate::</code>：从当前 crate 根部开始找路径</li>
+<li><code>super::</code>：从父模块开始找路径</li>
+<li>嵌套模块：用目录组织子模块</li>
+<li><code>pub use</code>：re-export，重新导出更干净的外部 API</li>
+<li><code>#[cfg(test)] mod tests</code>：模块内单元测试</li>
+<li><code>src/lib.rs</code> 与 <code>src/main.rs</code>：library crate 与 binary crate 的分工</li>
+</ul>
+<p>今日代码目录：</p>
+<pre><code class="language-bash">/Users/zhenliangzhang/projects/rust_tutor/day11_modules
+</code></pre>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day11_modules
+cargo run
+cargo test
+</code></pre>
+<h2 id="1-为什么需要模块系统"><a class="header" href="#1-为什么需要模块系统">1. 为什么需要模块系统</a></h2>
+<p>前面几天的代码大多写在一个 <code>main.rs</code> 里。随着程序变大，一个文件会逐渐混入很多职责：</p>
+<pre><code class="language-text">数据结构定义
+文本解析
+统计逻辑
+输出格式化
+错误处理
+main 流程
+测试代码
+</code></pre>
+<p>模块系统的作用是把它们拆开：</p>
+<pre><code class="language-text">student.rs  -&gt; 数据结构
+parser.rs   -&gt; 解析文本
+stats.rs    -&gt; 统计逻辑
+report.rs   -&gt; 汇总输出
+main.rs     -&gt; 程序入口
+lib.rs      -&gt; library crate 根部，对外组织 API
+</code></pre>
+<p>一句话：</p>
+<pre><code class="language-text">module 系统负责组织代码边界；pub 负责控制边界外能看见什么。
+</code></pre>
+<h2 id="2-day-11-项目结构"><a class="header" href="#2-day-11-项目结构">2. Day 11 项目结构</a></h2>
+<p>今日项目最终结构：</p>
+<pre><code class="language-text">day11_modules/
+  Cargo.toml
+  src/
+    lib.rs
+    main.rs
+    student.rs
+    parser.rs
+    stats.rs
+    report.rs
+    formatters/
+      mod.rs
+      text.rs
+      table.rs
+</code></pre>
+<p>职责：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>文件</th><th>作用</th></tr>
+</thead>
+<tbody>
+<tr><td><code>src/lib.rs</code></td><td>library crate 根部，声明并公开模块</td></tr>
+<tr><td><code>src/main.rs</code></td><td>binary crate 入口，调用 library 逻辑</td></tr>
+<tr><td><code>src/student.rs</code></td><td>定义 <code>Student</code> 类型和示例数据</td></tr>
+<tr><td><code>src/parser.rs</code></td><td>把文本解析成 <code>Student</code></td></tr>
+<tr><td><code>src/stats.rs</code></td><td>计算平均分、及格名单、分数表</td></tr>
+<tr><td><code>src/report.rs</code></td><td>打印汇总报告</td></tr>
+<tr><td><code>src/formatters/mod.rs</code></td><td>嵌套模块 <code>formatters</code> 的入口</td></tr>
+<tr><td><code>src/formatters/text.rs</code></td><td>文本行格式化</td></tr>
+<tr><td><code>src/formatters/table.rs</code></td><td>表格格式化，作为内部实现模块</td></tr>
+</tbody>
+</table>
+</div>
+<h2 id="3-第一层多文件模块"><a class="header" href="#3-第一层多文件模块">3. 第一层：多文件模块</a></h2>
+<p>最初可以从一个 binary 项目理解模块：</p>
+<pre><code class="language-text">src/main.rs
+src/student.rs
+src/parser.rs
+src/stats.rs
+</code></pre>
+<p>在 <code>main.rs</code> 里声明：</p>
+<pre><code class="language-rust ignore">mod student;
+mod parser;
+mod stats;</code></pre>
+<p>这几行告诉 Rust：</p>
+<pre><code class="language-text">当前 crate 里有 student/parser/stats 这些模块；
+请去找 src/student.rs、src/parser.rs、src/stats.rs。
+</code></pre>
+<p>重要规则：</p>
+<pre><code class="language-text">文件存在 != 模块已声明。
+必须用 mod 把文件挂到模块树上。
+</code></pre>
+<p>如果删掉：</p>
+<pre><code class="language-rust ignore">mod parser;</code></pre>
+<p>即使 <code>src/parser.rs</code> 文件存在，Rust 也不知道 <code>crate::parser</code> 是什么。</p>
+<h2 id="4-studentrspub-struct公开字段与私有字段"><a class="header" href="#4-studentrspub-struct公开字段与私有字段">4. <code>student.rs</code>：<code>pub struct</code>、公开字段与私有字段</a></h2>
+<p><code>src/student.rs</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[derive(Debug, Clone)]
+pub struct Student {
+    pub name: String,
+    score: i32,
+}
+
+impl Student {
+    pub fn new(name: &amp;str, score: i32) -&gt; Self {
+        Self {
+            name: name.to_string(),
+            score,
+        }
+    }
+
+    pub fn score(&amp;self) -&gt; i32 {
+        self.score
+    }
+
+    pub fn is_passing(&amp;self) -&gt; bool {
+        self.score &gt;= 60
+    }
+}
+
+pub fn sample_students() -&gt; Vec&lt;Student&gt; {
+    vec![
+        Student::new("Alice", 95),
+        Student::new("Bob", 67),
+        Student::new("Carol", 88),
+        Student::new("David", 52),
+    ]
+}
+<span class="boring">}</span></code></pre>
+<h3 id="41-pub-struct-student"><a class="header" href="#41-pub-struct-student">4.1 <code>pub struct Student</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Student
+<span class="boring">}</span></code></pre>
+<p>表示 <code>Student</code> 这个类型可以被其他模块使用。</p>
+<p>如果写成：</p>
+<pre><code class="language-rust ignore">struct Student { ... }</code></pre>
+<p>那么 <code>parser.rs</code>、<code>stats.rs</code>、<code>report.rs</code> 这些兄弟模块就不能使用 <code>Student</code>。</p>
+<p>Rust 默认是 private。想让模块外访问，必须显式写 <code>pub</code>。</p>
+<h3 id="42-struct-是-pub字段不会自动-pub"><a class="header" href="#42-struct-是-pub字段不会自动-pub">4.2 struct 是 <code>pub</code>，字段不会自动 <code>pub</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub struct Student {
+    pub name: String,
+    score: i32,
+}
+<span class="boring">}</span></code></pre>
+<p>含义是：</p>
+<pre><code class="language-text">Student 类型是 public。
+name 字段是 public。
+score 字段是 private。
+</code></pre>
+<p>所以其他模块可以写：</p>
+<pre><code class="language-rust ignore">student.name</code></pre>
+<p>但不能直接写：</p>
+<pre><code class="language-rust ignore">student.score</code></pre>
+<p>因为 <code>score</code> 字段没有 <code>pub</code>。</p>
+<p>不过外部可以通过公开方法读取：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub fn score(&amp;self) -&gt; i32 {
+    self.score
+}
+<span class="boring">}</span></code></pre>
+<p>这就是封装：</p>
+<pre><code class="language-text">字段不直接公开；
+通过公开方法控制访问。
+</code></pre>
+<h2 id="5-parserrs模块间引用与-crate"><a class="header" href="#5-parserrs模块间引用与-crate">5. <code>parser.rs</code>：模块间引用与 <code>crate::</code></a></h2>
+<p><code>src/parser.rs</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::student::Student;
+
+pub fn parse_student(line: &amp;str) -&gt; Result&lt;Student, String&gt; {
+    let (name, score_text) = line
+        .split_once(',')
+        .ok_or_else(|| format!("missing comma in line: {line:?}"))?;
+
+    let name = name.trim();
+    if name.is_empty() {
+        return Err(format!("missing student name in line: {line:?}"));
+    }
+
+    let score = score_text
+        .trim()
+        .parse::&lt;i32&gt;()
+        .map_err(|error| format!("invalid score in line {line:?}: {error}"))?;
+
+    Ok(Student::new(name, score))
+}
+
+pub fn parse_students(text: &amp;str) -&gt; Result&lt;Vec&lt;Student&gt;, String&gt; {
+    let mut students = Vec::new();
+
+    for (index, line) in text.lines().enumerate() {
+        let trimmed = line.trim();
+
+        if trimmed.is_empty() {
+            continue;
+        }
+
+        let student = parse_student(trimmed)
+            .map_err(|error| format!("line {}: {error}", index + 1))?;
+
+        students.push(student);
+    }
+
+    Ok(students)
+}
+<span class="boring">}</span></code></pre>
+<p>这一句：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::student::Student;
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">从当前 crate 的根开始找 student::Student。
+</code></pre>
+<p>如果不写 <code>use</code>，也可以在函数签名里写完整路径：</p>
+<pre><code class="language-rust ignore">pub fn parse_student(line: &amp;str) -&gt; Result&lt;crate::student::Student, String&gt; {
+    // ...
+}</code></pre>
+<p>但这会很啰嗦。所以常用 <code>use</code> 把路径引入当前作用域。</p>
+<h2 id="6-statsrs模块内测试与-super"><a class="header" href="#6-statsrs模块内测试与-super">6. <code>stats.rs</code>：模块内测试与 <code>super::*</code></a></h2>
+<p><code>src/stats.rs</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use std::collections::HashMap;
+
+use crate::student::Student;
+
+pub fn average_score(students: &amp;[Student]) -&gt; Option&lt;f64&gt; {
+    if students.is_empty() {
+        return None;
+    }
+
+    let total: i32 = students.iter().map(|student| student.score()).sum();
+    Some(total as f64 / students.len() as f64)
+}
+
+pub fn passing_names(students: &amp;[Student]) -&gt; Vec&lt;String&gt; {
+    students
+        .iter()
+        .filter(|student| student.is_passing())
+        .map(|student| student.name.clone())
+        .collect()
+}
+
+pub fn score_map(students: &amp;[Student]) -&gt; HashMap&lt;String, i32&gt; {
+    let mut scores = HashMap::new();
+
+    for student in students {
+        scores.insert(student.name.clone(), student.score());
+    }
+
+    scores
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn average_score_returns_none_for_empty_input() {
+        let students = Vec::new();
+        assert_eq!(average_score(&amp;students), None);
+    }
+
+    #[test]
+    fn average_score_computes_mean() {
+        let students = vec![Student::new("Alice", 80), Student::new("Bob", 100)];
+        assert_eq!(average_score(&amp;students), Some(90.0));
+    }
+
+    #[test]
+    fn passing_names_keeps_only_passing_students() {
+        let students = vec![Student::new("Alice", 95), Student::new("David", 52)];
+        assert_eq!(passing_names(&amp;students), vec![String::from("Alice")]);
+    }
+}
+<span class="boring">}</span></code></pre>
+<h3 id="61-cfgtest-mod-tests"><a class="header" href="#61-cfgtest-mod-tests">6.1 <code>#[cfg(test)] mod tests</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>#[cfg(test)]
+mod tests {
+    // ...
+}
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">只有 cargo test 时才编译 tests 模块。
+</code></pre>
+<p>所以测试代码不会影响：</p>
+<pre><code class="language-bash">cargo run
+</code></pre>
+<h3 id="62-use-super"><a class="header" href="#62-use-super">6.2 <code>use super::*</code></a></h3>
+<p>在 <code>stats.rs</code> 里，模块关系是：</p>
+<pre><code class="language-text">stats
+└── tests
+</code></pre>
+<p><code>tests</code> 的父模块是 <code>stats</code>。所以：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use super::*;
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">从父模块 stats 引入可见项。
+</code></pre>
+<p>这样测试里可以直接调用：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>average_score(...)
+passing_names(...)
+<span class="boring">}</span></code></pre>
+<p>不用写：</p>
+<pre><code class="language-rust ignore">super::average_score(...)</code></pre>
+<p>对比：</p>
+<pre><code class="language-text">crate:: 从当前 crate 根部开始找。
+super:: 从当前模块的父模块开始找。
+</code></pre>
+<h2 id="7-reportrs引入模块本身"><a class="header" href="#7-reportrs引入模块本身">7. <code>report.rs</code>：引入模块本身</a></h2>
+<p><code>src/report.rs</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::stats;
+use crate::student::Student;
+
+pub fn print_summary(students: &amp;[Student]) {
+    println!("students = {:?}", students);
+
+    match stats::average_score(students) {
+        Some(avg) =&gt; println!("average score = {avg:.2}"),
+        None =&gt; println!("average score = N/A"),
+    }
+
+    let passing_names = stats::passing_names(students);
+    println!("passing students = {:?}", passing_names);
+
+    let score_map = stats::score_map(students);
+    println!("score map = {:?}", score_map);
+}
+<span class="boring">}</span></code></pre>
+<p>这里：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::stats;
+<span class="boring">}</span></code></pre>
+<p>引入整个 <code>stats</code> 模块。因此调用时写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>stats::average_score(students)
+stats::passing_names(students)
+stats::score_map(students)
+<span class="boring">}</span></code></pre>
+<p>也可以写成：</p>
+<pre><code class="language-rust ignore">use crate::stats::{average_score, passing_names, score_map};</code></pre>
+<p>然后直接调用函数名。当前保留 <code>stats::...</code> 是为了让函数来源更清楚。</p>
+<h2 id="8-嵌套模块目录--modrs"><a class="header" href="#8-嵌套模块目录--modrs">8. 嵌套模块：目录 + <code>mod.rs</code></a></h2>
+<p>Day 11 第二层加入了嵌套模块：</p>
+<pre><code class="language-text">src/formatters/
+  mod.rs
+  text.rs
+  table.rs
+</code></pre>
+<p>在 <code>src/lib.rs</code> 中声明：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod formatters;
+<span class="boring">}</span></code></pre>
+<p>Rust 会去找：</p>
+<pre><code class="language-text">src/formatters.rs
+</code></pre>
+<p>或者：</p>
+<pre><code class="language-text">src/formatters/mod.rs
+</code></pre>
+<p>本项目使用的是：</p>
+<pre><code class="language-text">src/formatters/mod.rs
+</code></pre>
+<h3 id="81-formattersmodrs"><a class="header" href="#81-formattersmodrs">8.1 <code>formatters/mod.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod text;
+
+mod table;
+
+pub use table::print_score_table;
+<span class="boring">}</span></code></pre>
+<p>含义：</p>
+<pre><code class="language-text">pub mod text;
+    声明 text 子模块，并且让外部可以访问 formatters::text。
+
+mod table;
+    声明 table 子模块，但 table 模块本身不对外公开。
+
+pub use table::print_score_table;
+    把 table 模块里的 print_score_table 重新导出为 formatters::print_score_table。
+</code></pre>
+<h2 id="9-pub-usere-export"><a class="header" href="#9-pub-usere-export">9. <code>pub use</code>：re-export</a></h2>
+<p><code>pub use</code> 叫重新导出。</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub use table::print_score_table;
+<span class="boring">}</span></code></pre>
+<p>让外部可以写：</p>
+<pre><code class="language-rust ignore">formatters::print_score_table(&amp;students);</code></pre>
+<p>而不是：</p>
+<pre><code class="language-rust ignore">formatters::table::print_score_table(&amp;students);</code></pre>
+<p>而且因为 <code>table</code> 是 private：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>mod table;
+<span class="boring">}</span></code></pre>
+<p>外部本来就不能访问：</p>
+<pre><code class="language-rust ignore">formatters::table</code></pre>
+<p>这是一种常见 API 设计：</p>
+<pre><code class="language-text">内部文件如何拆，是实现细节；
+外部只看到干净的公开接口。
+</code></pre>
+<h2 id="10-formatterstextrs"><a class="header" href="#10-formatterstextrs">10. <code>formatters/text.rs</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::student::Student;
+
+pub fn format_student_line(student: &amp;Student) -&gt; String {
+    let status = if student.is_passing() { "PASS" } else { "FAIL" };
+    format!("{}: {} ({})", student.name, student.score(), status)
+}
+
+pub fn print_student_lines(students: &amp;[Student]) {
+    for student in students {
+        println!("{}", format_student_line(student));
+    }
+}
+<span class="boring">}</span></code></pre>
+<p>因为在 <code>formatters/mod.rs</code> 中写了：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod text;
+<span class="boring">}</span></code></pre>
+<p>所以外部可以调用：</p>
+<pre><code class="language-rust ignore">formatters::text::print_student_lines(&amp;students);</code></pre>
+<h2 id="11-formatterstablers-与-super"><a class="header" href="#11-formatterstablers-与-super">11. <code>formatters/table.rs</code> 与 <code>super::</code></a></h2>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::student::Student;
+
+use super::text::format_student_line;
+
+pub fn print_score_table(students: &amp;[Student]) {
+    println!("Name   | Score | Status");
+    println!("-------|-------|--------");
+
+    for student in students {
+        println!("{}", format_table_row(student));
+    }
+}
+
+fn format_table_row(student: &amp;Student) -&gt; String {
+    let status = if student.is_passing() { "PASS" } else { "FAIL" };
+    format!("{:&lt;6} | {:&gt;5} | {}", student.name, student.score(), status)
+}
+
+#[allow(dead_code)]
+fn debug_line_from_sibling_module(student: &amp;Student) -&gt; String {
+    format_student_line(student)
+}
+<span class="boring">}</span></code></pre>
+<p>当前模块是：</p>
+<pre><code class="language-text">crate::formatters::table
+</code></pre>
+<p>父模块是：</p>
+<pre><code class="language-text">crate::formatters
+</code></pre>
+<p>所以：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use super::text::format_student_line;
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">从父模块 formatters 出发，找到兄弟模块 text，再找到 format_student_line。
+</code></pre>
+<p>等价于：</p>
+<pre><code class="language-rust ignore">use crate::formatters::text::format_student_line;</code></pre>
+<p>在同一组子模块内部，用 <code>super::</code> 很常见。</p>
+<h2 id="12-srclibrslibrary-crate-根部"><a class="header" href="#12-srclibrslibrary-crate-根部">12. <code>src/lib.rs</code>：library crate 根部</a></h2>
+<p>最终项目加入了 <code>src/lib.rs</code>：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod formatters;
+pub mod parser;
+pub mod report;
+pub mod stats;
+pub mod student;
+
+pub use parser::{parse_student, parse_students};
+pub use student::{sample_students, Student};
+<span class="boring">}</span></code></pre>
+<p>这表示当前 package 现在同时有：</p>
+<pre><code class="language-text">src/lib.rs  -&gt; library crate
+src/main.rs -&gt; binary crate
+</code></pre>
+<p><code>lib.rs</code> 承载可复用的业务逻辑和模块树。</p>
+<p><code>main.rs</code> 作为可执行程序入口，负责调用 library 逻辑。</p>
+<p>真实 Rust 项目常见组织方式：</p>
+<pre><code class="language-text">业务逻辑放 lib.rs 及其子模块；
+main.rs 尽量薄，只负责启动、读参数、调用逻辑、打印结果。
+</code></pre>
+<h3 id="121-pub-mod-in-librs"><a class="header" href="#121-pub-mod-in-librs">12.1 <code>pub mod</code> in <code>lib.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod parser;
+<span class="boring">}</span></code></pre>
+<p>表示：</p>
+<pre><code class="language-text">声明 parser 模块，对应 src/parser.rs；
+并且让外部能访问 day11_modules::parser。
+</code></pre>
+<p>如果写成：</p>
+<pre><code class="language-rust ignore">mod parser;</code></pre>
+<p>则 <code>parser</code> 只对 library 内部可见，外部不能写：</p>
+<pre><code class="language-rust ignore">day11_modules::parser::parse_students</code></pre>
+<p>但如果仍然有：</p>
+<pre><code class="language-rust ignore">pub use parser::parse_students;</code></pre>
+<p>外部仍然可以通过重新导出的路径访问：</p>
+<pre><code class="language-rust ignore">day11_modules::parse_students</code></pre>
+<p>这说明可以隐藏内部模块结构，只暴露希望用户使用的 API。</p>
+<h3 id="122-pub-use-in-librs"><a class="header" href="#122-pub-use-in-librs">12.2 <code>pub use</code> in <code>lib.rs</code></a></h3>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub use parser::{parse_student, parse_students};
+pub use student::{sample_students, Student};
+<span class="boring">}</span></code></pre>
+<p>让外部除了写：</p>
+<pre><code class="language-rust ignore">day11_modules::parser::parse_students
+day11_modules::student::Student</code></pre>
+<p>还可以写：</p>
+<pre><code class="language-rust ignore">day11_modules::parse_students
+day11_modules::Student</code></pre>
+<p>这就是 re-export 的价值：</p>
+<pre><code class="language-text">内部按模块组织；
+外部暴露更顺手的入口。
+</code></pre>
+<h2 id="13-srcmainrsbinary-crate-入口"><a class="header" href="#13-srcmainrsbinary-crate-入口">13. <code>src/main.rs</code>：binary crate 入口</a></h2>
+<p>最终 <code>src/main.rs</code>：</p>
+<pre class="playground"><code class="language-rust">use day11_modules::formatters;
+use day11_modules::parser::parse_students;
+use day11_modules::report;
+use day11_modules::student::sample_students;
+
+fn main() {
+    println!("== 1. Use modules from separate files ==");
+
+    let students = sample_students();
+    report::print_summary(&amp;students);
+
+    println!("\n== 2. Parse students from text ==");
+
+    let text = "Alice,95\nBob,67\nCarol,88\n\nDavid,52\n";
+
+    match parse_students(text) {
+        Ok(parsed_students) =&gt; report::print_summary(&amp;parsed_students),
+        Err(error) =&gt; println!("failed to parse students: {error}"),
+    }
+
+    println!("\n== 3. Parse bad input and show error ==");
+
+    let bad_text = "Alice,95\nbad line\nCarol,88\n";
+
+    match parse_students(bad_text) {
+        Ok(parsed_students) =&gt; report::print_summary(&amp;parsed_students),
+        Err(error) =&gt; println!("failed to parse students: {error}"),
+    }
+
+    println!("\n== 4. Nested modules and re-export ==");
+    formatters::text::print_student_lines(&amp;students);
+
+    println!("\n== 5. Private child module with public re-export ==");
+    formatters::print_score_table(&amp;students);
+}</code></pre>
+<p>注意这里使用的是：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use day11_modules::parser::parse_students;
+<span class="boring">}</span></code></pre>
+<p>而不是：</p>
+<pre><code class="language-rust ignore">use crate::parser::parse_students;</code></pre>
+<p>原因是：</p>
+<pre><code class="language-text">main.rs 是 binary crate 的 crate root。
+lib.rs 是 library crate 的 crate root。
+</code></pre>
+<p>它们虽然在同一个 package 里，但属于两个 crate。</p>
+<p><code>main.rs</code> 使用 <code>lib.rs</code> 暴露出的 library，就像使用一个外部 crate 一样，通过 package/crate 名字访问：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>day11_modules::...
+<span class="boring">}</span></code></pre>
+<p>这个名字来自 <code>Cargo.toml</code>：</p>
+<pre><code class="language-toml">[package]
+name = "day11_modules"
+</code></pre>
+<h2 id="14-crate-在-librs-模块里指向谁"><a class="header" href="#14-crate-在-librs-模块里指向谁">14. <code>crate::</code> 在 <code>lib.rs</code> 模块里指向谁</a></h2>
+<p>在 <code>parser.rs</code>、<code>stats.rs</code>、<code>report.rs</code> 中仍然可以写：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>use crate::student::Student;
+<span class="boring">}</span></code></pre>
+<p>因为这些文件现在是通过 <code>lib.rs</code> 挂进模块树的：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>pub mod parser;
+pub mod stats;
+pub mod report;
+pub mod student;
+<span class="boring">}</span></code></pre>
+<p>所以在这些模块里：</p>
+<pre><code class="language-text">crate:: 指向 library crate 根部，也就是 src/lib.rs。
+</code></pre>
+<p>因此：</p>
+<pre class="playground"><code class="language-rust"><span class="boring">#![allow(unused)]
+</span><span class="boring">fn main() {
+</span>crate::student::Student
+<span class="boring">}</span></code></pre>
+<p>表示从 <code>lib.rs</code> 根部找到 <code>student::Student</code>。</p>
+<h2 id="15-为什么-cargo-test-会同时测试-librs-和-mainrs"><a class="header" href="#15-为什么-cargo-test-会同时测试-librs-和-mainrs">15. 为什么 <code>cargo test</code> 会同时测试 <code>lib.rs</code> 和 <code>main.rs</code></a></h2>
+<p>加入 <code>src/lib.rs</code> 后，运行：</p>
+<pre><code class="language-bash">cargo test
+</code></pre>
+<p>会看到类似：</p>
+<pre><code class="language-text">Running unittests src/lib.rs
+running 5 tests
+...
+
+Running unittests src/main.rs
+running 0 tests
+...
+</code></pre>
+<p>原因是当前 package 里有两个 crate：</p>
+<pre><code class="language-text">library crate: src/lib.rs
+binary crate:  src/main.rs
+</code></pre>
+<p>测试主要放在 <code>parser.rs</code> 和 <code>stats.rs</code> 中，而它们属于 library crate，所以测试出现在：</p>
+<pre><code class="language-text">Running unittests src/lib.rs
+</code></pre>
+<p><code>main.rs</code> 中没有测试，所以显示 0 tests。</p>
+<h2 id="16-两种嵌套模块文件布局"><a class="header" href="#16-两种嵌套模块文件布局">16. 两种嵌套模块文件布局</a></h2>
+<p>今天使用的是 <code>mod.rs</code> 风格：</p>
+<pre><code class="language-text">src/
+  formatters/
+    mod.rs
+    text.rs
+    table.rs
+</code></pre>
+<p>还有一种更扁平的风格：</p>
+<pre><code class="language-text">src/
+  formatters.rs
+  formatters/
+    text.rs
+    table.rs
+</code></pre>
+<p>其中 <code>formatters.rs</code> 内容类似：</p>
+<pre><code class="language-rust ignore">pub mod text;
+mod table;
+pub use table::print_score_table;</code></pre>
+<p>这两种都表示：</p>
+<pre><code class="language-text">crate::formatters
+</code></pre>
+<p>只是文件布局不同。当前阶段先熟悉 <code>mod.rs</code> 风格即可；以后看到 <code>formatters.rs + formatters/</code>，知道它们是同一类东西。</p>
+<h2 id="17-今日主实验代码索引"><a class="header" href="#17-今日主实验代码索引">17. 今日主实验代码索引</a></h2>
+<p>运行：</p>
+<pre><code class="language-bash">cd /Users/zhenliangzhang/projects/rust_tutor/day11_modules
+cargo run
+cargo test
+</code></pre>
+<p>核心文件：</p>
+<pre><code class="language-text">src/lib.rs
+src/main.rs
+src/student.rs
+src/parser.rs
+src/stats.rs
+src/report.rs
+src/formatters/mod.rs
+src/formatters/text.rs
+src/formatters/table.rs
+</code></pre>
+<p>输出重点：</p>
+<pre><code class="language-text">== 1. Use modules from separate files ==
+...
+
+== 4. Nested modules and re-export ==
+Alice: 95 (PASS)
+Bob: 67 (PASS)
+Carol: 88 (PASS)
+David: 52 (FAIL)
+
+== 5. Private child module with public re-export ==
+Name   | Score | Status
+-------|-------|--------
+Alice  |    95 | PASS
+Bob    |    67 | PASS
+Carol  |    88 | PASS
+David  |    52 | FAIL
+</code></pre>
+<h2 id="18-常见问题小结"><a class="header" href="#18-常见问题小结">18. 常见问题小结</a></h2>
+<h3 id="181-删除-mod-parser-会怎样"><a class="header" href="#181-删除-mod-parser-会怎样">18.1 删除 <code>mod parser;</code> 会怎样？</a></h3>
+<p>如果父模块不声明 <code>mod parser;</code>，Rust 就不会把 <code>parser.rs</code> 加入模块树。即使文件存在，<code>crate::parser</code> 也不存在。</p>
+<h3 id="182-删除-pub-struct-student-会怎样"><a class="header" href="#182-删除-pub-struct-student-会怎样">18.2 删除 <code>pub struct Student</code> 会怎样？</a></h3>
+<p><code>Student</code> 会变成只在 <code>student</code> 模块内部可见。兄弟模块无法使用 <code>crate::student::Student</code>。</p>
+<h3 id="183-为什么-score-字段不是-pub但能通过-score-读取"><a class="header" href="#183-为什么-score-字段不是-pub但能通过-score-读取">18.3 为什么 <code>score</code> 字段不是 <code>pub</code>，但能通过 <code>score()</code> 读取？</a></h3>
+<p>因为字段 private，但方法 public。方法定义在同一模块内部，可以访问 private 字段；外部只能调用 public 方法。</p>
+<h3 id="184-cratestudentstudent-和-super-区别是什么"><a class="header" href="#184-cratestudentstudent-和-super-区别是什么">18.4 <code>crate::student::Student</code> 和 <code>super::*</code> 区别是什么？</a></h3>
+<pre><code class="language-text">crate:: 从当前 crate 根部开始找。
+super:: 从当前模块的父模块开始找。
+</code></pre>
+<p><code>use super::*</code> 常用于测试子模块，把父模块里的可见项引入测试模块。</p>
+<h3 id="185-为什么-cfgtest-mod-tests-不影响-cargo-run"><a class="header" href="#185-为什么-cfgtest-mod-tests-不影响-cargo-run">18.5 为什么 <code>#[cfg(test)] mod tests</code> 不影响 <code>cargo run</code>？</a></h3>
+<p>因为 <code>#[cfg(test)]</code> 表示这段代码只在 <code>cargo test</code> 时编译。</p>
+<h2 id="今日总结-9"><a class="header" href="#今日总结-9">今日总结</a></h2>
+<p>Day 11 的核心地图：</p>
+<div class="table-wrapper">
+<table>
+<thead>
+<tr><th>概念</th><th>关键点</th></tr>
+</thead>
+<tbody>
+<tr><td><code>mod</code></td><td>声明模块，把文件挂到模块树上</td></tr>
+<tr><td><code>pub</code></td><td>控制外部可见性</td></tr>
+<tr><td><code>use</code></td><td>引入路径，减少长路径重复</td></tr>
+<tr><td><code>crate::</code></td><td>从当前 crate 根部找</td></tr>
+<tr><td><code>super::</code></td><td>从父模块找</td></tr>
+<tr><td><code>pub mod</code></td><td>模块本身对外公开</td></tr>
+<tr><td><code>pub fn</code> / <code>pub struct</code></td><td>item 对外公开</td></tr>
+<tr><td>私有字段</td><td>struct 即使 <code>pub</code>，字段也不会自动公开</td></tr>
+<tr><td><code>pub use</code></td><td>重新导出 API，隐藏内部路径</td></tr>
+<tr><td><code>#[cfg(test)]</code></td><td>只在测试时编译</td></tr>
+<tr><td><code>lib.rs</code></td><td>library crate 根部，组织可复用业务逻辑</td></tr>
+<tr><td><code>main.rs</code></td><td>binary crate 入口，负责启动和调用逻辑</td></tr>
+</tbody>
+</table>
+</div>
+<p>一句话总结：</p>
+<pre><code class="language-text">mod 负责组织代码在哪里；pub 负责决定外部能看见什么；lib.rs 负责沉淀可复用逻辑；main.rs 负责把程序跑起来。
+</code></pre>
+<h2 id="下次继续-10"><a class="header" href="#下次继续-10">下次继续</a></h2>
+<p>Day 12 建议主题：trait 与泛型入门。</p>
+<p>它会把前面见过但没有系统展开的概念串起来：</p>
+<ul>
+<li><code>Debug</code></li>
+<li><code>Clone</code></li>
+<li><code>Copy</code></li>
+<li><code>Iterator</code></li>
+<li><code>Fn</code> / <code>FnMut</code> / <code>FnOnce</code></li>
+<li><code>T: Clone</code></li>
+<li><code>impl Trait</code></li>
+<li><code>Box&lt;dyn Error&gt;</code></li>
+</ul>
+<p>Day 12 的目标是理解：</p>
+<pre><code class="language-text">trait 是 Rust 中表达“某种能力/行为”的核心机制。
+</code></pre>
 
                     </main>
 
